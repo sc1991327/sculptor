@@ -40,16 +40,28 @@ public class VoxelStoreSmooth
 
 public class VoxelOpt
 {
-    public Vector3 Pos { get; set; }
-    public MaterialSet MaterialWeight { get; set; }
+    public Vector3i Pos { get; set; }
+    public MaterialSet MaterialNew { get; set; }
+    public MaterialSet MaterialOld { get; set; }
+    public VoxelOpt(Vector3i p, MaterialSet mnew, MaterialSet mold)
+    {
+        Pos = p;
+        MaterialNew = mnew;
+        MaterialOld = mold;
+    }
 }
 
 public class RecordBehaviour : MonoBehaviour {
 
+    public GameObject BasicProceduralVolume = null;
+
     private StreamWriter file;
 
+    private TerrainVolume terrainVolume;
+
     private List<List<VoxelOpt>> optStack;
-    private int optPos = -1;
+    private int optSize = 20;
+    private int optPos = 0;
 
     // Use this for initialization
     void Awake () {
@@ -60,6 +72,14 @@ public class RecordBehaviour : MonoBehaviour {
         // Example
         //string lines = "First line.\r\nSecond line.\r\nThird line.";
         //file.WriteLine(lines);
+
+        terrainVolume = BasicProceduralVolume.GetComponent<TerrainVolume>();
+
+
+        optStack = new List<List<VoxelOpt>>(optSize);
+        for (int i = 0; i < optSize; i++){
+            optStack.Add(new List<VoxelOpt>());
+        }
     }
 	
 	// Update is called once per frame
@@ -69,27 +89,96 @@ public class RecordBehaviour : MonoBehaviour {
 
     public void UnDo()
     {
-
+        //Debug.Log("UnDo");
+        SubOptPos();
+        bool reopt = SetVoxelsOld();
+        if (reopt == false)
+        {
+            AddOptPos();
+            Debug.Log("Undo Failed, Over Steps.");
+        }
     }
 
     public void ReDo()
     {
-
+        //Debug.Log("ReDo");
+        bool reopt = SetVoxelsNew();
+        if (reopt == false)
+        {
+            Debug.Log("Redo Failed, Over Steps.");
+        }
+        else
+        {
+            AddOptPos();
+        }
     }
 
-    public void StartNewOperator()
+    public void NewDo()
     {
-
+        //Debug.Log("NewDo");
+        AddOptPos();
+        optStack[optPos].Clear();
     }
 
-    public void PushOperator()
+    public void PushOperator(VoxelOpt opt)
     {
-
+        optStack[optPos].Add(opt);
     }
 
-    public void PopOperator()
+    private void AddOptPos()
     {
+        if (optPos < optSize - 1)
+        {
+            optPos++;
+        }
+        else
+        {
+            optPos = 0;
+        }
+    }
 
+    private void SubOptPos()
+    {
+        if (optPos > 0)
+        {
+            optPos--;
+        }
+        else
+        {
+            optPos = optSize;
+        }
+    }
+
+    private bool SetVoxelsNew()
+    {
+        if (optStack[optPos].Count == 0)
+        {
+            return false;
+        }
+        else
+        {
+            foreach (VoxelOpt tempOpt in optStack[optPos])
+            {
+                terrainVolume.data.SetVoxel(tempOpt.Pos.x, tempOpt.Pos.y, tempOpt.Pos.z, tempOpt.MaterialNew);
+            }
+        }
+        return true;
+    }
+
+    private bool SetVoxelsOld()
+    {
+        if (optStack[optPos].Count == 0)
+        {
+            return false;
+        }
+        else
+        {
+            foreach (VoxelOpt tempOpt in optStack[optPos])
+            {
+                terrainVolume.data.SetVoxel(tempOpt.Pos.x, tempOpt.Pos.y, tempOpt.Pos.z, tempOpt.MaterialOld);
+            }
+        }
+        return true;
     }
 
     public void Write(Vector3i Pos, Vector3 RotateEuler, MaterialSet materialSet, Vector3i range, OptShape optshape, float mtime)

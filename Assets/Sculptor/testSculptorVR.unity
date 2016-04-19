@@ -154,7 +154,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11414578, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 2}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2015248, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 2}
       propertyPath: m_ClearFlags
@@ -162,7 +162,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 2015248, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 2}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400008, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 2}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 400002, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 2}
+      propertyPath: m_RootOrder
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11462408, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 2}
@@ -324,9 +332,9 @@ MonoBehaviour:
   frameRate: 30
   maxFramesToRecord: 0
   frameNumberDigits: 6
-  startSound: {fileID: 0}
-  doneSound: {fileID: 0}
-  failSound: {fileID: 0}
+  startSound: {fileID: 8300000, guid: 3b7a828a646174088aa48ee1db9c439c, type: 3}
+  doneSound: {fileID: 8300000, guid: a22b8c429f521429084d616c68dda19a, type: 3}
+  failSound: {fileID: 8300000, guid: b4ed406e6e315450f85fa2c0f65bce01, type: 3}
   fadeDuringCapture: 1
   fadeTime: 0.25
   fadeColor: {r: 0, g: 0, b: 0, a: 1}
@@ -465,6 +473,10 @@ Transform:
   - {fileID: 567557955}
   m_Father: {fileID: 858757838}
   m_RootOrder: 0
+--- !u!4 &355689193 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 400006, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 2}
+  m_PrefabInternal: {fileID: 100700749}
 --- !u!1 &406002970
 GameObject:
   m_ObjectHideFlags: 0
@@ -718,7 +730,7 @@ Transform:
   m_LocalRotation: {x: -0.684209, y: 0.4338543, z: -0.15145232, w: -0.5662956}
   m_LocalPosition: {x: 128, y: 64, z: 128}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 65.0051, y: -137.7446, z: -87.5801}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -865,7 +877,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   spreadCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -887,7 +899,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
 --- !u!4 &788308655
 Transform:
   m_ObjectHideFlags: 0
@@ -905,17 +917,13 @@ Transform:
 GameObject:
   m_PrefabParentObject: {fileID: 100012, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 2}
   m_PrefabInternal: {fileID: 100700749}
---- !u!4 &790664137 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 400012, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 2}
-  m_PrefabInternal: {fileID: 100700749}
 --- !u!114 &790664138
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 790664136}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b94d55555c3316439d0b5e65e71b313, type: 3}
   m_Name: 
@@ -997,7 +1005,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045d67dae0d4c514a8e6add34c63a804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mData: {fileID: 1022702119}
+  mData: {fileID: 1823876764}
 --- !u!114 &826901852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1140,20 +1148,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 965229100}
---- !u!114 &1022702119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5775844f6e499034eb955d3c113ed57e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  basePath: 2
-  relativePathToVoxelDatabase: D:/unitysculptor/SculptorVR/Assets/StreamingAssets/Cubiquity/VoxelDatabases/VRSculptor_859606286.vdb
-  mWritePermissions: 1
 --- !u!1 &1218098105
 GameObject:
   m_ObjectHideFlags: 0
@@ -1518,8 +1512,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
-  m_Father: {fileID: 790664137}
-  m_RootOrder: 1
+  m_Father: {fileID: 355689193}
+  m_RootOrder: 0
 --- !u!20 &1490585458
 Camera:
   m_ObjectHideFlags: 0
@@ -1625,6 +1619,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bf98c049af1f8c46b8790c43182833f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BasicProceduralVolume: {fileID: 826901847}
 --- !u!1 &1622141996
 GameObject:
   m_ObjectHideFlags: 0
@@ -1957,6 +1952,20 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1703180677}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1823876764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5775844f6e499034eb955d3c113ed57e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  basePath: 2
+  relativePathToVoxelDatabase: D:/unitysculptor/SculptorVR/Assets/StreamingAssets/Cubiquity/VoxelDatabases/VRSculptor_2147143122.vdb
+  mWritePermissions: 1
 --- !u!1 &1882354325
 GameObject:
   m_ObjectHideFlags: 0
@@ -2011,28 +2020,28 @@ Material:
         first:
           name: _Tex0
         second:
-          m_Texture: {fileID: 2800000, guid: bb38bb14b5e175f4ca16975ae08541d0, type: 3}
+          m_Texture: {fileID: 2800000, guid: 8c4d28bef2ee5064bbbe46e616acb5cc, type: 3}
           m_Scale: {x: 0.125, y: 0.125}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _Tex1
         second:
-          m_Texture: {fileID: 2800000, guid: 80ba9c91035caa14f8722f8bc573b136, type: 3}
+          m_Texture: {fileID: 2800000, guid: e35a79210cda9ea40b086b7beba733c2, type: 3}
           m_Scale: {x: 0.125, y: 0.125}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _Tex2
         second:
-          m_Texture: {fileID: 2800000, guid: c6c07e201ceca3443af08cff1b1fadb5, type: 3}
+          m_Texture: {fileID: 2800000, guid: 88975f73608bb9f429e48120ae4cb832, type: 3}
           m_Scale: {x: 0.125, y: 0.125}
           m_Offset: {x: 0, y: 0}
       data:
         first:
           name: _Tex3
         second:
-          m_Texture: {fileID: 0}
+          m_Texture: {fileID: 2800000, guid: c3b675e654e9ef34bb29a99f6d79f2ad, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -2288,8 +2297,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
-  m_Father: {fileID: 790664137}
-  m_RootOrder: 2
+  m_Father: {fileID: 355689193}
+  m_RootOrder: 1
 --- !u!114 &2051192705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2326,7 +2335,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294967293
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0

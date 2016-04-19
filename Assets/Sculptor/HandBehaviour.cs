@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
 using Cubiquity;
 
 public enum ControlPanel { empty, main, state, shape, color, readfile };
@@ -59,7 +59,6 @@ public class HandBehaviour : MonoBehaviour {
 
     private float buttonPreTime = 0.0f;
     private float ButtonTimeControlSingle = 0.3f;
-    private float ButtonTimeControlContinue = 0.01f;
     private float markTime;
 
     private int optRange = 4;
@@ -76,6 +75,9 @@ public class HandBehaviour : MonoBehaviour {
     private Color colorChose = Color.white;
 
     private float appStartTime;
+
+    private bool checkOptContinueState = false;
+    private bool checkPreOptContinueState = false;
 
     // -- OVRInput Info
 
@@ -254,6 +256,8 @@ public class HandBehaviour : MonoBehaviour {
 
     private void emptyPanelHandleOVRInput()
     {
+        checkOptContinueState = false;
+
         if (Axis1D_LT >0 && Axis1D_RT > 0)
         {
             // global position/rotation/scaling
@@ -327,43 +331,37 @@ public class HandBehaviour : MonoBehaviour {
                 activeShape = OptShape.sphere;
             }
 
-            if (Axis1D_LB > 0 && Axis1D_LT > 0 && optRange < 10 && (Time.time - buttonPreTime) > ButtonTimeControlContinue)
+            if (Axis1D_LB > 0 && Axis1D_LT > 0 && optRange < 10)
             {
                 activeShape = OptShape.sphere;
                 activeState = OptState.smooth;
                 StateHandleOVRInput(DrawPos.left);
-                buttonPreTime = Time.time;
             }
-            else if (Axis1D_LB > 0 && (Time.time - buttonPreTime) > ButtonTimeControlContinue)
+            else if (Axis1D_LB > 0)
             {
                 activeState = OptState.create;
                 StateHandleOVRInput(DrawPos.left);
-                buttonPreTime = Time.time;
             }
-            else if (Axis1D_LT > 0 && (Time.time - buttonPreTime) > ButtonTimeControlContinue)
+            else if (Axis1D_LT > 0)
             {
                 activeState = OptState.delete;
                 StateHandleOVRInput(DrawPos.left);
-                buttonPreTime = Time.time;
             }
 
-            if (Axis1D_RB > 0 && Axis1D_RT > 0 && optRange < 10 && (Time.time - buttonPreTime) > ButtonTimeControlContinue)
+            if (Axis1D_RB > 0 && Axis1D_RT > 0 && optRange < 10)
             {
                 activeState = OptState.smooth;
                 StateHandleOVRInput(DrawPos.right);
-                buttonPreTime = Time.time;
             }
-            else if (Axis1D_RB > 0 && (Time.time - buttonPreTime) > ButtonTimeControlContinue)
+            else if (Axis1D_RB > 0)
             {
                 activeState = OptState.create;
                 StateHandleOVRInput(DrawPos.right);
-                buttonPreTime = Time.time;
             }
-            else if (Axis1D_RT > 0 && (Time.time - buttonPreTime) > ButtonTimeControlContinue)
+            else if (Axis1D_RT > 0)
             {
                 activeState = OptState.delete;
                 StateHandleOVRInput(DrawPos.right);
-                buttonPreTime = Time.time;
             }
 
             // size
@@ -407,6 +405,12 @@ public class HandBehaviour : MonoBehaviour {
             //    rightChildPos.z = Axis2D_R.y * 20;
             //}
         }
+
+        if (checkPreOptContinueState == true && checkOptContinueState == false)
+        {
+            recordBehaviour.NewDo();
+        }
+        checkPreOptContinueState = checkOptContinueState;
 
     }
 
@@ -569,8 +573,9 @@ public class HandBehaviour : MonoBehaviour {
         }
         if (Button_B && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
-            activeDrawPos = DrawPos.right;
-            activeInfoPanel = InfoPanel.info;
+            //activeDrawPos = DrawPos.right;
+            //activeInfoPanel = InfoPanel.info;
+            recordBehaviour.ReDo();
             buttonPreTime = Time.time;
         }
 
@@ -589,8 +594,9 @@ public class HandBehaviour : MonoBehaviour {
         }
         if (Button_Y && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
-            activeDrawPos = DrawPos.left;
-            activeInfoPanel = InfoPanel.info;
+            //activeDrawPos = DrawPos.left;
+            //activeInfoPanel = InfoPanel.info;
+            recordBehaviour.UnDo();
             buttonPreTime = Time.time;
         }
 
@@ -627,7 +633,9 @@ public class HandBehaviour : MonoBehaviour {
 
     private void StateHandleOVRInput(DrawPos drawPos)
     {
-        if(drawPos == DrawPos.left)
+        checkOptContinueState = true;
+
+        if (drawPos == DrawPos.left)
         {
             tempDrawPosScaled = leftChildPositionScaled;
             tempDrawRotate = leftRotateEuler;
@@ -770,6 +778,84 @@ public class HandBehaviour : MonoBehaviour {
     }
     */
 
+    private bool CompareMaterialSet(MaterialSet ms1, MaterialSet ms2)
+    {
+        if (ms1.weights[0] != ms2.weights[0])
+        {
+            return false;
+        }
+        else if (ms1.weights[1] != ms2.weights[1])
+        {
+            return false;
+        }
+        else if (ms1.weights[2] != ms2.weights[2])
+        {
+            return false;
+        }
+        else if (ms1.weights[3] != ms2.weights[3])
+        {
+            return false;
+        }
+        return true;
+    }
+
+    private void VoxelSmoothing(Region vRegion)
+    {
+        //List<VoxelOpt> tempVoxelOpt;
+        //for (int tempX = vRegion.lowerCorner.x; tempX <= vRegion.upperCorner.x; ++tempX)
+        //{
+        //    for (int tempY = vRegion.lowerCorner.y; tempY <= vRegion.upperCorner.y; ++tempY)
+        //    {
+        //        for (int tempZ = vRegion.lowerCorner.z; tempZ <= vRegion.upperCorner.z; ++tempZ)
+        //        {
+        //            VoxelOpt tempV = new VoxelOpt(new Vector3i(tempX, tempY, tempZ), terrainVolume.data.GetVoxel(tempX, tempY, tempZ), terrainVolume.data.GetVoxel(tempX, tempY, tempZ));
+        //            tempVoxelOpt.Add(tempV);
+        //        }
+        //    }
+        //}
+        for (int tempX = vRegion.lowerCorner.x; tempX <= vRegion.upperCorner.x; ++tempX)
+        {
+            for (int tempY = vRegion.lowerCorner.y; tempY <= vRegion.upperCorner.y; ++tempY)
+            {
+                for (int tempZ = vRegion.lowerCorner.z; tempZ <= vRegion.upperCorner.z; ++tempZ)
+                {
+                    // only support 4 material channel
+                    MaterialSet tempMaterialSet = terrainVolume.data.GetVoxel(tempX, tempY, tempZ);
+                    for (uint tempM = 0; tempM < 4; tempM++)
+                    {
+                        int originalMaterialWeight = tempMaterialSet.weights[tempM];
+
+                        int sum = 0;
+                        sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ).weights[tempM];
+                        sum += terrainVolume.data.GetVoxel(tempX + 1, tempY, tempZ).weights[tempM];
+                        sum += terrainVolume.data.GetVoxel(tempX - 1, tempY, tempZ).weights[tempM];
+                        sum += terrainVolume.data.GetVoxel(tempX, tempY + 1, tempZ).weights[tempM];
+                        sum += terrainVolume.data.GetVoxel(tempX, tempY - 1, tempZ).weights[tempM];
+                        sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ + 1).weights[tempM];
+                        sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ - 1).weights[tempM];
+
+                        int avg = (int)((float)(sum) / 7.0f + 0.5f);
+                        avg = Mathf.Clamp(avg, 0, 255);
+                        tempMaterialSet.weights[tempM] = (byte)avg;
+                    }
+
+                    terrainVolume.data.SetVoxel(tempX, tempY, tempZ, tempMaterialSet);
+                }
+            }
+        }
+        //for (int tempX = vRegion.lowerCorner.x; tempX <= vRegion.upperCorner.x; ++tempX)
+        //{
+        //    for (int tempY = vRegion.lowerCorner.y; tempY <= vRegion.upperCorner.y; ++tempY)
+        //    {
+        //        for (int tempZ = vRegion.lowerCorner.z; tempZ <= vRegion.upperCorner.z; ++tempZ)
+        //        {
+        //            terrainVolume.data.SetVoxel(tempX, tempY, tempZ, tempMaterialSet);
+        //        }
+        //    }
+        //}
+
+    }
+
     private void VoxelSetting(Vector3i Pos, Vector3 RotateEuler, MaterialSet materialSet, Vector3i range, OptShape optshape)
     {
         int xPos = Pos.x;
@@ -792,7 +878,13 @@ public class HandBehaviour : MonoBehaviour {
                             Vector3 temp = RotatePointAroundPivot(new Vector3(x, y, z),new Vector3(xPos, yPos, zPos), RotateEuler);
                             temp = VoxelWorldTransform.InverseTransformPoint(temp) * VoxelWorldTransform.localScale.x;
                             Vector3i tempi = (Vector3i)(temp);
-                            terrainVolume.data.SetVoxel(tempi.x, tempi.y, tempi.z, materialSet);
+
+                            MaterialSet tempOld = terrainVolume.data.GetVoxel(tempi.x, tempi.y, tempi.z);
+                            if (!CompareMaterialSet(materialSet, tempOld))
+                            {
+                                recordBehaviour.PushOperator(new VoxelOpt(tempi, materialSet, tempOld));
+                                terrainVolume.data.SetVoxel(tempi.x, tempi.y, tempi.z, materialSet);
+                            }
                         }
                     }
                 }
@@ -815,12 +907,18 @@ public class HandBehaviour : MonoBehaviour {
                                 Vector3 temp = RotatePointAroundPivot(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler);
                                 temp = VoxelWorldTransform.InverseTransformPoint(temp) * VoxelWorldTransform.localScale.x;
                                 Vector3i tempi = (Vector3i)(temp);
-                                terrainVolume.data.SetVoxel(tempi.x, tempi.y, tempi.z, materialSet);
+
+                                MaterialSet tempOld = terrainVolume.data.GetVoxel(tempi.x, tempi.y, tempi.z);
+                                if (!CompareMaterialSet(materialSet, tempOld))
+                                {
+                                    recordBehaviour.PushOperator(new VoxelOpt(tempi, materialSet, tempOld));
+                                    terrainVolume.data.SetVoxel(tempi.x, tempi.y, tempi.z, materialSet);
+                                }
                             }
                         }
                     }
                 }
-                TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(xPos - range.x, yPos - range.y, zPos - range.z, xPos + range.x, yPos + range.y, zPos + range.z));
+                VoxelSmoothing(new Region(xPos - range.x, yPos - range.y, zPos - range.z, xPos + range.x, yPos + range.y, zPos + range.z));
                 break;
 
             case OptShape.cylinder:
@@ -840,7 +938,13 @@ public class HandBehaviour : MonoBehaviour {
                                 Vector3 temp = RotatePointAroundPivot(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler);
                                 temp = VoxelWorldTransform.InverseTransformPoint(temp) * VoxelWorldTransform.localScale.x;
                                 Vector3i tempi = (Vector3i)(temp);
-                                terrainVolume.data.SetVoxel(tempi.x, tempi.y, tempi.z, materialSet);
+
+                                MaterialSet tempOld = terrainVolume.data.GetVoxel(tempi.x, tempi.y, tempi.z);
+                                if (!CompareMaterialSet(materialSet, tempOld))
+                                {
+                                    recordBehaviour.PushOperator(new VoxelOpt(tempi, materialSet, tempOld));
+                                    terrainVolume.data.SetVoxel(tempi.x, tempi.y, tempi.z, materialSet);
+                                }
                             }
                         }
                     }
@@ -864,7 +968,13 @@ public class HandBehaviour : MonoBehaviour {
                                 Vector3 temp = RotatePointAroundPivot(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler);
                                 temp = VoxelWorldTransform.InverseTransformPoint(temp) * VoxelWorldTransform.localScale.x;
                                 Vector3i tempi = (Vector3i)(temp);
-                                terrainVolume.data.SetVoxel(tempi.x, tempi.y, tempi.z, materialSet);
+
+                                MaterialSet tempOld = terrainVolume.data.GetVoxel(tempi.x, tempi.y, tempi.z);
+                                if (!CompareMaterialSet(materialSet, tempOld))
+                                {
+                                    recordBehaviour.PushOperator(new VoxelOpt(tempi, materialSet, tempOld));
+                                    terrainVolume.data.SetVoxel(tempi.x, tempi.y, tempi.z, materialSet);
+                                }
                             }
                         }
                     }
@@ -889,7 +999,13 @@ public class HandBehaviour : MonoBehaviour {
                                 Vector3 temp = RotatePointAroundPivot(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler);
                                 temp = VoxelWorldTransform.InverseTransformPoint(temp) * VoxelWorldTransform.localScale.x;
                                 Vector3i tempi = (Vector3i)(temp);
-                                terrainVolume.data.SetVoxel(tempi.x, tempi.y, tempi.z, materialSet);
+
+                                MaterialSet tempOld = terrainVolume.data.GetVoxel(tempi.x, tempi.y, tempi.z);
+                                if (!CompareMaterialSet(materialSet, tempOld))
+                                {
+                                    recordBehaviour.PushOperator(new VoxelOpt(tempi, materialSet, tempOld));
+                                    terrainVolume.data.SetVoxel(tempi.x, tempi.y, tempi.z, materialSet);
+                                }
                             }
                         }
                     }
@@ -914,12 +1030,17 @@ public class HandBehaviour : MonoBehaviour {
                                 Vector3 temp = RotatePointAroundPivot(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler);
                                 temp = VoxelWorldTransform.InverseTransformPoint(temp) * VoxelWorldTransform.localScale.x;
                                 Vector3i tempi = (Vector3i)(temp);
-                                terrainVolume.data.SetVoxel(tempi.x, tempi.y, tempi.z, materialSet);
+
+                                MaterialSet tempOld = terrainVolume.data.GetVoxel(tempi.x, tempi.y, tempi.z);
+                                if (!CompareMaterialSet(materialSet, tempOld))
+                                {
+                                    recordBehaviour.PushOperator(new VoxelOpt(tempi, materialSet, tempOld));
+                                    terrainVolume.data.SetVoxel(tempi.x, tempi.y, tempi.z, materialSet);
+                                }
                             }
                         }
                     }
                 }
-                TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(xPos - range.x, yPos - range.y * 2, zPos - range.z, xPos + range.x, yPos + range.y * 2, zPos + range.z));
                 break;
         }
 
@@ -943,7 +1064,8 @@ public class HandBehaviour : MonoBehaviour {
         Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(Pos) * VoxelWorldTransform.localScale.x;
         Vector3i tempPosi = (Vector3i)tempPos;
         recordBehaviour.WriteSmooth(new Region(tempPosi.x - range.x, tempPosi.y - range.y, tempPosi.z - range.z, tempPosi.x + range.x, tempPosi.y + range.y, tempPosi.z + range.z), Time.time - appStartTime);
-        TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - range.x, tempPosi.y - range.y, tempPosi.z - range.z, tempPosi.x + range.x, tempPosi.y + range.y, tempPosi.z + range.z));
+        //TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - range.x, tempPosi.y - range.y, tempPosi.z - range.z, tempPosi.x + range.x, tempPosi.y + range.y, tempPosi.z + range.z));
+        VoxelSmoothing(new Region(tempPosi.x - range.x, tempPosi.y - range.y, tempPosi.z - range.z, tempPosi.x + range.x, tempPosi.y + range.y, tempPosi.z + range.z));
     }
 
     private void PaintVoxels(Vector3 Pos, float brushInnerRadius, float brushOuterRadius, float amount, uint materialIndex)
