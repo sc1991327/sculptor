@@ -186,10 +186,10 @@ PlayerSettings:
     m_Automatic: 0
   - m_BuildTarget: LinuxStandaloneSupport
     m_APIs: 0000000011000000
-    m_Automatic: 0
+    m_Automatic: 1
   - m_BuildTarget: WindowsStandaloneSupport
     m_APIs: 0200000001000000
-    m_Automatic: 0
+    m_Automatic: 1
   webPlayerTemplate: APPLICATION:Default
   m_TemplateCustomTags: {}
   wiiUTitleID: 0005000011000000
@@ -343,7 +343,7 @@ PlayerSettings:
   psmSplashimage: {fileID: 0}
   spritePackerPolicy: 
   scriptingDefineSymbols:
-    1: CROSS_PLATFORM_INPUT
+    1: CUBIQUITY_NATIVE_RENDERER
     2: 
     4: CROSS_PLATFORM_INPUT;MOBILE_INPUT
     7: CROSS_PLATFORM_INPUT;MOBILE_INPUT

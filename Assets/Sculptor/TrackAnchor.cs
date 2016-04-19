@@ -104,10 +104,19 @@ public class TrackAnchor : MonoBehaviour {
         twiceHand.SetActive(false);
 
         colorCube.SetActive(false);
+
+        var transparentLayer = LayerMask.NameToLayer("TransparentFX");
+        terrainWorld.layer = transparentLayer;
+        rightHand.layer = transparentLayer;
+        rightHandChild.layer = transparentLayer;
+        leftHand.layer = transparentLayer;
+        leftHandChild.layer = transparentLayer;
+        twiceHand.layer = transparentLayer;
+        colorCube.layer = transparentLayer;
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
 
         optRange = handBehaviour.GetOptRange();
 
@@ -203,6 +212,14 @@ public class TrackAnchor : MonoBehaviour {
                 rightHandChild.SetActive(true);
                 twiceHand.SetActive(false);
             }
+            var transparentLayer = LayerMask.NameToLayer("TransparentFX");
+            terrainWorld.layer = transparentLayer;
+            rightHand.layer = transparentLayer;
+            rightHandChild.layer = transparentLayer;
+            leftHand.layer = transparentLayer;
+            leftHandChild.layer = transparentLayer;
+            twiceHand.layer = transparentLayer;
+            colorCube.layer = transparentLayer;
         }
 
         terrainWorld.transform.position = terrainVolume.transform.position;
