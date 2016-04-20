@@ -18,8 +18,8 @@ public class TrackAnchor : MonoBehaviour {
 
     private GameObject terrainWorld = null;
 
-    private GameObject colorCube = null;
-    private Vector3 colorCubeSize = new Vector3(0.2f, 0.2f, 0.2f);
+    //private GameObject colorCube = null;
+    //private Vector3 colorCubeSize = new Vector3(0.2f, 0.2f, 0.2f);
     private float colorAlpha = 0.05f;
     private float colorChildAlpha = 0.3f;
 
@@ -41,8 +41,8 @@ public class TrackAnchor : MonoBehaviour {
     private HandOpt activeHandOpt = HandOpt.singleOpt;
     private ControlPanel showColorCube = ControlPanel.empty;
 
-    private Vector3 ColorBlackPoint = new Vector3(0, 0, 0);
-    private Color ColorChose = Color.white;
+    //private Vector3 ColorBlackPoint = new Vector3(0, 0, 0);
+    //private Color ColorChose = Color.white;
 
     // Use this for initialization
     void Start () {
@@ -92,18 +92,18 @@ public class TrackAnchor : MonoBehaviour {
         twiceHand.transform.GetComponent<Renderer>().material.color = materialColor;
         twiceHand.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
-        colorCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        materialColor = colorCube.transform.GetComponent<Renderer>().material.color;
-        materialColor.a = colorChildAlpha;
-        colorCube.transform.GetComponent<Renderer>().material.color = materialColor;
-        colorCube.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
-        colorCube.transform.localScale = colorCubeSize;
+        //colorCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        //materialColor = colorCube.transform.GetComponent<Renderer>().material.color;
+        //materialColor.a = colorChildAlpha;
+        //colorCube.transform.GetComponent<Renderer>().material.color = materialColor;
+        //colorCube.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
+        //colorCube.transform.localScale = colorCubeSize;
 
         leftHandChild.SetActive(true);
         rightHandChild.SetActive(true);
         twiceHand.SetActive(false);
 
-        colorCube.SetActive(false);
+        //colorCube.SetActive(false);
 
         var transparentLayer = LayerMask.NameToLayer("TransparentFX");
         terrainWorld.layer = transparentLayer;
@@ -112,7 +112,7 @@ public class TrackAnchor : MonoBehaviour {
         leftHand.layer = transparentLayer;
         leftHandChild.layer = transparentLayer;
         twiceHand.layer = transparentLayer;
-        colorCube.layer = transparentLayer;
+        //colorCube.layer = transparentLayer;
     }
 
     // Update is called once per frame
@@ -219,7 +219,7 @@ public class TrackAnchor : MonoBehaviour {
             leftHand.layer = transparentLayer;
             leftHandChild.layer = transparentLayer;
             twiceHand.layer = transparentLayer;
-            colorCube.layer = transparentLayer;
+            //colorCube.layer = transparentLayer;
         }
 
         terrainWorld.transform.position = terrainVolume.transform.position;
@@ -266,8 +266,7 @@ public class TrackAnchor : MonoBehaviour {
         activeHandOpt = tempActiveHandOpt;
 
         // color 
-        ControlPanel tempShowColorCube = handBehaviour.GetActivePanel();
-        // update state
+        /*ControlPanel tempShowColorCube = handBehaviour.GetActivePanel();
         if (tempShowColorCube != showColorCube)
         {
             if (tempShowColorCube == ControlPanel.color)
@@ -290,7 +289,6 @@ public class TrackAnchor : MonoBehaviour {
             }
             showColorCube = tempShowColorCube;
         }
-        // update data
         if (tempShowColorCube == ControlPanel.color)
         {
             DrawPos tempDrawPos = handBehaviour.GetActiveDrawPos();
@@ -319,9 +317,7 @@ public class TrackAnchor : MonoBehaviour {
 
             leftHandChild.GetComponent<Renderer>().material.color = ColorChose;
             rightHandChild.GetComponent<Renderer>().material.color = ColorChose;
-
-            //Debug.Log("Color: " + ColorChose.r + ", " + ColorChose.g + ", " + ColorChose.b);
-        }
+        }*/
     }
 
     public Vector3 GetRightChildPosition()
@@ -344,8 +340,8 @@ public class TrackAnchor : MonoBehaviour {
         return twiceHand.transform.localScale;
     }
 
-    public Color GetColorChose()
-    {
-        return ColorChose;
-    }
+    //public Color GetColorChose()
+    //{
+    //    return ColorChose;
+    //}
 }

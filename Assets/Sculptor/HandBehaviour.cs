@@ -19,6 +19,7 @@ public class HandBehaviour : MonoBehaviour {
 
     private TrackAnchor trackAnchor;
     private RecordBehaviour recordBehaviour;
+    private HandMenuControl handMenuControl;
 
     private TerrainVolume terrainVolume;
     private ProceduralTerrainVolume proceduralTerrainVolume;
@@ -28,7 +29,6 @@ public class HandBehaviour : MonoBehaviour {
     private MaterialSet colorMaterialSet;
 
     private Transform VoxelWorldTransform;
-    private Matrix4x4 VoxelWorldMatrix;
 
     private Vector3 rightChildPosition = new Vector3(0, 0, 0);
     private Vector3 rightChildPositionScaled = new Vector3(0, 0, 0);
@@ -132,6 +132,7 @@ public class HandBehaviour : MonoBehaviour {
 
         trackAnchor = GetComponent<TrackAnchor>();
         recordBehaviour = GetComponent<RecordBehaviour>();
+        handMenuControl = GetComponent<HandMenuControl>();
 
         // empty
         emptyMaterialSet = new MaterialSet();
@@ -217,10 +218,10 @@ public class HandBehaviour : MonoBehaviour {
         leftRotateEuler = leftHandAnchor.transform.rotation.eulerAngles;
         rightRotateEuler = rightHandAnchor.transform.rotation.eulerAngles;
 
-        Color tempcolor = trackAnchor.GetColorChose();
+        Color tempcolor = handMenuControl.GetColorChose();
         if (colorChose != tempcolor)
         {
-            float temptotal = colorChose.r + colorChose.g + colorChose.b;
+            float temptotal = tempcolor.r + tempcolor.g + tempcolor.b;
             if (temptotal == 0)
             {
                 colorMaterialSet.weights[3] = 255;    // black
@@ -231,11 +232,11 @@ public class HandBehaviour : MonoBehaviour {
             else
             {
                 colorMaterialSet.weights[3] = 0;    // black
-                colorMaterialSet.weights[2] = (byte)(int)(254 * (colorChose.b / temptotal));  // b
-                colorMaterialSet.weights[1] = (byte)(int)(254 * (colorChose.g / temptotal));  // g
-                colorMaterialSet.weights[0] = (byte)(int)(254 * (colorChose.r / temptotal));  // r
+                colorMaterialSet.weights[2] = (byte)(int)(254 * (tempcolor.b / temptotal));  // b
+                colorMaterialSet.weights[1] = (byte)(int)(254 * (tempcolor.g / temptotal));  // g
+                colorMaterialSet.weights[0] = (byte)(int)(254 * (tempcolor.r / temptotal));  // r
             }
-            Debug.Log("ColorMaterial: " + colorMaterialSet.weights[0] + ", " + colorMaterialSet.weights[1] + ", " + colorMaterialSet.weights[2] + ", " + colorMaterialSet.weights[3]);
+            //Debug.Log("ColorMaterial: " + colorMaterialSet.weights[0] + ", " + colorMaterialSet.weights[1] + ", " + colorMaterialSet.weights[2] + ", " + colorMaterialSet.weights[3]);
             colorChose = tempcolor;
         }
 
@@ -416,110 +417,37 @@ public class HandBehaviour : MonoBehaviour {
 
     private void mainPanelHandleOVRInput()
     {
-        if ((Axis2D_RB_Left || Axis2D_LB_Left) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
+        int tempMenuPoints = handMenuControl.GetMenuPoints();
+        int tempTouchID = handMenuControl.GetTouchID();
+        switch (tempTouchID)
         {
-            activePanel = ControlPanel.shape;
-            buttonPreTime = Time.time;
-        }
-        if ((Axis2D_RB_Right || Axis2D_LB_Right) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
-        {
-            activePanel = ControlPanel.color;
-            buttonPreTime = Time.time;
-        }
-        if ((Axis2D_RB_Up || Axis2D_LB_Up) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
-        {
-            activePanel = ControlPanel.state;
-            buttonPreTime = Time.time;
-        }
-        if (((Axis2D_RB_Down || Axis2D_LB_Down) || (Axis2D_RB_Center || Axis2D_LB_Center)) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
-        {
-            activePanel = ControlPanel.empty;
-            buttonPreTime = Time.time;
+            case 0:
+                activePanel = ControlPanel.color;
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
         }
     }
 
     private void statePanelHandleOVRInput()
     {
-        if ((Axis2D_RB_Left || Axis2D_LB_Left) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
-        {
-            activeState = OptState.delete;
-            activePanel = ControlPanel.empty;
-            buttonPreTime = Time.time;
-        }
-        if ((Axis2D_RB_Right || Axis2D_LB_Right) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
-        {
-            activeState = OptState.smooth;
-            activePanel = ControlPanel.empty;
-            buttonPreTime = Time.time;
-        }
-        if ((Axis2D_RB_Up || Axis2D_LB_Up) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
-        {
-            activeState = OptState.create;
-            activePanel = ControlPanel.empty;
-            buttonPreTime = Time.time;
-        }
-        if (((Axis2D_RB_Down || Axis2D_LB_Down) || (Axis2D_RB_Center || Axis2D_LB_Center)) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
-        {
-            activePanel = ControlPanel.empty;
-            buttonPreTime = Time.time;
-        }
+
     }
 
     private void shapePanelHandleOVRInput()
     {
-        if ((Axis2D_RB_Left || Axis2D_LB_Left) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
-        {
-            if (activeShape >= OptShape.cylinder)
-            {
-                activeShape = OptShape.cube;
-            }
-            else
-            {
-                activeShape++;
-            }
-            buttonPreTime = Time.time;
-        }
-        if ((Axis2D_RB_Right || Axis2D_LB_Right) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
-        {
-            if (activeShape <= OptShape.cube)
-            {
-                activeShape = OptShape.cylinder;
-            }
-            else
-            {
-                activeShape--;
-            }
-            buttonPreTime = Time.time;
-        }
-        if ((Axis2D_RB_Up || Axis2D_LB_Up) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
-        {
-            rightChildPos.z = 0;
-            optRange += 2;
-            buttonPreTime = Time.time;
-        }
-        if ((Axis2D_RB_Down || Axis2D_LB_Down) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
-        {
-            rightChildPos.z = 0;
-            optRange -= 2;
-            if (optRange < 2){
-                optRange = 2;
-            }
-            buttonPreTime = Time.time;
-        }
-        if ((Axis2D_RB_Center || Axis2D_LB_Center) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
-        {
-            activePanel = ControlPanel.empty;
-            buttonPreTime = Time.time;
-        }
+
     }
 
     private void colorPanelHandleOVRInput()
     {
-        if ((Axis1D_LB > 0 || Axis1D_RB > 0) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
-        {
-            activePanel = ControlPanel.empty;
-            buttonPreTime = Time.time;
-        }
+
     }
 
     private void readfilePanelHandleOVRInput()
@@ -558,51 +486,41 @@ public class HandBehaviour : MonoBehaviour {
         Button_X = OVRInput.Get(OVRInput.Button.Three);
         Button_Y = OVRInput.Get(OVRInput.Button.Four);
 
-        if (Button_A && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
+        if (Button_A)
         {
             activeDrawPos = DrawPos.right;
-            if (activePanel >= ControlPanel.readfile)
+            if (activePanel == ControlPanel.empty)
             {
-                activePanel = ControlPanel.empty;
+                activePanel = ControlPanel.main;
             }
-            else
-            {
-                activePanel++;
-            }
-            buttonPreTime = Time.time;
         }
+        else if (Button_X)
+        {
+            activeDrawPos = DrawPos.left;
+            if (activePanel == ControlPanel.empty)
+            {
+                activePanel = ControlPanel.main;
+            }
+        }
+        else
+        {
+            activePanel = ControlPanel.empty;
+        }
+
         if (Button_B && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
-            //activeDrawPos = DrawPos.right;
+            activeDrawPos = DrawPos.right;
             //activeInfoPanel = InfoPanel.info;
             recordBehaviour.ReDo();
             buttonPreTime = Time.time;
         }
 
-        if (Button_X && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
-        {
-            activeDrawPos = DrawPos.left;
-            if (activePanel >= ControlPanel.readfile)
-            {
-                activePanel = ControlPanel.empty;
-            }
-            else
-            {
-                activePanel++;
-            }
-            buttonPreTime = Time.time;
-        }
         if (Button_Y && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
-            //activeDrawPos = DrawPos.left;
+            activeDrawPos = DrawPos.left;
             //activeInfoPanel = InfoPanel.info;
             recordBehaviour.UnDo();
             buttonPreTime = Time.time;
-        }
-
-        if (Axis1D_RB > 0 || Axis1D_RT > 0)
-        {
-            activePanel = ControlPanel.empty;
         }
 
         switch (activePanel)
@@ -1057,13 +975,6 @@ public class HandBehaviour : MonoBehaviour {
         Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(Pos) * VoxelWorldTransform.localScale.x;
         Vector3i tempPosi = (Vector3i)tempPos;
         TerrainVolumeEditor.PaintTerrainVolume(terrainVolume, Pos.x, Pos.y, Pos.z, brushInnerRadius, brushOuterRadius, amount, materialIndex);
-    }
-
-    private void SculptVoxels(Vector3 Pos, float brushInnerRadius, float brushOuterRadius, float amount)
-    {
-        Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(Pos) * VoxelWorldTransform.localScale.x;
-        Vector3i tempPosi = (Vector3i)tempPos;
-        TerrainVolumeEditor.SculptTerrainVolume(terrainVolume, Pos.x, Pos.y, Pos.z, brushInnerRadius, brushOuterRadius, amount);
     }
 
     private void SaveVDBFile()
