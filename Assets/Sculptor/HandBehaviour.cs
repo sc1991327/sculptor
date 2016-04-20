@@ -801,18 +801,6 @@ public class HandBehaviour : MonoBehaviour {
 
     private void VoxelSmoothing(Region vRegion)
     {
-        //List<VoxelOpt> tempVoxelOpt;
-        //for (int tempX = vRegion.lowerCorner.x; tempX <= vRegion.upperCorner.x; ++tempX)
-        //{
-        //    for (int tempY = vRegion.lowerCorner.y; tempY <= vRegion.upperCorner.y; ++tempY)
-        //    {
-        //        for (int tempZ = vRegion.lowerCorner.z; tempZ <= vRegion.upperCorner.z; ++tempZ)
-        //        {
-        //            VoxelOpt tempV = new VoxelOpt(new Vector3i(tempX, tempY, tempZ), terrainVolume.data.GetVoxel(tempX, tempY, tempZ), terrainVolume.data.GetVoxel(tempX, tempY, tempZ));
-        //            tempVoxelOpt.Add(tempV);
-        //        }
-        //    }
-        //}
         for (int tempX = vRegion.lowerCorner.x; tempX <= vRegion.upperCorner.x; ++tempX)
         {
             for (int tempY = vRegion.lowerCorner.y; tempY <= vRegion.upperCorner.y; ++tempY)
@@ -839,20 +827,16 @@ public class HandBehaviour : MonoBehaviour {
                         tempMaterialSet.weights[tempM] = (byte)avg;
                     }
 
-                    terrainVolume.data.SetVoxel(tempX, tempY, tempZ, tempMaterialSet);
+                    MaterialSet tempOld = terrainVolume.data.GetVoxel(tempX, tempY, tempZ);
+                    if (!CompareMaterialSet(tempMaterialSet, tempOld))
+                    {
+                        recordBehaviour.PushOperator(new VoxelOpt(new Vector3i(tempX, tempY, tempZ), tempMaterialSet, tempOld));
+                        terrainVolume.data.SetVoxel(tempX, tempY, tempZ, tempMaterialSet);
+                    }
+                    //terrainVolume.data.SetVoxel(tempX, tempY, tempZ, tempMaterialSet);
                 }
             }
         }
-        //for (int tempX = vRegion.lowerCorner.x; tempX <= vRegion.upperCorner.x; ++tempX)
-        //{
-        //    for (int tempY = vRegion.lowerCorner.y; tempY <= vRegion.upperCorner.y; ++tempY)
-        //    {
-        //        for (int tempZ = vRegion.lowerCorner.z; tempZ <= vRegion.upperCorner.z; ++tempZ)
-        //        {
-        //            terrainVolume.data.SetVoxel(tempX, tempY, tempZ, tempMaterialSet);
-        //        }
-        //    }
-        //}
 
     }
 

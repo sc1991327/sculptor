@@ -173,8 +173,9 @@ public class RecordBehaviour : MonoBehaviour {
         }
         else
         {
-            foreach (VoxelOpt tempOpt in optStack[optPos])
+            for (int tempi = optStack[optPos].Count - 1; tempi >= 0; tempi--)
             {
+                VoxelOpt tempOpt = optStack[optPos][tempi];
                 terrainVolume.data.SetVoxel(tempOpt.Pos.x, tempOpt.Pos.y, tempOpt.Pos.z, tempOpt.MaterialOld);
             }
         }

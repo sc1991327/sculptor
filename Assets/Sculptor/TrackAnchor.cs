@@ -322,9 +322,6 @@ public class TrackAnchor : MonoBehaviour {
 
             //Debug.Log("Color: " + ColorChose.r + ", " + ColorChose.g + ", " + ColorChose.b);
         }
-
-
-
     }
 
     public Vector3 GetRightChildPosition()
