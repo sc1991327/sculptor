@@ -46,7 +46,7 @@ public class ProceduralTerrainVolume : MonoBehaviour
         Debug.Log("Load Initial Voxels Finished.");
     }
 
-    private void ProceduralVoxelVR()
+    public void ProceduralVoxelVR()
     {
         // Randomize the filename incase the file already exists
 

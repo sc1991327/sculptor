@@ -52,6 +52,7 @@ public class HandBehaviour : MonoBehaviour {
     private float VoxelWorldNowScale;
 
     private ControlPanel activePanel;
+    private bool activePanelContinue;
     private OptModePanel activeOptModePanel;
     private InfoPanel activeInfoPanel;
     private OptState activeState;
@@ -147,10 +148,11 @@ public class HandBehaviour : MonoBehaviour {
         colorMaterialSet = new MaterialSet();
         colorMaterialSet.weights[3] = 0;    // black
         colorMaterialSet.weights[2] = 255;  // b
-        colorMaterialSet.weights[1] = 0;  // g
-        colorMaterialSet.weights[0] = 0;  // r
+        colorMaterialSet.weights[1] = 255;  // g
+        colorMaterialSet.weights[0] = 255;  // r
 
         activePanel = ControlPanel.empty;
+        activePanelContinue = false;
         activeOptModePanel = OptModePanel.sculptor;
         activeState = OptState.create;
 
@@ -265,30 +267,57 @@ public class HandBehaviour : MonoBehaviour {
 
     private void mainPanelHandleOVRInput()
     {
-        int tempMenuPoints = handMenuControl.GetMenuPoints();
         int tempTouchID = handMenuControl.GetTouchID();
+        Debug.Log("TouchID:" + tempTouchID);
         switch (tempTouchID)
         {
             case 0:
+                // color choose panel
                 activePanel = ControlPanel.color;
                 break;
             case 1:
+                // sculptor mode
                 activeOptModePanel = OptModePanel.sculptor;
                 break;
             case 2:
+                // paint mode
                 activeOptModePanel = OptModePanel.paint;
                 break;
             case 3:
+                // Undo
+                recordBehaviour.UnDo();
+                activePanel = ControlPanel.empty;
+                activePanelContinue = true;
                 break;
             case 4:
+                // Redo
+                recordBehaviour.ReDo();
+                activePanel = ControlPanel.empty;
+                activePanelContinue = true;
                 break;
             case 5:
+                //Restart
+                RestartTerrainVolumeData();
+                activePanel = ControlPanel.empty;
+                activePanelContinue = true;
                 break;
             case 6:
+                //Replay
+
                 break;
             case 7:
+                //High operators mode choose panel
+
                 break;
             case 8:
+                //Save
+                SaveVDBFile();
+                activePanel = ControlPanel.empty;
+                activePanelContinue = true;
+                break;
+            case 9:
+                //Load files choose panel
+
                 break;
         }
     }
@@ -516,7 +545,7 @@ public class HandBehaviour : MonoBehaviour {
         if (Button_A)
         {
             activeDrawPos = DrawPos.right;
-            if (activePanel == ControlPanel.empty)
+            if (activePanel == ControlPanel.empty && activePanelContinue == false)
             {
                 activePanel = ControlPanel.main;
             }
@@ -524,29 +553,28 @@ public class HandBehaviour : MonoBehaviour {
         else if (Button_X)
         {
             activeDrawPos = DrawPos.left;
-            if (activePanel == ControlPanel.empty)
+            if (activePanel == ControlPanel.empty && activePanelContinue == false)
             {
                 activePanel = ControlPanel.main;
             }
         }
         else
         {
+            activePanelContinue = false;
             activePanel = ControlPanel.empty;
         }
 
         if (Button_B && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
             activeDrawPos = DrawPos.right;
-            //activeInfoPanel = InfoPanel.info;
-            recordBehaviour.ReDo();
+            activeInfoPanel = InfoPanel.info;
             buttonPreTime = Time.time;
         }
 
         if (Button_Y && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
             activeDrawPos = DrawPos.left;
-            //activeInfoPanel = InfoPanel.info;
-            recordBehaviour.UnDo();
+            activeInfoPanel = InfoPanel.info;
             buttonPreTime = Time.time;
         }
 
@@ -1014,6 +1042,13 @@ public class HandBehaviour : MonoBehaviour {
         Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(Pos) * VoxelWorldTransform.localScale.x;
         Vector3i tempPosi = (Vector3i)tempPos;
         TerrainVolumeEditor.PaintTerrainVolume(terrainVolume, Pos.x, Pos.y, Pos.z, brushInnerRadius, brushOuterRadius, amount, materialIndex);
+    }
+
+    private void RestartTerrainVolumeData()
+    {
+        ProceduralTerrainVolume tempbpv = BasicProceduralVolume.GetComponent<ProceduralTerrainVolume>();
+        tempbpv.ProceduralVoxelVR();
+        Debug.Log("Voxel database has been restarted.");
     }
 
     private void SaveVDBFile()

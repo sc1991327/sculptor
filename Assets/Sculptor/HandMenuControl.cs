@@ -12,9 +12,11 @@ public class HandMenuControl : MonoBehaviour {
     public Texture mainColorPaintMode;
     public Texture mainUndo;
     public Texture mainRedo;
-    public Texture mainReset;
+    public Texture mainRestart;
     public Texture mainReplay;
     public Texture mainHighEditorMode;
+    public Texture mainSave;
+    public Texture mainLoad;
 
     private HandBehaviour handBehaviour;
 
@@ -52,9 +54,11 @@ public class HandMenuControl : MonoBehaviour {
         mainTextureList.Add(mainColorPaintMode);
         mainTextureList.Add(mainUndo);
         mainTextureList.Add(mainRedo);
-        mainTextureList.Add(mainReset);
+        mainTextureList.Add(mainRestart);
         mainTextureList.Add(mainReplay);
         mainTextureList.Add(mainHighEditorMode);
+        mainTextureList.Add(mainSave);
+        mainTextureList.Add(mainLoad);
 
         colorColorList = new List<Color>();
         colorColorList.Add(Color.black);
@@ -88,7 +92,7 @@ public class HandMenuControl : MonoBehaviour {
                     DrawCircleMenuObj(menuPoints, mainTextureList);
                     break;
                 case ControlPanel.main:
-                    menuPoints = 8;
+                    menuPoints = 10;
                     DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
                     UpdateMenuCenterPos(nowPos);
                     DrawCircleMenuObj(menuPoints, mainTextureList);
@@ -103,13 +107,14 @@ public class HandMenuControl : MonoBehaviour {
             activePanel = nowPanel;
         }
 
+        TouchID = -1;
         if (activePanel != ControlPanel.empty)
         {
             TouchID = CheckMenuTouch(nowPos);
-            if (TouchID >= 0)
-            {
-                Debug.Log("TouchID:" + TouchID);
-            }
+            //if (TouchID >= 0)
+            //{
+            //    Debug.Log("TouchID:" + TouchID);
+            //}
 
             // chose color
             if (activePanel == ControlPanel.color && TouchID >= 0)

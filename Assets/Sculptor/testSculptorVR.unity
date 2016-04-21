@@ -437,20 +437,6 @@ Transform:
   - {fileID: 567557955}
   m_Father: {fileID: 858757838}
   m_RootOrder: 0
---- !u!114 &324187798
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5775844f6e499034eb955d3c113ed57e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  basePath: 2
-  relativePathToVoxelDatabase: D:/unitysculptor/SculptorVR/Assets/StreamingAssets/Cubiquity/VoxelDatabases/VRSculptor_370712375.vdb
-  mWritePermissions: 1
 --- !u!4 &355689193 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400006, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 2}
@@ -990,7 +976,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045d67dae0d4c514a8e6add34c63a804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mData: {fileID: 324187798}
+  mData: {fileID: 1788443325}
 --- !u!114 &826901852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1425,9 +1411,11 @@ MonoBehaviour:
   mainColorPaintMode: {fileID: 2800000, guid: 8c531feaa467f2c428de10c0d03cf723, type: 3}
   mainUndo: {fileID: 2800000, guid: d380d30b3c36ccf41b4336328580c2bb, type: 3}
   mainRedo: {fileID: 2800000, guid: 4d525c176bb88f041b877459cccfd14c, type: 3}
-  mainReset: {fileID: 2800000, guid: 917e573ca1d898c48ab4c06ad07f11d1, type: 3}
+  mainRestart: {fileID: 2800000, guid: e740318fe89ef1f4293bc363b58e5262, type: 3}
   mainReplay: {fileID: 2800000, guid: ea056248fc8132a4596bbaf2396c71d1, type: 3}
   mainHighEditorMode: {fileID: 2800000, guid: 3cc80fddc098f574ea7983729c9538cf, type: 3}
+  mainSave: {fileID: 2800000, guid: 2b5ee3912ff946d4b88b07fcb8882cc8, type: 3}
+  mainLoad: {fileID: 2800000, guid: c2d60c9778714754d9b6cb08eb17c043, type: 3}
 --- !u!1 &1634124945
 GameObject:
   m_ObjectHideFlags: 0
@@ -1692,6 +1680,20 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1703180677}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1788443325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5775844f6e499034eb955d3c113ed57e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  basePath: 2
+  relativePathToVoxelDatabase: D:/unitysculptor/SculptorVR/Assets/StreamingAssets/Cubiquity/VoxelDatabases/VRSculptor_878482064.vdb
+  mWritePermissions: 1
 --- !u!1 &1822243809
 GameObject:
   m_ObjectHideFlags: 0
