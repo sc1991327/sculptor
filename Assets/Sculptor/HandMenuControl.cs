@@ -7,6 +7,15 @@ public class HandMenuControl : MonoBehaviour {
     public GameObject leftHandAnchor = null;
     public GameObject rightHandAnchor = null;
 
+    public Texture mainColorChooseMode;
+    public Texture mainSculptorMode;
+    public Texture mainColorPaintMode;
+    public Texture mainUndo;
+    public Texture mainRedo;
+    public Texture mainReset;
+    public Texture mainReplay;
+    public Texture mainHighEditorMode;
+
     private HandBehaviour handBehaviour;
 
     private ControlPanel activePanel;
@@ -22,7 +31,7 @@ public class HandMenuControl : MonoBehaviour {
     private List<GameObject> MenuChildObject;
     private List<Vector3> MenuChildPos; // the menu position use to judge touch or not
 
-    private List<Color> mainColorList;
+    private List<Texture> mainTextureList;
     private List<Color> colorColorList;
 
     private Color colorChose = Color.gray;
@@ -37,12 +46,15 @@ public class HandMenuControl : MonoBehaviour {
         MenuChildObject = new List<GameObject>();
         MenuChildPos = new List<Vector3>();
 
-        mainColorList = new List<Color>();
-        mainColorList.Add(new Color(0.1f, 0.1f, 0.1f));
-        mainColorList.Add(new Color(0.3f, 0.3f, 0.3f));
-        mainColorList.Add(new Color(0.5f, 0.5f, 0.5f));
-        mainColorList.Add(new Color(0.7f, 0.7f, 0.7f));
-        mainColorList.Add(new Color(0.9f, 0.9f, 0.9f));
+        mainTextureList = new List<Texture>();
+        mainTextureList.Add(mainColorChooseMode);
+        mainTextureList.Add(mainSculptorMode);
+        mainTextureList.Add(mainColorPaintMode);
+        mainTextureList.Add(mainUndo);
+        mainTextureList.Add(mainRedo);
+        mainTextureList.Add(mainReset);
+        mainTextureList.Add(mainReplay);
+        mainTextureList.Add(mainHighEditorMode);
 
         colorColorList = new List<Color>();
         colorColorList.Add(Color.black);
@@ -73,28 +85,19 @@ public class HandMenuControl : MonoBehaviour {
                     menuPoints = 0;
                     DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
                     UpdateMenuCenterPos(nowPos);
-                    DrawCircleMenuObj(menuPoints, mainColorList);
+                    DrawCircleMenuObj(menuPoints, mainTextureList);
                     break;
                 case ControlPanel.main:
-                    menuPoints = 5;
+                    menuPoints = 8;
                     DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
                     UpdateMenuCenterPos(nowPos);
-                    DrawCircleMenuObj(menuPoints, mainColorList);
-                    break;
-                case ControlPanel.state:
-
-                    break;
-                case ControlPanel.shape:
-
+                    DrawCircleMenuObj(menuPoints, mainTextureList);
                     break;
                 case ControlPanel.color:
                     menuPoints = 9;
                     DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
                     UpdateMenuCenterPos(nowPos);
                     DrawCircleMenuObj(menuPoints, colorColorList);
-                    break;
-                case ControlPanel.readfile:
-
                     break;
             }
             activePanel = nowPanel;
@@ -103,7 +106,10 @@ public class HandMenuControl : MonoBehaviour {
         if (activePanel != ControlPanel.empty)
         {
             TouchID = CheckMenuTouch(nowPos);
-            Debug.Log("TouchID:" + TouchID);
+            if (TouchID >= 0)
+            {
+                Debug.Log("TouchID:" + TouchID);
+            }
 
             // chose color
             if (activePanel == ControlPanel.color && TouchID >= 0)
@@ -111,6 +117,12 @@ public class HandMenuControl : MonoBehaviour {
                 colorChose = colorColorList[TouchID];
             }
 
+        }
+
+        // MenuChildObject rotate
+        foreach (GameObject tObj in MenuChildObject)
+        {
+            tObj.transform.Rotate(0, 1, 0);
         }
 
     }
@@ -154,6 +166,27 @@ public class HandMenuControl : MonoBehaviour {
         {
             MenuCenterObject.transform.position = rightHandAnchor.transform.position;
             MenuCenterObject.transform.LookAt(Camera.main.transform.position);
+        }
+    }
+
+    private void DrawCircleMenuObj(int MenuPoints, List<Texture> texturelist)
+    {
+        foreach (GameObject tObj in MenuChildObject)
+        {
+            UnityEngine.Object.Destroy(tObj.gameObject);
+        }
+        MenuChildPos.Clear();
+        MenuChildObject.Clear();
+        for (int oi = 0; oi < MenuPoints; oi++)
+        {
+            GameObject tempObj;
+            tempObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            tempObj.transform.parent = MenuCenterObject.transform;
+            tempObj.transform.localScale = new Vector3(MenuLocalScale, MenuLocalScale, MenuLocalScale);
+            tempObj.transform.localPosition = MenuChildLocalPos[oi];
+            tempObj.transform.GetComponent<Renderer>().material.mainTexture = texturelist[oi];
+            MenuChildObject.Add(tempObj);
+            MenuChildPos.Add(tempObj.transform.position);
         }
     }
 

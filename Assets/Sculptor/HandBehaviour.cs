@@ -3,9 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Cubiquity;
 
-public enum ControlPanel { empty, main, state, shape, color, readfile };
+public enum ControlPanel { empty, main, color };
+public enum OptModePanel { sculptor, paint, replay, mirror };
 public enum InfoPanel { empty, start, info};
-public enum OptState { create, delete, smooth };
+public enum OptState { create, delete, smooth, paint };
 public enum OptShape { cube, sphere, capsule, cylinder };
 public enum DrawPos {left, right, twice };
 public enum HandOpt { singleOpt, pairOpt, voxelWorldOpt };
@@ -51,6 +52,7 @@ public class HandBehaviour : MonoBehaviour {
     private float VoxelWorldNowScale;
 
     private ControlPanel activePanel;
+    private OptModePanel activeOptModePanel;
     private InfoPanel activeInfoPanel;
     private OptState activeState;
     private OptShape activeShape;
@@ -149,6 +151,7 @@ public class HandBehaviour : MonoBehaviour {
         colorMaterialSet.weights[0] = 0;  // r
 
         activePanel = ControlPanel.empty;
+        activeOptModePanel = OptModePanel.sculptor;
         activeState = OptState.create;
 
         markTime = Time.time;
@@ -257,9 +260,49 @@ public class HandBehaviour : MonoBehaviour {
 
     private void emptyPanelHandleOVRInput()
     {
+
+    }
+
+    private void mainPanelHandleOVRInput()
+    {
+        int tempMenuPoints = handMenuControl.GetMenuPoints();
+        int tempTouchID = handMenuControl.GetTouchID();
+        switch (tempTouchID)
+        {
+            case 0:
+                activePanel = ControlPanel.color;
+                break;
+            case 1:
+                activeOptModePanel = OptModePanel.sculptor;
+                break;
+            case 2:
+                activeOptModePanel = OptModePanel.paint;
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
+        }
+    }
+
+    private void colorPanelHandleOVRInput()
+    {
+
+    }
+
+    private void sculptorOptModePanelHandleOVRInput()
+    {
         checkOptContinueState = false;
 
-        if (Axis1D_LT >0 && Axis1D_RT > 0)
+        if (Axis1D_LT > 0 && Axis1D_RT > 0)
         {
             // global position/rotation/scaling
             if (activeHandOpt != HandOpt.voxelWorldOpt)
@@ -290,7 +333,7 @@ public class HandBehaviour : MonoBehaviour {
         {
             // two hand operator
             activeHandOpt = HandOpt.pairOpt;
-            if((Axis2D_LB_Right || Axis2D_RB_Right) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
+            if ((Axis2D_LB_Right || Axis2D_RB_Right) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
             {
                 if (activeShape >= OptShape.cylinder)
                 {
@@ -302,7 +345,7 @@ public class HandBehaviour : MonoBehaviour {
                 }
                 buttonPreTime = Time.time;
             }
-            else if((Axis2D_LB_Left || Axis2D_RB_Left) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
+            else if ((Axis2D_LB_Left || Axis2D_RB_Left) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
             {
                 if (activeShape <= OptShape.cube)
                 {
@@ -412,45 +455,29 @@ public class HandBehaviour : MonoBehaviour {
             recordBehaviour.NewDo();
         }
         checkPreOptContinueState = checkOptContinueState;
-
     }
 
-    private void mainPanelHandleOVRInput()
+    private void paintOptModePanelHandleOVRInput()
     {
-        int tempMenuPoints = handMenuControl.GetMenuPoints();
-        int tempTouchID = handMenuControl.GetTouchID();
-        switch (tempTouchID)
+        if (Axis1D_LB > 0)
         {
-            case 0:
-                activePanel = ControlPanel.color;
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
+            activeState = OptState.paint;
+            StateHandleOVRInput(DrawPos.left);
         }
+        else if (Axis1D_RB > 0)
+        {
+            activeState = OptState.paint;
+            StateHandleOVRInput(DrawPos.right);
+        }
+
     }
 
-    private void statePanelHandleOVRInput()
+    private void mirrorOptModePanelHandleOVRInput()
     {
 
     }
 
-    private void shapePanelHandleOVRInput()
-    {
-
-    }
-
-    private void colorPanelHandleOVRInput()
-    {
-
-    }
-
-    private void readfilePanelHandleOVRInput()
+    private void replayOptModePanelHandleOVRInput()
     {
 
     }
@@ -523,6 +550,7 @@ public class HandBehaviour : MonoBehaviour {
             buttonPreTime = Time.time;
         }
 
+        // menu opt
         switch (activePanel)
         {
             case ControlPanel.empty:
@@ -531,17 +559,25 @@ public class HandBehaviour : MonoBehaviour {
             case ControlPanel.main:
                 mainPanelHandleOVRInput();
                 break;
-            case ControlPanel.state:
-                statePanelHandleOVRInput();
-                break;
-            case ControlPanel.shape:
-                shapePanelHandleOVRInput();
-                break;
             case ControlPanel.color:
                 colorPanelHandleOVRInput();
                 break;
-            case ControlPanel.readfile:
-                readfilePanelHandleOVRInput();
+        }
+
+        // scene opt
+        switch (activeOptModePanel)
+        {
+            case OptModePanel.sculptor:
+                sculptorOptModePanelHandleOVRInput();
+                break;
+            case OptModePanel.paint:
+                paintOptModePanelHandleOVRInput();
+                break;
+            case OptModePanel.mirror:
+                mirrorOptModePanelHandleOVRInput();
+                break;
+            case OptModePanel.replay:
+                replayOptModePanelHandleOVRInput();
                 break;
         }
 
@@ -583,6 +619,9 @@ public class HandBehaviour : MonoBehaviour {
                 break;
             case OptState.smooth:
                 SmoothVoxels(tempDrawPosScaled, (Vector3i)tempDrawScale);
+                break;
+            case OptState.paint:
+                PaintVoxels(tempDrawPosScaled, 0, 5, 1, 0);
                 break;
         }
     }
