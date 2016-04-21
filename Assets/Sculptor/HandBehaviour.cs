@@ -1048,6 +1048,7 @@ public class HandBehaviour : MonoBehaviour {
     {
         ProceduralTerrainVolume tempbpv = BasicProceduralVolume.GetComponent<ProceduralTerrainVolume>();
         tempbpv.ProceduralVoxelVR();
+        recordBehaviour.ClearAll();
         Debug.Log("Voxel database has been restarted.");
     }
 

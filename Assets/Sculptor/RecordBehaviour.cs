@@ -125,6 +125,14 @@ public class RecordBehaviour : MonoBehaviour {
         optStack[optPos].Add(opt);
     }
 
+    public void ClearAll()
+    {
+        for (int i = 0; i < optSize; i++)
+        {
+            optStack[i].Clear();
+        }
+    }
+
     private void AddOptPos()
     {
         if (optPos < optSize - 1)
