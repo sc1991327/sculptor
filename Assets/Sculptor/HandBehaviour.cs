@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cubiquity;
 
-public enum ControlPanel { empty, main, color };
+public enum ControlPanel { empty, main, color, replay, load, high };
 public enum OptModePanel { sculptor, paint, replay, mirror };
 public enum InfoPanel { empty, start, info};
 public enum OptState { create, delete, smooth, paint };
@@ -81,6 +81,8 @@ public class HandBehaviour : MonoBehaviour {
 
     private bool checkOptContinueState = false;
     private bool checkPreOptContinueState = false;
+
+    private float replayStartTime = 0.0f;
 
     // -- OVRInput Info
 
@@ -223,28 +225,6 @@ public class HandBehaviour : MonoBehaviour {
         leftRotateEuler = leftHandAnchor.transform.rotation.eulerAngles;
         rightRotateEuler = rightHandAnchor.transform.rotation.eulerAngles;
 
-        Color tempcolor = handMenuControl.GetColorChose();
-        if (colorChose != tempcolor)
-        {
-            float temptotal = tempcolor.r + tempcolor.g + tempcolor.b;
-            if (temptotal == 0)
-            {
-                colorMaterialSet.weights[3] = 255;    // black
-                colorMaterialSet.weights[2] = 0;  // b
-                colorMaterialSet.weights[1] = 0;  // g
-                colorMaterialSet.weights[0] = 0;  // r
-            }
-            else
-            {
-                colorMaterialSet.weights[3] = 0;    // black
-                colorMaterialSet.weights[2] = (byte)(int)(254 * (tempcolor.b / temptotal));  // b
-                colorMaterialSet.weights[1] = (byte)(int)(254 * (tempcolor.g / temptotal));  // g
-                colorMaterialSet.weights[0] = (byte)(int)(254 * (tempcolor.r / temptotal));  // r
-            }
-            //Debug.Log("ColorMaterial: " + colorMaterialSet.weights[0] + ", " + colorMaterialSet.weights[1] + ", " + colorMaterialSet.weights[2] + ", " + colorMaterialSet.weights[3]);
-            colorChose = tempcolor;
-        }
-
         HandleKeyBoardInput();
         HandleOVRInput();
     }
@@ -302,12 +282,12 @@ public class HandBehaviour : MonoBehaviour {
                 activePanelContinue = true;
                 break;
             case 6:
-                //Replay
-
+                //Replay file choose panel
+                activePanel = ControlPanel.replay;
                 break;
             case 7:
                 //High operators mode choose panel
-
+                activePanel = ControlPanel.high;
                 break;
             case 8:
                 //Save
@@ -317,12 +297,62 @@ public class HandBehaviour : MonoBehaviour {
                 break;
             case 9:
                 //Load files choose panel
-
+                activePanel = ControlPanel.load;
                 break;
         }
     }
 
     private void colorPanelHandleOVRInput()
+    {
+        // chose color
+        int tempTouchID = handMenuControl.GetTouchID();
+        if (activePanel == ControlPanel.color && tempTouchID >= 0)
+        {
+            Color tempcolor = handMenuControl.colorColorList[tempTouchID];
+
+            if (colorChose != tempcolor)
+            {
+                float temptotal = tempcolor.r + tempcolor.g + tempcolor.b;
+                if (temptotal == 0)
+                {
+                    colorMaterialSet.weights[3] = 255;    // black
+                    colorMaterialSet.weights[2] = 0;  // b
+                    colorMaterialSet.weights[1] = 0;  // g
+                    colorMaterialSet.weights[0] = 0;  // r
+                }
+                else
+                {
+                    colorMaterialSet.weights[3] = 0;    // black
+                    colorMaterialSet.weights[2] = (byte)(int)(254 * (tempcolor.b / temptotal));  // b
+                    colorMaterialSet.weights[1] = (byte)(int)(254 * (tempcolor.g / temptotal));  // g
+                    colorMaterialSet.weights[0] = (byte)(int)(254 * (tempcolor.r / temptotal));  // r
+                }
+                //Debug.Log("ColorMaterial: " + colorMaterialSet.weights[0] + ", " + colorMaterialSet.weights[1] + ", " + colorMaterialSet.weights[2] + ", " + colorMaterialSet.weights[3]);
+                colorChose = tempcolor;
+            }
+        }
+
+    }
+
+    private void replayPanelHandleOVRInput()
+    {
+        // execute once for each touch
+
+        int tempTouchID = handMenuControl.GetTouchID();
+        recordBehaviour.ReadJsonFile(recordBehaviour.fileNames[tempTouchID]);
+
+        activeOptModePanel = OptModePanel.replay;
+        replayStartTime = Time.time;
+
+        activePanel = ControlPanel.empty;
+    }
+
+    private void loadPanelHandleOVRInput()
+    {
+
+    }
+
+    private void highPanelHandleOVRInput()
     {
 
     }
@@ -508,7 +538,37 @@ public class HandBehaviour : MonoBehaviour {
 
     private void replayOptModePanelHandleOVRInput()
     {
+        if (recordBehaviour.ReplayVoxelStore.Count > 0)
+        {
+            VoxelStoreObj tempVSO = recordBehaviour.ReplayVoxelStore[0];
 
+            float relatedTime = Time.time - replayStartTime;
+            if (relatedTime > tempVSO.Time)
+            {
+                if (tempVSO.Type == 1)
+                {
+                    Vector3i Pos = new Vector3i(tempVSO.PosX, tempVSO.PosY, tempVSO.PosZ);
+                    Vector3 RotateEuler = new Vector3(tempVSO.RotateEulerX, tempVSO.RotateEulerY, tempVSO.RotateEulerZ);
+                    MaterialSet materialSet = new MaterialSet();
+                    materialSet.weights[0] = (byte)tempVSO.MaterialWeight0;
+                    materialSet.weights[1] = (byte)tempVSO.MaterialWeight1;
+                    materialSet.weights[2] = (byte)tempVSO.MaterialWeight2;
+                    materialSet.weights[3] = (byte)tempVSO.MaterialWeight3;
+                    Vector3i range = new Vector3i(tempVSO.RangeX, tempVSO.RangeY, tempVSO.RangeZ);
+                    OptShape optshape = (OptShape)tempVSO.Optshape;
+
+                    VoxelSetting(Pos, RotateEuler, materialSet, range, optshape);
+                }
+                else
+                {
+                    Region region = new Region(tempVSO.LowcornerX, tempVSO.LowcornerY, tempVSO.LowcornerZ, tempVSO.UpcornerX, tempVSO.UpcornerY, tempVSO.UpcornerZ);
+
+                    VoxelSmoothing(region);
+                }
+
+                recordBehaviour.ReplayVoxelStore.RemoveAt(0);
+            }
+        }
     }
 
     private void HandleOVRInput()
@@ -589,6 +649,15 @@ public class HandBehaviour : MonoBehaviour {
                 break;
             case ControlPanel.color:
                 colorPanelHandleOVRInput();
+                break;
+            case ControlPanel.replay:
+                replayPanelHandleOVRInput();
+                break;
+            case ControlPanel.load:
+                loadPanelHandleOVRInput();
+                break;
+            case ControlPanel.high:
+                highPanelHandleOVRInput();
                 break;
         }
 
@@ -1018,13 +1087,13 @@ public class HandBehaviour : MonoBehaviour {
     private void DestroyVoxels(Vector3i Pos, Vector3 RotateEular, Vector3i range, OptShape optshape)
     {
         MaterialSet emptyMaterialSet = new MaterialSet();
-        recordBehaviour.Write(Pos, RotateEular, emptyMaterialSet, range, optshape, Time.time - appStartTime);
+        recordBehaviour.WriteJsonFile(Pos, RotateEular, emptyMaterialSet, range, optshape, Time.time - appStartTime);
         VoxelSetting(Pos, RotateEular, emptyMaterialSet, range, optshape);
     }
 
     private void CreateVoxels(Vector3i Pos, Vector3 RotateEular, MaterialSet materialSet, Vector3i range, OptShape optshape)
     {
-        recordBehaviour.Write(Pos, RotateEular, materialSet, range, optshape, Time.time - appStartTime);
+        recordBehaviour.WriteJsonFile(Pos, RotateEular, materialSet, range, optshape, Time.time - appStartTime);
         VoxelSetting(Pos, RotateEular, materialSet, range, optshape);
     }
 
@@ -1032,7 +1101,7 @@ public class HandBehaviour : MonoBehaviour {
     {
         Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(Pos) * VoxelWorldTransform.localScale.x;
         Vector3i tempPosi = (Vector3i)tempPos;
-        recordBehaviour.WriteSmooth(new Region(tempPosi.x - range.x, tempPosi.y - range.y, tempPosi.z - range.z, tempPosi.x + range.x, tempPosi.y + range.y, tempPosi.z + range.z), Time.time - appStartTime);
+        recordBehaviour.WriteJsonFileSmooth(new Region(tempPosi.x - range.x, tempPosi.y - range.y, tempPosi.z - range.z, tempPosi.x + range.x, tempPosi.y + range.y, tempPosi.z + range.z), Time.time - appStartTime);
         //TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - range.x, tempPosi.y - range.y, tempPosi.z - range.z, tempPosi.x + range.x, tempPosi.y + range.y, tempPosi.z + range.z));
         VoxelSmoothing(new Region(tempPosi.x - range.x, tempPosi.y - range.y, tempPosi.z - range.z, tempPosi.x + range.x, tempPosi.y + range.y, tempPosi.z + range.z));
     }

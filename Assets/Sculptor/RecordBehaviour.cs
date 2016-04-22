@@ -5,37 +5,54 @@ using System.IO;
 
 using Cubiquity;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 public class VoxelStoreObj
 {
+    [JsonProperty(PropertyName = "Type")]
     public int Type { get; set; }
+    [JsonProperty(PropertyName = "Time")]
     public float Time { get; set; }
+    [JsonProperty(PropertyName = "PosX")]
     public int PosX { get; set; }
+    [JsonProperty(PropertyName = "PosY")]
     public int PosY { get; set; }
+    [JsonProperty(PropertyName = "PosZ")]
     public int PosZ { get; set; }
+    [JsonProperty(PropertyName = "RotateEulerX")]
     public float RotateEulerX { get; set; }
+    [JsonProperty(PropertyName = "RotateEulerY")]
     public float RotateEulerY { get; set; }
+    [JsonProperty(PropertyName = "RotateEulerZ")]
     public float RotateEulerZ { get; set; }
+    [JsonProperty(PropertyName = "MaterialWeight0")]
     public int MaterialWeight0 { get; set; }
+    [JsonProperty(PropertyName = "MaterialWeight1")]
     public int MaterialWeight1 { get; set; }
+    [JsonProperty(PropertyName = "MaterialWeight2")]
     public int MaterialWeight2 { get; set; }
+    [JsonProperty(PropertyName = "MaterialWeight3")]
     public int MaterialWeight3 { get; set; }
+    [JsonProperty(PropertyName = "RangeX")]
     public int RangeX { get; set; }
+    [JsonProperty(PropertyName = "RangeY")]
     public int RangeY { get; set; }
+    [JsonProperty(PropertyName = "RangeZ")]
     public int RangeZ { get; set; }
+    [JsonProperty(PropertyName = "UpcornerX")]
+    public int UpcornerX { get; set; }
+    [JsonProperty(PropertyName = "UpcornerY")]
+    public int UpcornerY { get; set; }
+    [JsonProperty(PropertyName = "UpcornerZ")]
+    public int UpcornerZ { get; set; }
+    [JsonProperty(PropertyName = "LowcornerX")]
+    public int LowcornerX { get; set; }
+    [JsonProperty(PropertyName = "LowcornerY")]
+    public int LowcornerY { get; set; }
+    [JsonProperty(PropertyName = "LowcornerZ")]
+    public int LowcornerZ { get; set; }
+    [JsonProperty(PropertyName = "Optshape")]
     public int Optshape { get; set; }
-}
-
-public class VoxelStoreSmooth
-{
-    public int Type { get; set; }
-    public float Time { get; set; }
-    public float UpcornerX { get; set; }
-    public float UpcornerY { get; set; }
-    public float UpcornerZ { get; set; }
-    public float LowcornerX { get; set; }
-    public float LowcornerY { get; set; }
-    public float LowcornerZ { get; set; }
 }
 
 public class VoxelOpt
@@ -55,6 +72,10 @@ public class RecordBehaviour : MonoBehaviour {
 
     public GameObject BasicProceduralVolume = null;
 
+    public List<string> fileNames;
+    public List<VoxelStoreObj> ReplayVoxelStore;
+    public List<VoxelStoreObj> RecordVoxelStore;
+
     private StreamWriter file;
 
     private TerrainVolume terrainVolume;
@@ -66,20 +87,21 @@ public class RecordBehaviour : MonoBehaviour {
     // Use this for initialization
     void Awake () {
 
-        string randomName = Path.GetRandomFileName();
-        file = new System.IO.StreamWriter("Record/RecordOpt_" + randomName + ".txt");
-
-        // Example
-        //string lines = "First line.\r\nSecond line.\r\nThird line.";
-        //file.WriteLine(lines);
+        fileNames = new List<string>();
 
         terrainVolume = BasicProceduralVolume.GetComponent<TerrainVolume>();
-
 
         optStack = new List<List<VoxelOpt>>(optSize);
         for (int i = 0; i < optSize; i++){
             optStack.Add(new List<VoxelOpt>());
         }
+
+        // obtain all files name
+        string fonderpath = "Record";
+        ProcessDirectory(fonderpath);
+
+        ReplayVoxelStore = new List<VoxelStoreObj>();
+        RecordVoxelStore = new List<VoxelStoreObj>();
     }
 	
 	// Update is called once per frame
@@ -190,7 +212,58 @@ public class RecordBehaviour : MonoBehaviour {
         return true;
     }
 
-    public void Write(Vector3i Pos, Vector3 RotateEuler, MaterialSet materialSet, Vector3i range, OptShape optshape, float mtime)
+    private void ProcessDirectory(string targetDirectory)
+    {
+        // Process the list of files found in the directory.
+        string[] fileEntries = Directory.GetFiles(targetDirectory);
+        foreach (string fileName in fileEntries)
+            ProcessFile(fileName);
+
+        // Recurse into subdirectories of this directory.
+        string[] subdirectoryEntries = Directory.GetDirectories(targetDirectory);
+        foreach (string subdirectory in subdirectoryEntries)
+            ProcessDirectory(subdirectory);
+    }
+
+    // Insert logic for processing found files here.
+    private void ProcessFile(string path)
+    {
+        fileNames.Add(path);
+    }
+
+    public void ReadJsonFile(string filename)
+    {
+        string jsontext = System.IO.File.ReadAllText(filename);
+        //string jsontext = @"[{
+        //    'Type': 1,
+        //    'Time': 10.4302082,
+        //    'PosX': -8,
+        //    'PosY': -13,
+        //    'PosZ': 27,
+        //    'RotateEulerX': 326.963043,
+        //    'RotateEulerY': 337.606079,
+        //    'RotateEulerZ': 2.99512219,
+        //    'MaterialWeight0': 255,
+        //    'MaterialWeight1': 255,
+        //    'MaterialWeight2': 255,
+        //    'MaterialWeight3': 0,
+        //    'RangeX': 2,
+        //    'RangeY': 2,
+        //    'RangeZ': 2,
+        //    'UpcornerX': 0,
+        //    'UpcornerY': 0,
+        //    'UpcornerZ': 0,
+        //    'LowcornerX': 0,
+        //    'LowcornerY': 0,
+        //    'LowcornerZ': 0,
+        //    'Optshape': 1
+        //}]";
+
+        ReplayVoxelStore = JsonConvert.DeserializeObject<List<VoxelStoreObj>>(jsontext);
+        Debug.Log("JSON File Size: " + ReplayVoxelStore.Count);
+    }
+
+    public void WriteJsonFile(Vector3i Pos, Vector3 RotateEuler, MaterialSet materialSet, Vector3i range, OptShape optshape, float mtime)
     {
         VoxelStoreObj temp = new VoxelStoreObj
         {
@@ -211,13 +284,12 @@ public class RecordBehaviour : MonoBehaviour {
             RangeZ = range.z,
             Optshape = (int)optshape
         };
-        string jsonMsg = JsonConvert.SerializeObject(temp, Formatting.Indented);
-        file.WriteLine(jsonMsg.ToString());
+        RecordVoxelStore.Add(temp);
     }
 
-    public void WriteSmooth(Region mregion, float mtime)
+    public void WriteJsonFileSmooth(Region mregion, float mtime)
     {
-        VoxelStoreSmooth temp = new VoxelStoreSmooth
+        VoxelStoreObj temp = new VoxelStoreObj
         {
             Type = 2,
             Time = mtime,
@@ -228,12 +300,21 @@ public class RecordBehaviour : MonoBehaviour {
             UpcornerY = mregion.upperCorner.y,
             UpcornerZ = mregion.upperCorner.z,
         };
-        string jsonMsg = JsonConvert.SerializeObject(temp, Formatting.Indented);
-        file.WriteLine(jsonMsg.ToString());
+        RecordVoxelStore.Add(temp);
     }
 
     void OnApplicationQuit()
     {
+        string randomName = Path.GetRandomFileName();
+        file = new System.IO.StreamWriter("Record/RecordOpt_" + randomName + ".txt");
+        file.WriteLine("[");
+        foreach (VoxelStoreObj temp in RecordVoxelStore)
+        {
+            string jsonMsg = JsonConvert.SerializeObject(temp, Formatting.Indented);
+            file.WriteLine(jsonMsg);
+            file.WriteLine(",");
+        }
+        file.WriteLine("]");
         file.Close();
     }
 }

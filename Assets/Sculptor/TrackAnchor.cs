@@ -340,8 +340,4 @@ public class TrackAnchor : MonoBehaviour {
         return twiceHand.transform.localScale;
     }
 
-    //public Color GetColorChose()
-    //{
-    //    return ColorChose;
-    //}
 }
