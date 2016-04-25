@@ -8,7 +8,7 @@ public enum OptModePanel { sculptor, paint, replay, mirror };
 public enum InfoPanel { empty, start, info};
 public enum OptState { create, delete, smooth, paint };
 public enum OptShape { cube, sphere, capsule, cylinder };
-public enum DrawPos {left, right, twice };
+public enum DrawPos { left, right, twice };
 public enum HandOpt { singleOpt, pairOpt, voxelWorldOpt };
 
 public class HandBehaviour : MonoBehaviour {
@@ -339,17 +339,26 @@ public class HandBehaviour : MonoBehaviour {
         // execute once for each touch
 
         int tempTouchID = handMenuControl.GetTouchID();
-        recordBehaviour.ReadJsonFile(recordBehaviour.fileNames[tempTouchID]);
+        if (tempTouchID >= 0 && tempTouchID < recordBehaviour.recordFileNames.Count)
+        {
+            recordBehaviour.ReadJsonFile(recordBehaviour.recordFileNames[tempTouchID]);
 
-        activeOptModePanel = OptModePanel.replay;
-        replayStartTime = Time.time;
+            activeOptModePanel = OptModePanel.replay;
+            replayStartTime = Time.time;
 
-        activePanel = ControlPanel.empty;
+            activePanel = ControlPanel.empty;
+        }
     }
 
     private void loadPanelHandleOVRInput()
     {
+        int tempTouchID = handMenuControl.GetTouchID();
+        if (tempTouchID >= 0 && tempTouchID < recordBehaviour.loadFileNames.Count)
+        {
+            proceduralTerrainVolume.LoadVDBFile(recordBehaviour.loadFileNames[tempTouchID]);
 
+            activePanel = ControlPanel.empty;
+        }
     }
 
     private void highPanelHandleOVRInput()

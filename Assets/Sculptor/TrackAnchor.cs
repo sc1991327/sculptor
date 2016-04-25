@@ -39,8 +39,8 @@ public class TrackAnchor : MonoBehaviour {
 
     private GameObject twiceHand;
     private HandOpt activeHandOpt = HandOpt.singleOpt;
-    private ControlPanel showColorCube = ControlPanel.empty;
 
+    //private ControlPanel showColorCube = ControlPanel.empty;
     //private Vector3 ColorBlackPoint = new Vector3(0, 0, 0);
     //private Color ColorChose = Color.white;
 

@@ -108,16 +108,16 @@ public class HandMenuControl : MonoBehaviour {
                     break;
                 case ControlPanel.replay:
                     // use recordBehaviour fileNames size to create menu objects.
-                    menuPoints = Mathf.Clamp(recordBehaviour.fileNames.Count, 0, 30);
+                    menuPoints = Mathf.Clamp(recordBehaviour.recordFileNames.Count, 0, 30);
                     DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
                     UpdateMenuCenterPos(nowPos);
-                    DrawCircleMenuObj(menuPoints, recordBehaviour.fileNames);
+                    DrawCircleMenuObj(menuPoints, recordBehaviour.recordFileNames);
                     break;
                 case ControlPanel.load:
-                    //menuPoints = 9;
-                    //DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
-                    //UpdateMenuCenterPos(nowPos);
-                    //DrawCircleMenuObj(menuPoints, colorColorList);
+                    menuPoints = Mathf.Clamp(recordBehaviour.loadFileNames.Count, 0, 30);
+                    DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
+                    UpdateMenuCenterPos(nowPos);
+                    DrawCircleMenuObj(menuPoints, recordBehaviour.loadFileNames);
                     break;
                 case ControlPanel.high:
                     menuPoints = 1;
@@ -208,7 +208,8 @@ public class HandMenuControl : MonoBehaviour {
             tempObj.transform.localScale = new Vector3(MenuLocalScale, MenuLocalScale, MenuLocalScale);
             tempObj.transform.localPosition = MenuChildLocalPos[oi];
             tempObj.transform.GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value);
-            tempObj.GetComponent<TextMesh>().text = textlist[oi];
+            tempObj.GetComponent<TextMesh>().text = textlist[oi].Substring(textlist[oi].LastIndexOf('\\') + 1);
+//            tempObj.GetComponent<TextMesh>().text = textlist[oi];
             tempObj.GetComponent<TextMesh>().characterSize = 0.1f;
             tempObj.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
             MenuChildObject.Add(tempObj);

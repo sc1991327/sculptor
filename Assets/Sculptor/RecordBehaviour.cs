@@ -72,9 +72,10 @@ public class RecordBehaviour : MonoBehaviour {
 
     public GameObject BasicProceduralVolume = null;
 
-    public List<string> fileNames;
+    public List<string> recordFileNames;
     public List<VoxelStoreObj> ReplayVoxelStore;
     public List<VoxelStoreObj> RecordVoxelStore;
+    public List<string> loadFileNames;
 
     private StreamWriter file;
 
@@ -87,7 +88,8 @@ public class RecordBehaviour : MonoBehaviour {
     // Use this for initialization
     void Awake () {
 
-        fileNames = new List<string>();
+        recordFileNames = new List<string>();
+        loadFileNames = new List<string>();
 
         terrainVolume = BasicProceduralVolume.GetComponent<TerrainVolume>();
 
@@ -98,7 +100,10 @@ public class RecordBehaviour : MonoBehaviour {
 
         // obtain all files name
         string fonderpath = "Record";
-        ProcessDirectory(fonderpath);
+        ProcessDirectory(fonderpath, recordFileNames, "*.txt", false);
+
+        string loadfonderpath = Paths.voxelDatabases;
+        ProcessDirectory(loadfonderpath, loadFileNames, "*.vdb", false);
 
         ReplayVoxelStore = new List<VoxelStoreObj>();
         RecordVoxelStore = new List<VoxelStoreObj>();
@@ -212,23 +217,26 @@ public class RecordBehaviour : MonoBehaviour {
         return true;
     }
 
-    private void ProcessDirectory(string targetDirectory)
+    private void ProcessDirectory(string targetDirectory, List<string> targetList, string constraint, bool handleChildDirectory)
     {
         // Process the list of files found in the directory.
-        string[] fileEntries = Directory.GetFiles(targetDirectory);
+        string[] fileEntries = Directory.GetFiles(targetDirectory, constraint);
         foreach (string fileName in fileEntries)
-            ProcessFile(fileName);
+            ProcessFile(fileName, targetList);
 
-        // Recurse into subdirectories of this directory.
-        string[] subdirectoryEntries = Directory.GetDirectories(targetDirectory);
-        foreach (string subdirectory in subdirectoryEntries)
-            ProcessDirectory(subdirectory);
+        if (handleChildDirectory)
+        {
+            // Recurse into subdirectories of this directory.
+            string[] subdirectoryEntries = Directory.GetDirectories(targetDirectory);
+            foreach (string subdirectory in subdirectoryEntries)
+                ProcessDirectory(subdirectory, targetList, constraint, handleChildDirectory);
+        }
     }
 
     // Insert logic for processing found files here.
-    private void ProcessFile(string path)
+    private void ProcessFile(string path, List<string> targetList)
     {
-        fileNames.Add(path);
+        targetList.Add(path);
     }
 
     public void ReadJsonFile(string filename)

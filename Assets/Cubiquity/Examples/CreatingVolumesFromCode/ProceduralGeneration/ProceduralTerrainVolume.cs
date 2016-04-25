@@ -28,9 +28,9 @@ public class ProceduralTerrainVolume : MonoBehaviour
         //LoadVDBFile();
     }
 
-    public void LoadVDBFile()
+    public void LoadVDBFile(string loadLocation)
     {
-        string loadLocation = Paths.voxelDatabases + "/VRSculptor_49537287.vdb";
+        //string loadLocation = Paths.voxelDatabases + "/VRSculptor_49537287.vdb";
         TerrainVolumeData data = VolumeData.CreateFromVoxelDatabase<TerrainVolumeData>(loadLocation);
 
         TerrainVolume volume = GetComponent<TerrainVolume>();
