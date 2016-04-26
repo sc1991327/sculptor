@@ -46,6 +46,7 @@ public class TrackAnchor : MonoBehaviour {
     private GameObject mirrorAnchorPoint0;
     private GameObject mirrorAnchorPoint1;
     private GameObject mirrorAnchorPoint2;
+    private Vector3 mirrorScale = new Vector3(10, 10, 10);
 
     private OptModePanel activeMode, nowMode;
 
@@ -113,6 +114,7 @@ public class TrackAnchor : MonoBehaviour {
 
         mirrorChildPlane1 = GameObject.CreatePrimitive(PrimitiveType.Plane);
         mirrorChildPlane1.transform.Rotate(0, 0, 0);
+        mirrorChildPlane1.transform.localScale = mirrorScale;
         mirrorChildPlane1.transform.parent = mirrorPlane.transform;
         materialColor = mirrorChildPlane1.transform.GetComponent<Renderer>().material.color;
         materialColor.a = colorChildAlpha;
@@ -121,6 +123,7 @@ public class TrackAnchor : MonoBehaviour {
 
         mirrorChildPlane2 = GameObject.CreatePrimitive(PrimitiveType.Plane);
         mirrorChildPlane2.transform.Rotate(0, 0, 180);
+        mirrorChildPlane2.transform.localScale = mirrorScale;
         mirrorChildPlane2.transform.parent = mirrorPlane.transform;
         materialColor = mirrorChildPlane2.transform.GetComponent<Renderer>().material.color;
         materialColor.a = colorChildAlpha;
@@ -130,6 +133,9 @@ public class TrackAnchor : MonoBehaviour {
         mirrorAnchorPoint0 = new GameObject();
         mirrorAnchorPoint1 = new GameObject();
         mirrorAnchorPoint2 = new GameObject();
+        //mirrorAnchorPoint0 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        //mirrorAnchorPoint1 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        //mirrorAnchorPoint2 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         mirrorAnchorPoint0.transform.position = new Vector3(0, 0, 0);
         mirrorAnchorPoint1.transform.position = new Vector3(1, 0, 0);
         mirrorAnchorPoint2.transform.position = new Vector3(0, 0, 1);
@@ -137,7 +143,7 @@ public class TrackAnchor : MonoBehaviour {
         mirrorAnchorPoint1.transform.parent = mirrorPlane.transform;
         mirrorAnchorPoint2.transform.parent = mirrorPlane.transform;
 
-        mirrorPlane.transform.Rotate(30, 40, 50);
+        mirrorPlane.transform.parent = terrainWorld.transform;
 
         leftHandChild.SetActive(true);
         rightHandChild.SetActive(true);
@@ -398,6 +404,12 @@ public class TrackAnchor : MonoBehaviour {
     public Vector3 GetTwiceChildLocalScale()
     {
         return twiceHand.transform.localScale;
+    }
+
+    public void SetMirrorPlaneTransform(Vector3 pos, Quaternion rot)
+    {
+        //mirrorPlane.transform.position = pos;
+        mirrorPlane.transform.rotation = rot;
     }
 
     public Transform GetMirrorPlaneTransform()
