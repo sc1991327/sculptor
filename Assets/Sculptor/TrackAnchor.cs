@@ -40,6 +40,15 @@ public class TrackAnchor : MonoBehaviour {
     private GameObject twiceHand;
     private HandOpt activeHandOpt = HandOpt.singleOpt;
 
+    private GameObject mirrorPlane;
+    private GameObject mirrorChildPlane1;
+    private GameObject mirrorChildPlane2;
+    private GameObject mirrorAnchorPoint0;
+    private GameObject mirrorAnchorPoint1;
+    private GameObject mirrorAnchorPoint2;
+
+    private OptModePanel activeMode, nowMode;
+
     //private ControlPanel showColorCube = ControlPanel.empty;
     //private Vector3 ColorBlackPoint = new Vector3(0, 0, 0);
     //private Color ColorChose = Color.white;
@@ -99,9 +108,43 @@ public class TrackAnchor : MonoBehaviour {
         //colorCube.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
         //colorCube.transform.localScale = colorCubeSize;
 
+        mirrorPlane = new GameObject();
+        mirrorPlane.name = "MirrorPlane";
+
+        mirrorChildPlane1 = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        mirrorChildPlane1.transform.Rotate(0, 0, 0);
+        mirrorChildPlane1.transform.parent = mirrorPlane.transform;
+        materialColor = mirrorChildPlane1.transform.GetComponent<Renderer>().material.color;
+        materialColor.a = colorChildAlpha;
+        mirrorChildPlane1.transform.GetComponent<Renderer>().material.color = materialColor;
+        mirrorChildPlane1.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
+
+        mirrorChildPlane2 = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        mirrorChildPlane2.transform.Rotate(0, 0, 180);
+        mirrorChildPlane2.transform.parent = mirrorPlane.transform;
+        materialColor = mirrorChildPlane2.transform.GetComponent<Renderer>().material.color;
+        materialColor.a = colorChildAlpha;
+        mirrorChildPlane2.transform.GetComponent<Renderer>().material.color = materialColor;
+        mirrorChildPlane2.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
+
+        mirrorAnchorPoint0 = new GameObject();
+        mirrorAnchorPoint1 = new GameObject();
+        mirrorAnchorPoint2 = new GameObject();
+        mirrorAnchorPoint0.transform.position = new Vector3(0, 0, 0);
+        mirrorAnchorPoint1.transform.position = new Vector3(1, 0, 0);
+        mirrorAnchorPoint2.transform.position = new Vector3(0, 0, 1);
+        mirrorAnchorPoint0.transform.parent = mirrorPlane.transform;
+        mirrorAnchorPoint1.transform.parent = mirrorPlane.transform;
+        mirrorAnchorPoint2.transform.parent = mirrorPlane.transform;
+
+        mirrorPlane.transform.Rotate(30, 40, 50);
+
         leftHandChild.SetActive(true);
         rightHandChild.SetActive(true);
         twiceHand.SetActive(false);
+
+        mirrorPlane.SetActive(false);
+        activeMode = OptModePanel.sculptor;
 
         //colorCube.SetActive(false);
 
@@ -212,6 +255,7 @@ public class TrackAnchor : MonoBehaviour {
                 rightHandChild.SetActive(true);
                 twiceHand.SetActive(false);
             }
+
             var transparentLayer = LayerMask.NameToLayer("TransparentFX");
             terrainWorld.layer = transparentLayer;
             rightHand.layer = transparentLayer;
@@ -220,6 +264,22 @@ public class TrackAnchor : MonoBehaviour {
             leftHandChild.layer = transparentLayer;
             twiceHand.layer = transparentLayer;
             //colorCube.layer = transparentLayer;
+        }
+
+        // mirror
+        nowMode = handBehaviour.GetActiveOptModePanel();
+        if (nowMode != activeMode)
+        {
+            if (nowMode == OptModePanel.mirror)
+            {
+                mirrorPlane.SetActive(true);
+            }
+            else
+            {
+                mirrorPlane.SetActive(false);
+            }
+
+            activeMode = nowMode;
         }
 
         terrainWorld.transform.position = terrainVolume.transform.position;
@@ -340,4 +400,23 @@ public class TrackAnchor : MonoBehaviour {
         return twiceHand.transform.localScale;
     }
 
+    public Transform GetMirrorPlaneTransform()
+    {
+        return mirrorPlane.transform;
+    }
+
+    public Vector3 GetMirrorAnchorPoint0()
+    {
+        return mirrorAnchorPoint0.transform.position;
+    }
+
+    public Vector3 GetMirrorAnchorPoint1()
+    {
+        return mirrorAnchorPoint1.transform.position;
+    }
+
+    public Vector3 GetMirrorAnchorPoint2()
+    {
+        return mirrorAnchorPoint2.transform.position;
+    }
 }

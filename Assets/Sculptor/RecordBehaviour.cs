@@ -14,11 +14,11 @@ public class VoxelStoreObj
     [JsonProperty(PropertyName = "Time")]
     public float Time { get; set; }
     [JsonProperty(PropertyName = "PosX")]
-    public int PosX { get; set; }
+    public float PosX { get; set; }
     [JsonProperty(PropertyName = "PosY")]
-    public int PosY { get; set; }
+    public float PosY { get; set; }
     [JsonProperty(PropertyName = "PosZ")]
-    public int PosZ { get; set; }
+    public float PosZ { get; set; }
     [JsonProperty(PropertyName = "RotateEulerX")]
     public float RotateEulerX { get; set; }
     [JsonProperty(PropertyName = "RotateEulerY")]
@@ -39,20 +39,11 @@ public class VoxelStoreObj
     public int RangeY { get; set; }
     [JsonProperty(PropertyName = "RangeZ")]
     public int RangeZ { get; set; }
-    [JsonProperty(PropertyName = "UpcornerX")]
-    public int UpcornerX { get; set; }
-    [JsonProperty(PropertyName = "UpcornerY")]
-    public int UpcornerY { get; set; }
-    [JsonProperty(PropertyName = "UpcornerZ")]
-    public int UpcornerZ { get; set; }
-    [JsonProperty(PropertyName = "LowcornerX")]
-    public int LowcornerX { get; set; }
-    [JsonProperty(PropertyName = "LowcornerY")]
-    public int LowcornerY { get; set; }
-    [JsonProperty(PropertyName = "LowcornerZ")]
-    public int LowcornerZ { get; set; }
+    public float LowcornerZ { get; set; }
     [JsonProperty(PropertyName = "Optshape")]
     public int Optshape { get; set; }
+    [JsonProperty(PropertyName = "ActiveMirror")]
+    public bool ActiveMirror { get; set; }
 }
 
 public class VoxelOpt
@@ -265,13 +256,14 @@ public class RecordBehaviour : MonoBehaviour {
         //    'LowcornerY': 0,
         //    'LowcornerZ': 0,
         //    'Optshape': 1
+        //    'ActiveMirror' : 0
         //}]";
 
         ReplayVoxelStore = JsonConvert.DeserializeObject<List<VoxelStoreObj>>(jsontext);
         Debug.Log("JSON File Size: " + ReplayVoxelStore.Count);
     }
 
-    public void WriteJsonFile(Vector3i Pos, Vector3 RotateEuler, MaterialSet materialSet, Vector3i range, OptShape optshape, float mtime)
+    public void WriteJsonFile(Vector3 Pos, Vector3 RotateEuler, MaterialSet materialSet, Vector3i range, OptShape optshape, float mtime, bool activeMirror)
     {
         VoxelStoreObj temp = new VoxelStoreObj
         {
@@ -290,23 +282,25 @@ public class RecordBehaviour : MonoBehaviour {
             RangeX = range.x,
             RangeY = range.y,
             RangeZ = range.z,
-            Optshape = (int)optshape
+            Optshape = (int)optshape,
+            ActiveMirror = activeMirror
         };
         RecordVoxelStore.Add(temp);
     }
 
-    public void WriteJsonFileSmooth(Region mregion, float mtime)
+    public void WriteJsonFileSmooth(Vector3 Pos, Vector3i range, float mtime, bool activeMirror)
     {
         VoxelStoreObj temp = new VoxelStoreObj
         {
             Type = 2,
             Time = mtime,
-            LowcornerX = mregion.lowerCorner.x,
-            LowcornerY = mregion.lowerCorner.y,
-            LowcornerZ = mregion.lowerCorner.z,
-            UpcornerX = mregion.upperCorner.x,
-            UpcornerY = mregion.upperCorner.y,
-            UpcornerZ = mregion.upperCorner.z,
+            PosX = Pos.x,
+            PosY = Pos.y,
+            PosZ = Pos.z,
+            RangeX = range.x,
+            RangeY = range.y,
+            RangeZ = range.z,
+            ActiveMirror = activeMirror
         };
         RecordVoxelStore.Add(temp);
     }
