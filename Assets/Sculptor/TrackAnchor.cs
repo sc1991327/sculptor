@@ -11,6 +11,7 @@ public class TrackAnchor : MonoBehaviour {
     public GameObject rightHandAnchor = null;
 
     public Texture boundTexture = null;
+    public Texture planeTexture = null;
 
     private GameObject leftHand = null;
     private GameObject leftHandChild = null;
@@ -51,7 +52,7 @@ public class TrackAnchor : MonoBehaviour {
     private GameObject mirrorAnchorPoint0;
     private GameObject mirrorAnchorPoint1;
     private GameObject mirrorAnchorPoint2;
-    private Vector3 mirrorScale = new Vector3(10, 10, 10);
+    private Vector3 mirrorScale = new Vector3(30, 30, 30);
 
     private OptModePanel activeMode, nowMode;
 
@@ -68,10 +69,11 @@ public class TrackAnchor : MonoBehaviour {
         handBehaviour = GetComponent<HandBehaviour>();
 
         terrainWorld = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        //materialColor = terrainWorld.transform.GetComponent<Renderer>().material.color;
-        //materialColor.a = colorAlpha;
-        //terrainWorld.transform.GetComponent<Renderer>().material.color = materialColor;
-        //terrainWorld.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
+        terrainWorld.transform.GetComponent<Renderer>().material.mainTexture = planeTexture;
+        materialColor = terrainWorld.transform.GetComponent<Renderer>().material.color;
+        materialColor.a = 0.6f;
+        terrainWorld.transform.GetComponent<Renderer>().material.color = materialColor;
+        terrainWorld.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
         rightHand = GameObject.CreatePrimitive(PrimitiveType.Cube);
         materialColor = rightHand.transform.GetComponent<Renderer>().material.color;
@@ -121,6 +123,7 @@ public class TrackAnchor : MonoBehaviour {
         mirrorChildPlane1.transform.Rotate(0, 0, 0);
         mirrorChildPlane1.transform.localScale = mirrorScale;
         mirrorChildPlane1.transform.parent = mirrorPlane.transform;
+        mirrorChildPlane1.transform.GetComponent<Renderer>().material.mainTexture = planeTexture;
         materialColor = mirrorChildPlane1.transform.GetComponent<Renderer>().material.color;
         materialColor.a = colorChildAlpha;
         mirrorChildPlane1.transform.GetComponent<Renderer>().material.color = materialColor;
@@ -130,6 +133,7 @@ public class TrackAnchor : MonoBehaviour {
         mirrorChildPlane2.transform.Rotate(0, 0, 180);
         mirrorChildPlane2.transform.localScale = mirrorScale;
         mirrorChildPlane2.transform.parent = mirrorPlane.transform;
+        mirrorChildPlane2.transform.GetComponent<Renderer>().material.mainTexture = planeTexture;
         materialColor = mirrorChildPlane2.transform.GetComponent<Renderer>().material.color;
         materialColor.a = colorChildAlpha;
         mirrorChildPlane2.transform.GetComponent<Renderer>().material.color = materialColor;
