@@ -21,6 +21,8 @@ public class HandMenuControl : MonoBehaviour {
     public List<Texture> mainTextureList;
     public List<Color> colorColorList;
 
+    public AudioSource audioSource;
+
     private RecordBehaviour recordBehaviour;
     private HandBehaviour handBehaviour;
 
@@ -38,6 +40,8 @@ public class HandMenuControl : MonoBehaviour {
     private List<Vector3> MenuChildPos; // the menu position use to judge touch or not
 
     private Color colorChose = Color.gray;
+
+    private bool hasPlayed = false;
 
     // Use this for initialization
     void Start () {
@@ -74,6 +78,9 @@ public class HandMenuControl : MonoBehaviour {
 
         handBehaviour = GetComponent<HandBehaviour>();
         recordBehaviour = GetComponent<RecordBehaviour>();
+
+        audioSource.loop = false;
+        audioSource.Stop();
     }
 	
 	// Update is called once per frame
@@ -160,7 +167,17 @@ public class HandMenuControl : MonoBehaviour {
                 float dis = Vector3.Distance(nowPosList[ti], leftHandAnchor.transform.position);
                 if (dis < MenuLocalScale / 2)
                 {
+                    audioSource.transform.position = nowPosList[ti];
+                    if (hasPlayed == false)
+                    {
+                        hasPlayed = true;
+                        audioSource.Play();
+                    }
                     return ti;
+                }
+                else
+                {
+                    hasPlayed = false;
                 }
             }
         }
@@ -171,7 +188,17 @@ public class HandMenuControl : MonoBehaviour {
                 float dis = Vector3.Distance(nowPosList[ti], rightHandAnchor.transform.position);
                 if (dis < MenuLocalScale / 2)
                 {
+                    audioSource.transform.position = nowPosList[ti];
+                    if (hasPlayed == false)
+                    {
+                        hasPlayed = true;
+                        audioSource.Play();
+                    }
                     return ti;
+                }
+                else
+                {
+                    hasPlayed = false;
                 }
             }
         }

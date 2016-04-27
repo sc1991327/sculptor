@@ -140,6 +140,8 @@
     <Compile Include="Assets\LOOM Framework\LOOM\Internal\ThreadWaitCommands.cs" />
     <Compile Include="Assets\LOOM Framework\LOOM\Loom.cs" />
     <Compile Include="Assets\LOOM Framework\LOOM\ThreadPoolScheduler.cs" />
+    <Compile Include="Assets\OSPNative\scenes\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
+    <Compile Include="Assets\OSPNative\scripts\ONSPAudioSource.cs" />
     <Compile Include="Assets\OVR\Moonlight\Scripts\OVRDebugHeadController.cs" />
     <Compile Include="Assets\OVR\Moonlight\Scripts\OVROverlay.cs" />
     <Compile Include="Assets\OVR\Moonlight\Scripts\OVRPlatformMenu.cs" />

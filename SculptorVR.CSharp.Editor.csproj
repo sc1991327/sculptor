@@ -94,6 +94,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>Assets\Plugins\x86_64\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Assembly-UnityScript">
+      <HintPath>Library\ScriptAssemblies\Assembly-UnityScript.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="SculptorVR.CSharp.csproj">
@@ -119,6 +122,8 @@
     <Compile Include="Assets\Cubiquity\Editor\VolumeColliderInspector.cs" />
     <Compile Include="Assets\Cubiquity\Editor\VolumeDataAsset.cs" />
     <Compile Include="Assets\Cubiquity\Editor\VolumeDataInspector.cs" />
+    <Compile Include="Assets\OSPNative\editor\ONSPAudioSourceEditor.cs" />
+    <Compile Include="Assets\OSPNative\editor\ONSPReflectionCustomGUI.cs" />
     <Compile Include="Assets\OVR\Editor\OVRBuild.cs" />
     <Compile Include="Assets\OVR\Moonlight\Editor\OVRMoonlightLoader.cs" />
     <Compile Include="Assets\Sculptor\Scene\UnityVC\Editor\StandardShaderVCGUI.cs" />
