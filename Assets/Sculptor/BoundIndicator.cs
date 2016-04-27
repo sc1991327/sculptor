@@ -4,7 +4,7 @@ using System.Collections;
 [RequireComponent(typeof(MeshRenderer)), RequireComponent(typeof(MeshFilter))]
 public class BoundIndicator : MonoBehaviour {
 
-    private int extent = 100;
+    private int extent = 1;
     Mesh indicatorMesh;
 
 
@@ -40,6 +40,27 @@ public class BoundIndicator : MonoBehaviour {
             new Vector3( extent, -extent, -extent),
             new Vector3(-extent, -extent,  extent),
             new Vector3(-extent, -extent, -extent),
+
+            new Vector3( extent, -extent,  extent),
+            new Vector3( extent, -extent, -extent),
+            new Vector3( extent,  extent,  extent),
+            new Vector3( extent,  extent, -extent),
+
+            new Vector3( extent, -extent, -extent),
+            new Vector3(-extent, -extent, -extent),
+            new Vector3( extent,  extent, -extent),
+            new Vector3(-extent,  extent, -extent),
+
+            new Vector3(-extent, -extent,  extent),
+            new Vector3(-extent, -extent, -extent),
+            new Vector3(-extent,  extent,  extent),
+            new Vector3(-extent,  extent, -extent),
+
+            new Vector3( extent, -extent,  extent),
+            new Vector3(-extent, -extent,  extent),
+            new Vector3( extent,  extent,  extent),
+            new Vector3(-extent,  extent,  extent),
+
             new Vector3( extent,  extent,  extent),
             new Vector3( extent,  extent, -extent),
             new Vector3(-extent,  extent,  extent),
@@ -48,36 +69,58 @@ public class BoundIndicator : MonoBehaviour {
         //UV
         Vector2[] uv = new Vector2[]
         {
-            new Vector2(1, 1),
-            new Vector2(1, 0),
-            new Vector2(0, 1),
             new Vector2(0, 0),
-            new Vector2(1, 1),
-            new Vector2(1, 0),
             new Vector2(0, 1),
+            new Vector2(1, 0),
+            new Vector2(1, 1),
+
             new Vector2(0, 0),
+            new Vector2(0, 1),
+            new Vector2(1, 0),
+            new Vector2(1, 1),
+
+            new Vector2(0, 0),
+            new Vector2(0, 1),
+            new Vector2(1, 0),
+            new Vector2(1, 1),
+
+            new Vector2(0, 0),
+            new Vector2(0, 1),
+            new Vector2(1, 0),
+            new Vector2(1, 1),
+
+            new Vector2(0, 0),
+            new Vector2(0, 1),
+            new Vector2(1, 0),
+            new Vector2(1, 1),
+
+            new Vector2(0, 0),
+            new Vector2(0, 1),
+            new Vector2(1, 0),
+            new Vector2(1, 1),
         };
         //index
-        int[] triangles = new int[]
+        int[] triangles = new int[72];
+        for (int tempi = 0; tempi < 6; tempi++)
         {
-            0, 1, 2,
-            2, 1, 3,
+            triangles[12 * tempi] = tempi * 4;
+            triangles[12 * tempi + 1] = tempi * 4 + 2;
+            triangles[12 * tempi + 2] = tempi * 4 + 1;
+            triangles[12 * tempi + 3] = tempi * 4 + 1;
+            triangles[12 * tempi + 4] = tempi * 4 + 2;
+            triangles[12 * tempi + 5] = tempi * 4 + 3;
+            triangles[12 * tempi + 6] = tempi * 4 + 0;
+            triangles[12 * tempi + 7] = tempi * 4 + 1;
+            triangles[12 * tempi + 8] = tempi * 4 + 2;
+            triangles[12 * tempi + 9] = tempi * 4 + 1;
+            triangles[12 * tempi + 10] = tempi * 4 + 3;
+            triangles[12 * tempi + 11] = tempi * 4 + 2;
+        }
 
-            4, 5, 6,
-            6, 5, 7,
-
-            0, 1, 5,
-            0, 5, 4,
-
-            2, 3, 7,
-            2, 7, 6,
-
-            0, 4, 2,
-            2, 4, 6,
-
-            1, 5, 3,
-            3, 5, 7,
-        };
+        //0, 2, 1,
+        //1, 2, 3,
+        //0, 1, 2,
+        //1, 3, 2,
 
         mesh.vertices = vertices;
         mesh.uv = uv;

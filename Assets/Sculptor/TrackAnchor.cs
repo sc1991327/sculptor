@@ -10,6 +10,8 @@ public class TrackAnchor : MonoBehaviour {
     public GameObject leftHandAnchor = null;
     public GameObject rightHandAnchor = null;
 
+    public Texture boundTexture = null;
+
     private GameObject leftHand = null;
     private GameObject leftHandChild = null;
 
@@ -17,6 +19,9 @@ public class TrackAnchor : MonoBehaviour {
     private GameObject rightHandChild = null;
 
     private GameObject terrainWorld = null;
+
+    private BoundIndicator boundIndicator;
+    private ProceduralTerrainVolume proceduralTerrainVolume;
 
     //private GameObject colorCube = null;
     //private Vector3 colorCubeSize = new Vector3(0.2f, 0.2f, 0.2f);
@@ -144,6 +149,14 @@ public class TrackAnchor : MonoBehaviour {
         mirrorAnchorPoint2.transform.parent = mirrorPlane.transform;
 
         mirrorPlane.transform.parent = terrainWorld.transform;
+
+        proceduralTerrainVolume = BasicProceduralVolume.GetComponent<ProceduralTerrainVolume>();
+        boundIndicator = proceduralTerrainVolume.gameObject.GetComponent<BoundIndicator>();
+        boundIndicator.transform.GetComponent<Renderer>().material.mainTexture = boundTexture;
+        Color tempBoundColor = boundIndicator.transform.GetComponent<Renderer>().material.color;
+        tempBoundColor.a = colorChildAlpha;
+        boundIndicator.transform.GetComponent<Renderer>().material.color = tempBoundColor;
+        boundIndicator.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
         leftHandChild.SetActive(true);
         rightHandChild.SetActive(true);
@@ -331,6 +344,18 @@ public class TrackAnchor : MonoBehaviour {
         }
         activeHandOpt = tempActiveHandOpt;
 
+        // bound
+
+        //if (IsHandInVolume(true) && IsHandInVolume(false))
+        //{
+        //    boundIndicator.Hide();
+        //}
+        //else
+        //{
+        //    boundIndicator.Show();
+        //}
+        boundIndicator.Show();
+
         // color 
         /*ControlPanel tempShowColorCube = handBehaviour.GetActivePanel();
         if (tempShowColorCube != showColorCube)
@@ -384,6 +409,22 @@ public class TrackAnchor : MonoBehaviour {
             leftHandChild.GetComponent<Renderer>().material.color = ColorChose;
             rightHandChild.GetComponent<Renderer>().material.color = ColorChose;
         }*/
+    }
+
+    private bool IsHandInVolume(bool leftHand = true)
+    {
+        if (proceduralTerrainVolume == null)
+        {
+            return false;
+        }
+
+        Vector3 handPos = leftHand ? leftHandChild.transform.position : rightHandChild.transform.position;
+
+        //todo: worldSpace
+        return (
+                handPos.x <= proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.x && handPos.x >= -proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.x &&
+                handPos.y <= proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.y && handPos.y >= -proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.y &&
+                handPos.z <= proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.z && handPos.z >= -proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.z);
     }
 
     public Vector3 GetRightChildPosition()

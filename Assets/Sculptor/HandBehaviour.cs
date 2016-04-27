@@ -24,7 +24,6 @@ public class HandBehaviour : MonoBehaviour {
 
     private TerrainVolume terrainVolume;
     private ProceduralTerrainVolume proceduralTerrainVolume;
-    private BoundIndicator boundIndicator;
 
     private MaterialSet emptyMaterialSet;
     private MaterialSet colorMaterialSet;
@@ -122,7 +121,6 @@ public class HandBehaviour : MonoBehaviour {
 
         terrainVolume = BasicProceduralVolume.GetComponent<TerrainVolume>();
         proceduralTerrainVolume = BasicProceduralVolume.GetComponent<ProceduralTerrainVolume>();
-        boundIndicator = proceduralTerrainVolume.gameObject.GetComponent<BoundIndicator>();
 
         if (leftHandAnchor == null || rightHandAnchor == null || BasicProceduralVolume == null)
         {
@@ -170,22 +168,6 @@ public class HandBehaviour : MonoBehaviour {
         VoxelWorldCenterPos = terrainVolume.transform.position;
         VoxelWorldLeftHandPos = new Vector3(0, 0, 0);
     }
-	
-    private bool IsHandInVolume(bool leftHand = true)
-    {
-        if(proceduralTerrainVolume == null)
-        {
-            return false;
-        }
-
-        Vector3 handPos = leftHand ? trackAnchor.GetLeftChildPosition() : trackAnchor.GetRightChildPosition();
-
-        //todo: worldSpace
-        return (
-                handPos.x <= proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.x && handPos.x >= -proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.x && 
-                handPos.y <= proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.y && handPos.y >= -proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.y &&
-                handPos.z <= proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.z && handPos.z >= -proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.z);
-    }
 
 	// Update is called once per frame
 	void Update () {
@@ -201,16 +183,6 @@ public class HandBehaviour : MonoBehaviour {
         {
             activeInfoPanel = InfoPanel.empty;
             markTime = Time.time;
-        }
-
-
-        if(IsHandInVolume(true) && IsHandInVolume(false))
-        {
-            boundIndicator.Hide();
-        }
-        else
-        {
-            boundIndicator.Show();
         }
 
         leftChildPosition = trackAnchor.GetLeftChildPosition() - VoxelWorldTransform.position;
