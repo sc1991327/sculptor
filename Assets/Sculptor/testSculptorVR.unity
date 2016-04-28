@@ -943,10 +943,10 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 626622222}
-  m_LocalRotation: {x: -0.684209, y: 0.4338543, z: -0.15145232, w: -0.5662956}
-  m_LocalPosition: {x: 128, y: 64, z: 128}
+  m_LocalRotation: {x: 0.43855438, y: 0.08232384, z: -0.12671511, w: 0.8859098}
+  m_LocalPosition: {x: 0.07, y: 14.64, z: 1.28}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 65.0051, y: -137.7446, z: -87.5801}
+  m_LocalEulerAnglesHint: {x: 52.930298, y: 3.3019998, z: -14.6359}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -1296,7 +1296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045d67dae0d4c514a8e6add34c63a804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mData: {fileID: 1156306060}
+  mData: {fileID: 1902444312}
 --- !u!114 &826901852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1371,20 +1371,6 @@ Transform:
   - {fileID: 1634124946}
   m_Father: {fileID: 0}
   m_RootOrder: 7
---- !u!114 &1156306060
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5775844f6e499034eb955d3c113ed57e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  basePath: 2
-  relativePathToVoxelDatabase: D:/unitysculptor/SculptorVR/Assets/StreamingAssets/Cubiquity/VoxelDatabases/VRSculptor_2140757915.vdb
-  mWritePermissions: 1
 --- !u!1 &1218098105
 GameObject:
   m_ObjectHideFlags: 0
@@ -1742,19 +1728,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f62a9d525054c34180f1cb7ebfde93a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftHandAnchor: {fileID: 250534754}
-  rightHandAnchor: {fileID: 1696910535}
-  mainColorChooseMode: {fileID: 2800000, guid: 97f9b590608424a4f9ca7e54e4232fe4, type: 3}
-  mainSculptorMode: {fileID: 2800000, guid: bd6838bae1b095c48ab2a12138df0d50, type: 3}
-  mainColorPaintMode: {fileID: 2800000, guid: 8c531feaa467f2c428de10c0d03cf723, type: 3}
-  mainUndo: {fileID: 2800000, guid: d380d30b3c36ccf41b4336328580c2bb, type: 3}
-  mainRedo: {fileID: 2800000, guid: 4d525c176bb88f041b877459cccfd14c, type: 3}
-  mainRestart: {fileID: 2800000, guid: e740318fe89ef1f4293bc363b58e5262, type: 3}
-  mainReplay: {fileID: 2800000, guid: ea056248fc8132a4596bbaf2396c71d1, type: 3}
-  mainHighEditorMode: {fileID: 2800000, guid: 3cc80fddc098f574ea7983729c9538cf, type: 3}
-  mainSave: {fileID: 2800000, guid: 2b5ee3912ff946d4b88b07fcb8882cc8, type: 3}
-  mainLoad: {fileID: 2800000, guid: c2d60c9778714754d9b6cb08eb17c043, type: 3}
+  mainColorChooseMode: {fileID: 2800000, guid: 4505b21662d96e849abefe1d431d4d94, type: 3}
+  mainSculptorMode: {fileID: 2800000, guid: 7e86a7e5159277e4ca6423455369545b, type: 3}
+  mainColorPaintMode: {fileID: 2800000, guid: 08daf461b0ebc1b4bb869ee054358776, type: 3}
+  mainUndo: {fileID: 2800000, guid: c6ac33f277b362447a1a4311ad4a7018, type: 3}
+  mainRedo: {fileID: 2800000, guid: 827ec33dde360dc458937c056eaa5d43, type: 3}
+  mainRestart: {fileID: 2800000, guid: 246e057a9a0dd0c42a6986d13e8ee835, type: 3}
+  mainReplay: {fileID: 2800000, guid: d1c3d11073c02d145a9fb2eda2230a7a, type: 3}
+  mainHighEditorMode: {fileID: 2800000, guid: a349faaef54f41141b11d101cc574755, type: 3}
+  mainSave: {fileID: 2800000, guid: 2994a335df229ec4ca928ad5cecf4baa, type: 3}
+  mainLoad: {fileID: 2800000, guid: b9d669be7b3bd3a4393735b65ba1704f, type: 3}
+  highMirror: {fileID: 2800000, guid: 487932ac431752d4fb08b0634798a83f, type: 3}
   mainTextureList: []
+  highTextureList: []
   colorColorList: []
   audioSource: {fileID: 408349393}
 --- !u!1 &1634124945
@@ -2112,6 +2098,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1519644884}
   m_RootOrder: 0
+--- !u!114 &1902444312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5775844f6e499034eb955d3c113ed57e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  basePath: 2
+  relativePathToVoxelDatabase: D:/unitysculptor/SculptorVR/Assets/StreamingAssets/Cubiquity/VoxelDatabases/VRSculptor_1597891926.vdb
+  mWritePermissions: 1
 --- !u!21 &1944232371
 Material:
   serializedVersion: 6

@@ -14,8 +14,10 @@ public class HandMenuControl : MonoBehaviour {
     public Texture mainHighEditorMode;
     public Texture mainSave;
     public Texture mainLoad;
+    public Texture highMirror;
 
     public List<Texture> mainTextureList;
+    public List<Texture> highTextureList;
     public List<Color> colorColorList;
 
     public AudioSource audioSource;
@@ -41,6 +43,8 @@ public class HandMenuControl : MonoBehaviour {
 
     private bool hasPlayed = false;
 
+    private float menuAlpha = 1;
+
     // Use this for initialization
     void Start () {
 
@@ -62,6 +66,9 @@ public class HandMenuControl : MonoBehaviour {
         mainTextureList.Add(mainHighEditorMode);
         mainTextureList.Add(mainSave);
         mainTextureList.Add(mainLoad);
+
+        highTextureList = new List<Texture>();
+        highTextureList.Add(highMirror);
 
         colorColorList = new List<Color>();
         colorColorList.Add(Color.black);
@@ -129,7 +136,7 @@ public class HandMenuControl : MonoBehaviour {
                     menuPoints = 1;
                     DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
                     UpdateMenuCenterPos(nowPos);
-                    DrawCircleMenuObj(menuPoints, colorColorList);
+                    DrawCircleMenuObj(menuPoints, highTextureList);
                     break;
             }
             activePanel = nowPanel;
@@ -150,7 +157,7 @@ public class HandMenuControl : MonoBehaviour {
         {
             foreach (GameObject tObj in MenuChildObject)
             {
-                tObj.transform.Rotate(0, 1, 0);
+                tObj.transform.Rotate(0, 0.1f, 0);
             }
         }
 
@@ -242,6 +249,12 @@ public class HandMenuControl : MonoBehaviour {
             tempObj.transform.localScale = new Vector3(MenuLocalScale, MenuLocalScale, MenuLocalScale);
             tempObj.transform.localPosition = MenuChildLocalPos[oi];
             tempObj.transform.GetComponent<Renderer>().material.mainTexture = texturelist[oi];
+
+            Color tempC = tempObj.transform.GetComponent<Renderer>().material.color;
+            tempC.a = menuAlpha;
+            tempObj.transform.GetComponent<Renderer>().material.color = tempC;
+            tempObj.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
+
             MenuChildObject.Add(tempObj);
             MenuChildPos.Add(tempObj.transform.position);
         }
@@ -263,6 +276,12 @@ public class HandMenuControl : MonoBehaviour {
             tempObj.transform.localScale = new Vector3(MenuLocalScale, MenuLocalScale, MenuLocalScale);
             tempObj.transform.localPosition = MenuChildLocalPos[oi];
             tempObj.transform.GetComponent<Renderer>().material.color = colorlist[oi];
+
+            Color tempC = tempObj.transform.GetComponent<Renderer>().material.color;
+            tempC.a = menuAlpha;
+            tempObj.transform.GetComponent<Renderer>().material.color = tempC;
+            tempObj.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
+
             MenuChildObject.Add(tempObj);
             MenuChildPos.Add(tempObj.transform.position);
         }
@@ -284,6 +303,12 @@ public class HandMenuControl : MonoBehaviour {
             tempObj.transform.localScale = new Vector3(MenuLocalScale, MenuLocalScale, MenuLocalScale);
             tempObj.transform.localPosition = MenuChildLocalPos[oi];
             tempObj.transform.GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value);
+
+            Color tempC = tempObj.transform.GetComponent<Renderer>().material.color;
+            tempC.a = menuAlpha;
+            tempObj.transform.GetComponent<Renderer>().material.color = tempC;
+            tempObj.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
+
             MenuChildObject.Add(tempObj);
             MenuChildPos.Add(tempObj.transform.position);
         }
