@@ -31,8 +31,10 @@ public class HandMenuControl : MonoBehaviour {
     private int TouchID = -2;
 
     private int menuPoints = 0;
-    private float MenuChildRadio = 0.15f;
-    private float MenuLocalScale = 0.08f;
+    private float MenuChildRadio = 0.2f;
+    private float MenuLocalScale = 0.05f;
+    private float MenuLocalScaleMax = 0.1f;
+    private float menuAlpha = 0.3f;
 
     private GameObject MenuCenterObject;
     private List<Vector3> MenuChildLocalPos;
@@ -42,8 +44,6 @@ public class HandMenuControl : MonoBehaviour {
     private Color colorChose = Color.gray;
 
     private bool hasPlayed = false;
-
-    private float menuAlpha = 1;
 
     // Use this for initialization
     void Start () {
@@ -176,6 +176,7 @@ public class HandMenuControl : MonoBehaviour {
         for (int ti = 0; ti < nowPosList.Count; ti++)
         {
             float dis = Vector3.Distance(nowPosList[ti], handPos);
+
             if (dis < MenuLocalScale / 2)
             {
                 audioSource.transform.position = nowPosList[ti];
@@ -190,6 +191,13 @@ public class HandMenuControl : MonoBehaviour {
             {
                 hasPlayed = false;
             }
+
+            // menu state animation
+            float tempV = 1 - (Mathf.Clamp(dis, MenuLocalScale, MenuChildRadio) - MenuLocalScale) / (MenuChildRadio - MenuLocalScale);
+            MenuChildObject[ti].transform.localScale = new Vector3(MenuLocalScale + tempV * (MenuLocalScaleMax - MenuLocalScale), MenuLocalScale + tempV * (MenuLocalScaleMax - MenuLocalScale), MenuLocalScale + tempV * (MenuLocalScaleMax - MenuLocalScale));
+            Color tempC = MenuChildObject[ti].transform.GetComponent<Renderer>().material.color;
+            tempC.a = menuAlpha + tempV * (1 - menuAlpha);
+            MenuChildObject[ti].transform.GetComponent<Renderer>().material.color = tempC;
         }
 
         return -1;
@@ -362,13 +370,13 @@ public class HandMenuControl : MonoBehaviour {
     private void DrawColorPanelPoints(Vector3 center)
     {
         MenuChildLocalPos.Clear();
-        float newc_X = center.x - MenuLocalScale * 3.5f;
-        float newc_y = center.y - MenuLocalScale * 3.5f;
+        float newc_X = center.x - MenuLocalScaleMax * 3.5f;
+        float newc_y = center.y - MenuLocalScaleMax * 3.5f;
         for (int ti=0; ti<8; ti++)
         {
             for (int tj=0; tj<8; tj++)
             {
-                Vector3 p = new Vector3(newc_X + MenuLocalScale * ti, newc_y + MenuLocalScale * tj, 0);
+                Vector3 p = new Vector3(newc_X + MenuLocalScaleMax * ti, newc_y + MenuLocalScaleMax * tj, 0);
                 MenuChildLocalPos.Add(p);
             }
         }
