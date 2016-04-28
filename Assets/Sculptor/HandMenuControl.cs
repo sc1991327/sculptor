@@ -4,9 +4,6 @@ using System.Collections.Generic;
 
 public class HandMenuControl : MonoBehaviour {
 
-    public GameObject leftHandAnchor = null;
-    public GameObject rightHandAnchor = null;
-
     public Texture mainColorChooseMode;
     public Texture mainSculptorMode;
     public Texture mainColorPaintMode;
@@ -25,13 +22,14 @@ public class HandMenuControl : MonoBehaviour {
 
     private RecordBehaviour recordBehaviour;
     private HandBehaviour handBehaviour;
+    private TrackAnchor trackAnchor;
 
     private ControlPanel activePanel;
 
     private int TouchID = -2;
 
     private int menuPoints = 0;
-    private float MenuChildRadio = 0.2f;
+    private float MenuChildRadio = 0.15f;
     private float MenuLocalScale = 0.08f;
 
     private GameObject MenuCenterObject;
@@ -78,6 +76,7 @@ public class HandMenuControl : MonoBehaviour {
 
         handBehaviour = GetComponent<HandBehaviour>();
         recordBehaviour = GetComponent<RecordBehaviour>();
+        trackAnchor = GetComponent<TrackAnchor>();
 
         audioSource.loop = false;
         audioSource.Stop();
@@ -160,48 +159,31 @@ public class HandMenuControl : MonoBehaviour {
     private int CheckMenuTouch(DrawPos nowPos, List<Vector3> nowPosList)
     {
         // check touch or not
-        if (nowPos == DrawPos.left)
+        Vector3 handPos = trackAnchor.GetLeftChildPosition();
+        if (nowPos == DrawPos.right)
         {
-            for (int ti = 0; ti < nowPosList.Count; ti++)
+            handPos = trackAnchor.GetRightChildPosition();
+        }
+
+        for (int ti = 0; ti < nowPosList.Count; ti++)
+        {
+            float dis = Vector3.Distance(nowPosList[ti], handPos);
+            if (dis < MenuLocalScale / 2)
             {
-                float dis = Vector3.Distance(nowPosList[ti], leftHandAnchor.transform.position);
-                if (dis < MenuLocalScale / 2)
+                audioSource.transform.position = nowPosList[ti];
+                if (hasPlayed == false)
                 {
-                    audioSource.transform.position = nowPosList[ti];
-                    if (hasPlayed == false)
-                    {
-                        hasPlayed = true;
-                        audioSource.Play();
-                    }
-                    return ti;
+                    hasPlayed = true;
+                    audioSource.Play();
                 }
-                else
-                {
-                    hasPlayed = false;
-                }
+                return ti;
+            }
+            else
+            {
+                hasPlayed = false;
             }
         }
-        else
-        {
-            for (int ti = 0; ti < nowPosList.Count; ti++)
-            {
-                float dis = Vector3.Distance(nowPosList[ti], rightHandAnchor.transform.position);
-                if (dis < MenuLocalScale / 2)
-                {
-                    audioSource.transform.position = nowPosList[ti];
-                    if (hasPlayed == false)
-                    {
-                        hasPlayed = true;
-                        audioSource.Play();
-                    }
-                    return ti;
-                }
-                else
-                {
-                    hasPlayed = false;
-                }
-            }
-        }
+
         return -1;
     }
 
@@ -209,12 +191,12 @@ public class HandMenuControl : MonoBehaviour {
     {
         if (nowPos == DrawPos.left)
         {
-            MenuCenterObject.transform.position = leftHandAnchor.transform.position;
+            MenuCenterObject.transform.position = trackAnchor.GetLeftChildPosition();
             MenuCenterObject.transform.LookAt(Camera.main.transform.position);
         }
         else
         {
-            MenuCenterObject.transform.position = rightHandAnchor.transform.position;
+            MenuCenterObject.transform.position = trackAnchor.GetRightChildPosition();
             MenuCenterObject.transform.LookAt(Camera.main.transform.position);
         }
     }
