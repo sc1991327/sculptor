@@ -71,15 +71,17 @@ public class HandMenuControl : MonoBehaviour {
         highTextureList.Add(highMirror);
 
         colorColorList = new List<Color>();
-        colorColorList.Add(Color.black);
-        colorColorList.Add(Color.blue);
-        colorColorList.Add(Color.cyan);
-        colorColorList.Add(Color.green);
-        colorColorList.Add(Color.grey);
-        colorColorList.Add(Color.magenta);
-        colorColorList.Add(Color.red);
-        colorColorList.Add(Color.white);
-        colorColorList.Add(Color.yellow);
+        for (int oi = 0; oi < 4; oi++)
+        {
+            for (int oj = 0; oj < 4; oj++)
+            {
+                for (int ok = 0; ok < 4; ok++)
+                {
+                    Color c = new Color(0.3f * oi, 0.3f * oj, 0.3f * ok);
+                    colorColorList.Add(c);
+                }
+            }
+        }
 
         handBehaviour = GetComponent<HandBehaviour>();
         recordBehaviour = GetComponent<RecordBehaviour>();
@@ -114,10 +116,9 @@ public class HandMenuControl : MonoBehaviour {
                     DrawCircleMenuObj(menuPoints, mainTextureList);
                     break;
                 case ControlPanel.color:
-                    menuPoints = 9;
-                    DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
+                    DrawColorPanelPoints(new Vector3(0, 0, 0));
                     UpdateMenuCenterPos(nowPos);
-                    DrawCircleMenuObj(menuPoints, colorColorList);
+                    DrawColorPanel();
                     break;
                 case ControlPanel.replay:
                     // use recordBehaviour fileNames size to create menu objects.
@@ -153,7 +154,7 @@ public class HandMenuControl : MonoBehaviour {
         }
 
         // MenuChildObject rotate
-        if (nowPanel != ControlPanel.replay)
+        if (nowPanel != ControlPanel.color)
         {
             foreach (GameObject tObj in MenuChildObject)
             {
@@ -206,6 +207,35 @@ public class HandMenuControl : MonoBehaviour {
             MenuCenterObject.transform.position = trackAnchor.GetRightChildPosition();
             MenuCenterObject.transform.LookAt(Camera.main.transform.position);
         }
+    }
+
+    private void DrawColorPanel()
+    {
+        foreach (GameObject tObj in MenuChildObject)
+        {
+            UnityEngine.Object.Destroy(tObj.gameObject);
+        }
+        MenuChildPos.Clear();
+        MenuChildObject.Clear();
+
+        for (int oi = 0; oi < 64; oi++)
+        {
+            GameObject tempObj;
+            tempObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            tempObj.transform.parent = MenuCenterObject.transform;
+            tempObj.transform.localScale = new Vector3(MenuLocalScale, MenuLocalScale, MenuLocalScale);
+            tempObj.transform.localPosition = MenuChildLocalPos[oi];
+            tempObj.transform.GetComponent<Renderer>().material.color = colorColorList[oi];
+
+            Color tempC = tempObj.transform.GetComponent<Renderer>().material.color;
+            tempC.a = menuAlpha;
+            tempObj.transform.GetComponent<Renderer>().material.color = tempC;
+            tempObj.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
+
+            MenuChildObject.Add(tempObj);
+            MenuChildPos.Add(tempObj.transform.position);
+        }
+
     }
 
     private void DrawCircleMenuObj(int MenuPoints, List<string> textlist)
@@ -326,6 +356,21 @@ public class HandMenuControl : MonoBehaviour {
             Vector3 p = new Vector3(newX, newY, 0);
             MenuChildLocalPos.Add(p);
             //Debug.Log("LocalPos: " + p);
+        }
+    }
+
+    private void DrawColorPanelPoints(Vector3 center)
+    {
+        MenuChildLocalPos.Clear();
+        float newc_X = center.x - MenuLocalScale * 3.5f;
+        float newc_y = center.y - MenuLocalScale * 3.5f;
+        for (int ti=0; ti<8; ti++)
+        {
+            for (int tj=0; tj<8; tj++)
+            {
+                Vector3 p = new Vector3(newc_X + MenuLocalScale * ti, newc_y + MenuLocalScale * tj, 0);
+                MenuChildLocalPos.Add(p);
+            }
         }
     }
 

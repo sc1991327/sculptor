@@ -147,9 +147,9 @@ public class HandBehaviour : MonoBehaviour {
         // color control
         colorMaterialSet = new MaterialSet();
         colorMaterialSet.weights[3] = 0;    // black
-        colorMaterialSet.weights[2] = 255;  // b
-        colorMaterialSet.weights[1] = 255;  // g
-        colorMaterialSet.weights[0] = 255;  // r
+        colorMaterialSet.weights[2] = 127;  // b
+        colorMaterialSet.weights[1] = 64;  // g
+        colorMaterialSet.weights[0] = 64;  // r
 
         activePanel = ControlPanel.empty;
         activePanelContinue = false;
@@ -348,6 +348,8 @@ public class HandBehaviour : MonoBehaviour {
 
     private void HandleButtonInSculptor(bool activeMirror)
     {
+        float ButtonFilter = 0.8f;
+
         // mirror only support one hand operator
         activeHandOpt = HandOpt.singleOpt;
         if (activeShape != OptShape.cube && activeShape != OptShape.sphere)
@@ -355,34 +357,34 @@ public class HandBehaviour : MonoBehaviour {
             activeShape = OptShape.sphere;
         }
 
-        if (Axis1D_LB > 0 && Axis1D_LT > 0 && optRange < 10)
+        if (Axis1D_LB > ButtonFilter && Axis1D_LT > ButtonFilter && optRange < 10)
         {
             activeShape = OptShape.sphere;
             activeState = OptState.smooth;
             StateHandleOVRInput(DrawPos.left, activeMirror);
         }
-        else if (Axis1D_LB > 0)
+        else if (Axis1D_LB > ButtonFilter)
         {
             activeState = OptState.create;
             StateHandleOVRInput(DrawPos.left, activeMirror);
         }
-        else if (Axis1D_LT > 0)
+        else if (Axis1D_LT > ButtonFilter)
         {
             activeState = OptState.delete;
             StateHandleOVRInput(DrawPos.left, activeMirror);
         }
 
-        if (Axis1D_RB > 0 && Axis1D_RT > 0 && optRange < 10)
+        if (Axis1D_RB > ButtonFilter && Axis1D_RT > ButtonFilter && optRange < 10)
         {
             activeState = OptState.smooth;
             StateHandleOVRInput(DrawPos.right, activeMirror);
         }
-        else if (Axis1D_RB > 0)
+        else if (Axis1D_RB > ButtonFilter)
         {
             activeState = OptState.create;
             StateHandleOVRInput(DrawPos.right, activeMirror);
         }
-        else if (Axis1D_RT > 0)
+        else if (Axis1D_RT > ButtonFilter)
         {
             activeState = OptState.delete;
             StateHandleOVRInput(DrawPos.right, activeMirror);
