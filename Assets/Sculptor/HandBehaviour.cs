@@ -947,12 +947,19 @@ public class HandBehaviour : MonoBehaviour {
         return tempm;
     }
 
-    private void SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEuler, MaterialSet materialSet, Vector3 mirrorAnchorPoint0, Vector3 mirrorAnchorPoint1, Vector3 mirrorAnchorPoint2, bool activeMirror)
+private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEuler, MaterialSet materialSet, Vector3 mirrorAnchorPoint0, Vector3 mirrorAnchorPoint1, Vector3 mirrorAnchorPoint2, bool activeMirror)
     {
+        float dismax = 0;
+
         Vector3 temp1 = RotatePointAroundPivot(nowPos, cPos, RotateEuler);
         Vector3 temp2 = VoxelWorldTransform.InverseTransformPoint(temp1) * VoxelWorldTransform.localScale.x;
         Vector3i tempi = (Vector3i)(temp2);
 
+        dismax = Vector3.Distance(temp1, cPos);
+
+        int tempX = tempi.x;
+        int tempY = tempi.y;
+        int tempZ = tempi.z;
         MaterialSet tempOld = terrainVolume.data.GetVoxel(tempi.x, tempi.y, tempi.z);
         if (!CompareMaterialSet(materialSet, tempOld))
         {
@@ -972,6 +979,38 @@ public class HandBehaviour : MonoBehaviour {
                 terrainVolume.data.SetVoxel(tempmi.x, tempmi.y, tempmi.z, materialSet);
             }
         }
+
+        return dismax;
+    }
+
+    private void SingleVoxelSmoothHanding(int tempX, int tempY, int tempZ, bool activeMirror)
+    {
+        // only support 4 material channel
+        MaterialSet tempMaterialSet = terrainVolume.data.GetVoxel(tempX, tempY, tempZ);
+        for (uint tempM = 0; tempM < 4; tempM++)
+        {
+            int originalMaterialWeight = tempMaterialSet.weights[tempM];
+
+            int sum = 0;
+            sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ).weights[tempM];
+            sum += terrainVolume.data.GetVoxel(tempX + 1, tempY, tempZ).weights[tempM];
+            sum += terrainVolume.data.GetVoxel(tempX - 1, tempY, tempZ).weights[tempM];
+            sum += terrainVolume.data.GetVoxel(tempX, tempY + 1, tempZ).weights[tempM];
+            sum += terrainVolume.data.GetVoxel(tempX, tempY - 1, tempZ).weights[tempM];
+            sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ + 1).weights[tempM];
+            sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ - 1).weights[tempM];
+
+            int avg = (int)((float)(sum) / 7.0f + 0.5f);
+            avg = Mathf.Clamp(avg, 0, 255);
+            tempMaterialSet.weights[tempM] = (byte)avg;
+        }
+
+        MaterialSet tempOld = terrainVolume.data.GetVoxel(tempX, tempY, tempZ);
+        if (!CompareMaterialSet(tempMaterialSet, tempOld))
+        {
+            recordBehaviour.PushOperator(new VoxelOpt(new Vector3i(tempX, tempY, tempZ), tempMaterialSet, tempOld));
+            terrainVolume.data.SetVoxel(tempX, tempY, tempZ, tempMaterialSet);
+        }
     }
 
     private void VoxelSmoothing(Vector3 pos, Vector3i range, bool activeMirror)
@@ -988,32 +1027,7 @@ public class HandBehaviour : MonoBehaviour {
             {
                 for (int tempZ = vRegion.lowerCorner.z; tempZ <= vRegion.upperCorner.z; ++tempZ)
                 {
-                    // only support 4 material channel
-                    MaterialSet tempMaterialSet = terrainVolume.data.GetVoxel(tempX, tempY, tempZ);
-                    for (uint tempM = 0; tempM < 4; tempM++)
-                    {
-                        int originalMaterialWeight = tempMaterialSet.weights[tempM];
-
-                        int sum = 0;
-                        sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ).weights[tempM];
-                        sum += terrainVolume.data.GetVoxel(tempX + 1, tempY, tempZ).weights[tempM];
-                        sum += terrainVolume.data.GetVoxel(tempX - 1, tempY, tempZ).weights[tempM];
-                        sum += terrainVolume.data.GetVoxel(tempX, tempY + 1, tempZ).weights[tempM];
-                        sum += terrainVolume.data.GetVoxel(tempX, tempY - 1, tempZ).weights[tempM];
-                        sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ + 1).weights[tempM];
-                        sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ - 1).weights[tempM];
-
-                        int avg = (int)((float)(sum) / 7.0f + 0.5f);
-                        avg = Mathf.Clamp(avg, 0, 255);
-                        tempMaterialSet.weights[tempM] = (byte)avg;
-                    }
-
-                    MaterialSet tempOld = terrainVolume.data.GetVoxel(tempX, tempY, tempZ);
-                    if (!CompareMaterialSet(tempMaterialSet, tempOld))
-                    {
-                        recordBehaviour.PushOperator(new VoxelOpt(new Vector3i(tempX, tempY, tempZ), tempMaterialSet, tempOld));
-                        terrainVolume.data.SetVoxel(tempX, tempY, tempZ, tempMaterialSet);
-                    }
+                    SingleVoxelSmoothHanding(tempX, tempY, tempZ, activeMirror);
                 }
             }
         }
@@ -1036,6 +1050,9 @@ public class HandBehaviour : MonoBehaviour {
         int rangeY2 = range.y * range.y;
         int rangeZ2 = range.z * range.z;
 
+        int adsrange = 1;
+        int dismax = Mathf.Max(range.x, range.y, range.z);
+
         Vector3 mirrorAnchorPoint0 = trackAnchor.GetMirrorAnchorPoint0();
         Vector3 mirrorAnchorPoint1 = trackAnchor.GetMirrorAnchorPoint1();
         Vector3 mirrorAnchorPoint2 = trackAnchor.GetMirrorAnchorPoint2();
@@ -1049,31 +1066,17 @@ public class HandBehaviour : MonoBehaviour {
                     {
                         for (int x = xPos - range.x; x < xPos + range.x; x++)
                         {
-                            SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet, mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, activeMirror);
-
-                            //Vector3 temp = RotatePointAroundPivot(new Vector3(x, y, z),new Vector3(xPos, yPos, zPos), RotateEuler);
-                            //temp = VoxelWorldTransform.InverseTransformPoint(temp) * VoxelWorldTransform.localScale.x;
-
-                            //Vector3i tempi = (Vector3i)(temp);
-                            //MaterialSet tempOld = terrainVolume.data.GetVoxel(tempi.x, tempi.y, tempi.z);
-                            //if (!CompareMaterialSet(materialSet, tempOld))
-                            //{
-                            //    recordBehaviour.PushOperator(new VoxelOpt(tempi, materialSet, tempOld));
-                            //    terrainVolume.data.SetVoxel(tempi.x, tempi.y, tempi.z, materialSet);
-                            //}
-
-                            //if (activeMirror)
-                            //{
-                            //    Vector3i tempmi = (Vector3i)(CalcMirrorPos(mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, temp));
-                            //    MaterialSet tempmOld = terrainVolume.data.GetVoxel(tempmi.x, tempmi.y, tempmi.z);
-                            //    if (!CompareMaterialSet(materialSet, tempmOld))
-                            //    {
-                            //        recordBehaviour.PushOperator(new VoxelOpt(tempmi, materialSet, tempmOld));
-                            //        terrainVolume.data.SetVoxel(tempmi.x, tempmi.y, tempmi.z, materialSet);
-                            //    }
-                            //}
+                            dismax = (int)SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet, mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, activeMirror);
                         }
                     }
+                }
+
+                dismax += adsrange;
+                for ( int i=0; i < Mathf.Clamp(dismax / 3, 2, 6); i++ )
+                {
+                    Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
+                    Vector3i tempPosi = new Vector3i(tempPos);
+                    TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - dismax, tempPosi.y - dismax, tempPosi.z - dismax, tempPosi.x + dismax, tempPosi.y + dismax, tempPosi.z + dismax));
                 }
                 break;
 
@@ -1096,7 +1099,15 @@ public class HandBehaviour : MonoBehaviour {
                         }
                     }
                 }
-                VoxelSmoothing(new Vector3(xPos, yPos, zPos), range, activeMirror);
+
+                dismax += adsrange;
+                for (int i = 0; i < Mathf.Clamp((range.x + range.y + range.z) / 6, 1, 6); i++)
+                {
+                    Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
+                    Vector3i tempPosi = new Vector3i(tempPos);
+                    TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - dismax, tempPosi.y - dismax, tempPosi.z - dismax, tempPosi.x + dismax, tempPosi.y + dismax, tempPosi.z + dismax));
+                }
+
                 break;
 
             case OptShape.cylinder:
@@ -1113,11 +1124,20 @@ public class HandBehaviour : MonoBehaviour {
                             float distSquared = xDistance * xDistance / rangeX2 + zDistance * zDistance / rangeZ2;
                             if (distSquared < 1)
                             {
-                                SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet, mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, activeMirror);
+                                dismax = (int)SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet, mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, activeMirror);
                             }
                         }
                     }
                 }
+
+                dismax += adsrange;
+                for (int i = 0; i < Mathf.Clamp((range.x + range.y + range.z) / 6, 3, 6); i++)
+                {
+                    Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
+                    Vector3i tempPosi = new Vector3i(tempPos);
+                    TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - dismax, tempPosi.y - dismax, tempPosi.z - dismax, tempPosi.x + dismax, tempPosi.y + dismax, tempPosi.z + dismax));
+                }
+
                 break;
 
             case OptShape.capsule:
@@ -1135,7 +1155,6 @@ public class HandBehaviour : MonoBehaviour {
                             if (distSquared < 1)
                             {
                                 SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet, mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, activeMirror);
-
                             }
                         }
                     }
@@ -1181,11 +1200,20 @@ public class HandBehaviour : MonoBehaviour {
                             if (distSquared < 1)
                             {
                                 SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet, mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, activeMirror);
-
                             }
                         }
                     }
                 }
+
+                dismax = Mathf.Max(range.y * 2, dismax);
+                dismax += adsrange;
+                for (int i = 0; i < Mathf.Clamp((range.x + range.y + range.z) / 6, 3, 6); i++)
+                {
+                    Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
+                    Vector3i tempPosi = new Vector3i(tempPos);
+                    TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - dismax, tempPosi.y - dismax, tempPosi.z - dismax, tempPosi.x + dismax, tempPosi.y + dismax, tempPosi.z + dismax));
+                }
+
                 break;
         }
 
@@ -1238,6 +1266,45 @@ public class HandBehaviour : MonoBehaviour {
         dir = Quaternion.Euler(angles) * dir; // rotate it
         point = dir + pivot; // calculate rotated point
         return point; // return it
+
+        //float tempx = point.x - pivot.x;
+        //float tempy = point.y - pivot.y;
+        //float tempz = point.z - pivot.z;
+
+        //float Sx = Mathf.Sin(angles.x);
+        //float Sy = Mathf.Sin(angles.y);
+        //float Sz = Mathf.Sin(angles.z);
+        //float Cx = Mathf.Cos(angles.x);
+        //float Cy = Mathf.Cos(angles.y);
+        //float Cz = Mathf.Cos(angles.z);
+
+        /* ZXY */
+        //float m00 = Cy * Cz - Sx * Sy * Sz;
+        //float m01 = -Cx * Sz;
+        //float m02 = Cz * Sy + Cy * Sx * Sz;
+        //float m10 = Cz * Sx * Sy + Cy * Sz;
+        //float m11 = Cx * Cz;
+        //float m12 = -Cy * Cz * Sx + Sy * Sz;
+        //float m20 = -Cx * Sy;
+        //float m21 = Sx;
+        //float m22 = Cx * Cy;
+
+        /* XYZ */
+        //float m00 = Cy * Cz;
+        //float m01 = -Cy * Sz;
+        //float m02 = Sy;
+        //float m10 = Cz * Sx * Sy + Cx * Sz;
+        //float m11 = Cx * Cz - Sx * Sy * Sz;
+        //float m12 = -Cy * Sx;
+        //float m20 = -Cx * Cz * Sy + Sx * Sz;
+        //float m21 = Cz * Sx + Cx * Sy * Sz;
+        //float m22 = Cx * Cy;
+
+        //float tempz1 = m00 * tempx + m01 * tempy + m02 * tempz;
+        //float tempx1 = m10 * tempx + m11 * tempy + m12 * tempz;
+        //float tempy1 = m20 * tempx + m21 * tempy + m22 * tempz;
+
+        //return new Vector3(tempx1 + pivot.x, tempy1 + pivot.y, tempz1 + pivot.z);
     }
 
     public int GetOptRange()

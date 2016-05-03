@@ -482,12 +482,19 @@ namespace Cubiquity
 				Validate(cuPickTerrainSurface(volumeHandle, rayStartX, rayStartY, rayStartZ, rayDirX, rayDirY, rayDirZ, out resultX, out resultY, out resultZ, out result));
 				return result;
 			}
-			
-			////////////////////////////////////////////////////////////////////////////////
-			// Editing functions
-			////////////////////////////////////////////////////////////////////////////////
-			
-			[DllImport (dllToImport)]
+
+            ////////////////////////////////////////////////////////////////////////////////
+            // Editing functions
+            ////////////////////////////////////////////////////////////////////////////////
+
+            [DllImport(dllToImport)]
+            private static extern int cuSculptVRCube(uint volumeHandle, float centerX, float centerY, float centerZ, float brushRangeX, float brushRangeY, float brushRangeZ, float rotateEulerX, float rotateEulerY, float rotateEulerZ);
+            public static void SculptVRCube(uint volumeHandle, float centerX, float centerY, float centerZ, float brushRangeX, float brushRangeY, float brushRangeZ, float rotateEulerX, float rotateEulerY, float rotateEulerZ)
+            {
+                Validate(cuSculptVRCube(volumeHandle, centerX, centerY, centerZ, brushRangeX, brushRangeY, brushRangeZ, rotateEulerX, rotateEulerY, rotateEulerZ));
+            }
+
+            [DllImport (dllToImport)]
 			private static extern int cuSculptTerrainVolume(uint volumeHandle, float centerX, float centerY, float centerZ, float brushInnerRadius, float brushOuterRadius, float amount);
 			public static void SculptTerrainVolume(uint volumeHandle, float centerX, float centerY, float centerZ, float brushInnerRadius, float brushOuterRadius, float amount)
 			{

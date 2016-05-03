@@ -10,6 +10,11 @@ namespace Cubiquity
 	/// \cond
 	public class TerrainVolumeEditor
 	{
+        public static void SculptVRCube(TerrainVolume volume, float centerX, float centerY, float centerZ, float brushRangeX, float brushRangeY, float brushRangeZ, float rotateEulerX, float rotateEulerY, float rotateEulerZ)
+        {
+            CubiquityDLL.SculptVRCube((uint)volume.data.volumeHandle, centerX, centerY, centerZ, brushRangeX, brushRangeY, brushRangeZ, rotateEulerX, rotateEulerY, rotateEulerZ);
+        }
+
 		public static void SculptTerrainVolume(TerrainVolume volume, float centerX, float centerY, float centerZ, float brushInnerRadius, float brushOuterRadius, float amount)
 		{
 			CubiquityDLL.SculptTerrainVolume((uint)volume.data.volumeHandle, centerX, centerY, centerZ, brushInnerRadius, brushOuterRadius, amount);
