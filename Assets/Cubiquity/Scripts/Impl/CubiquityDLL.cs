@@ -488,10 +488,13 @@ namespace Cubiquity
             ////////////////////////////////////////////////////////////////////////////////
 
             [DllImport(dllToImport)]
-            private static extern int cuSculptVRCube(uint volumeHandle, float centerX, float centerY, float centerZ, float brushRangeX, float brushRangeY, float brushRangeZ, float rotateEulerX, float rotateEulerY, float rotateEulerZ);
-            public static void SculptVRCube(uint volumeHandle, float centerX, float centerY, float centerZ, float brushRangeX, float brushRangeY, float brushRangeZ, float rotateEulerX, float rotateEulerY, float rotateEulerZ)
+            private static extern int cuPaintingVR(uint volumeHandle, float centerX, float centerY, float centerZ, float brushInnerRadius, float brushOuterRadius, float amount, IntPtr value);
+            public static void PaintingVR<VoxelType>(uint volumeHandle, float centerX, float centerY, float centerZ, float brushInnerRadius, float brushOuterRadius, float amount, VoxelType value)
             {
-                Validate(cuSculptVRCube(volumeHandle, centerX, centerY, centerZ, brushRangeX, brushRangeY, brushRangeZ, rotateEulerX, rotateEulerY, rotateEulerZ));
+                IntPtr ptrValue = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(VoxelType)));
+                Marshal.StructureToPtr(value, ptrValue, true);
+                Validate(cuPaintingVR(volumeHandle, centerX, centerY, centerZ, brushInnerRadius, brushOuterRadius, amount, ptrValue));
+                Marshal.FreeHGlobal(ptrValue);
             }
 
             [DllImport (dllToImport)]

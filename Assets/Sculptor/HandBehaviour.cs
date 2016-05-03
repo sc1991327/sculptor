@@ -789,7 +789,7 @@ public class HandBehaviour : MonoBehaviour {
                 SmoothVoxels(tempDrawPosScaled, (Vector3i)tempDrawScale, activeMirror);
                 break;
             case OptState.paint:
-                PaintVoxels(tempDrawPosScaled, 0, 5, 1, 0);
+                PaintVoxels(tempDrawPosScaled, colorMaterialSet, 0, 5, 1, 0, activeMirror);
                 break;
         }
     }
@@ -1219,6 +1219,47 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
 
     }
 
+    private void VoxelPainting(Vector3 pos, Vector3i range, MaterialSet materialset, bool activeMirror)
+    {
+        int xPos = (int)pos.x;
+        int yPos = (int)pos.y;
+        int zPos = (int)pos.z;
+
+        int rangeX2 = range.x * range.x;
+        int rangeY2 = range.y * range.y;
+        int rangeZ2 = range.z * range.z;
+
+        for (int z = zPos - range.z; z < zPos + range.z; z++)
+        {
+            for (int y = yPos - range.y; y < yPos + range.y; y++)
+            {
+                for (int x = xPos - range.x; x < xPos + range.x; x++)
+                {
+                    float xDistance = x - xPos;
+                    float yDistance = y - yPos;
+                    float zDistance = z - zPos;
+
+                    float distSquared = xDistance * xDistance / rangeX2 + yDistance * yDistance / rangeY2 + zDistance * zDistance / rangeZ2;
+                    if (distSquared < 1)
+                    {
+                        MaterialSet tempOld = terrainVolume.data.GetVoxel(x, y, z);
+                        if (!CompareMaterialSet(materialset, tempOld))
+                        {
+                            int totalmold = tempOld.weights[0] + tempOld.weights[1] + tempOld.weights[2] + tempOld.weights[3];
+                            int totalmset = materialset.weights[0] + materialset.weights[1] + materialset.weights[2] + materialset.weights[3];
+                            MaterialSet mnew = new MaterialSet();
+                            mnew.weights[0] = (byte)(materialset.weights[0] * totalmold / totalmset);
+                            mnew.weights[1] = (byte)(materialset.weights[1] * totalmold / totalmset);
+                            mnew.weights[2] = (byte)(materialset.weights[2] * totalmold / totalmset);
+                            mnew.weights[3] = (byte)(materialset.weights[3] * totalmold / totalmset);
+                            terrainVolume.data.SetVoxel(x, y, z, mnew);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private void DestroyVoxels(Vector3 Pos, Vector3 RotateEular, Vector3i range, OptShape optshape, bool activeMirror)
     {
         MaterialSet emptyMaterialSet = new MaterialSet();
@@ -1239,11 +1280,15 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
         VoxelSmoothing(Pos, range, activeMirror);
     }
 
-    private void PaintVoxels(Vector3 Pos, float brushInnerRadius, float brushOuterRadius, float amount, uint materialIndex)
+    private void PaintVoxels(Vector3 Pos, MaterialSet materialSet, float brushInnerRadius, float brushOuterRadius, float amount, uint materialIndex, bool activeMirror)
     {
         Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(Pos) * VoxelWorldTransform.localScale.x;
         Vector3i tempPosi = (Vector3i)tempPos;
-        TerrainVolumeEditor.PaintTerrainVolume(terrainVolume, Pos.x, Pos.y, Pos.z, brushInnerRadius, brushOuterRadius, amount, materialIndex);
+        VoxelPainting(Pos, new Vector3i((int)brushOuterRadius, (int)brushOuterRadius, (int)brushOuterRadius), materialSet, activeMirror);
+
+
+        //ERROR - TerrainVolumeEditor.PaintTerrainVolume(terrainVolume, Pos.x, Pos.y, Pos.z, brushInnerRadius, brushOuterRadius, amount, materialSet);
+        //TerrainVolumeEditor.PaintTerrainVolume(terrainVolume, Pos.x, Pos.y, Pos.z, brushInnerRadius, brushOuterRadius, amount, materialIndex);
     }
 
     private void RestartTerrainVolumeData()

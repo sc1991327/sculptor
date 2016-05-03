@@ -10,10 +10,6 @@ namespace Cubiquity
 	/// \cond
 	public class TerrainVolumeEditor
 	{
-        public static void SculptVRCube(TerrainVolume volume, float centerX, float centerY, float centerZ, float brushRangeX, float brushRangeY, float brushRangeZ, float rotateEulerX, float rotateEulerY, float rotateEulerZ)
-        {
-            CubiquityDLL.SculptVRCube((uint)volume.data.volumeHandle, centerX, centerY, centerZ, brushRangeX, brushRangeY, brushRangeZ, rotateEulerX, rotateEulerY, rotateEulerZ);
-        }
 
 		public static void SculptTerrainVolume(TerrainVolume volume, float centerX, float centerY, float centerZ, float brushInnerRadius, float brushOuterRadius, float amount)
 		{
@@ -34,8 +30,13 @@ namespace Cubiquity
 		{
 			CubiquityDLL.PaintTerrainVolume((uint)volume.data.volumeHandle, centerX, centerY, centerZ, brushInnerRadius, brushOuterRadius, amount, materialIndex);
 		}
-		
-		/*public static void CreateCuboid(TerrainVolume volume, Region region, MaterialSet materialSet)
+
+        public static void PaintTerrainVolume(TerrainVolume volume, float centerX, float centerY, float centerZ, float brushInnerRadius, float brushOuterRadius, float amount, MaterialSet materialset)
+        {
+            CubiquityDLL.PaintingVR((uint)volume.data.volumeHandle, centerX, centerY, centerZ, brushInnerRadius, brushOuterRadius, amount, materialset);
+        }
+
+        /*public static void CreateCuboid(TerrainVolume volume, Region region, MaterialSet materialSet)
 		{
 			for(int z = region.lowerCorner.z; z <= region.upperCorner.z; z++)
 			{
@@ -48,6 +49,6 @@ namespace Cubiquity
 				}
 			}
 		}*/
-	}
+    }
 	/// \endcond
 }
