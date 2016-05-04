@@ -4,17 +4,17 @@ using System.Collections.Generic;
 
 public class HandMenuControl : MonoBehaviour {
 
-    public Texture mainColorChooseMode;
+    public Texture mainColorChoose;
     public Texture mainSculptorMode;
-    public Texture mainColorPaintMode;
+    public Texture mainMirrorMode;
+    public Texture mainHighEditorMode;
+    public Texture mainReplayMode;
     public Texture mainUndo;
     public Texture mainRedo;
     public Texture mainRestart;
-    public Texture mainReplay;
-    public Texture mainHighEditorMode;
     public Texture mainSave;
     public Texture mainLoad;
-    public Texture highMirror;
+    public Texture highNetwork;
 
     public List<Texture> mainTextureList;
     public List<Texture> highTextureList;
@@ -56,19 +56,19 @@ public class HandMenuControl : MonoBehaviour {
         MenuChildPos = new List<Vector3>();
 
         mainTextureList = new List<Texture>();
-        mainTextureList.Add(mainColorChooseMode);
+        mainTextureList.Add(mainColorChoose);
         mainTextureList.Add(mainSculptorMode);
-        mainTextureList.Add(mainColorPaintMode);
+        mainTextureList.Add(mainMirrorMode);
+        mainTextureList.Add(mainHighEditorMode);
+        mainTextureList.Add(mainReplayMode);
         mainTextureList.Add(mainUndo);
         mainTextureList.Add(mainRedo);
         mainTextureList.Add(mainRestart);
-        mainTextureList.Add(mainReplay);
-        mainTextureList.Add(mainHighEditorMode);
         mainTextureList.Add(mainSave);
         mainTextureList.Add(mainLoad);
 
         highTextureList = new List<Texture>();
-        highTextureList.Add(highMirror);
+        highTextureList.Add(highNetwork);
 
         colorColorList = new List<Color>();
         for (int oi = 0; oi < 4; oi++)

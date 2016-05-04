@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Cubiquity;
 
 public enum ControlPanel { empty, main, color, replay, load, high };
-public enum OptModePanel { sculptor, paint, replay, mirror };
+public enum OptModePanel { sculptor, network, replay, mirror };
 public enum InfoPanel { empty, start, info};
 public enum OptState { create, delete, smooth, paint };
 public enum OptShape { cube, sphere, capsule, cylinder };
@@ -82,6 +82,8 @@ public class HandBehaviour : MonoBehaviour {
     private bool checkPreOptContinueState = false;
 
     private float replayStartTime = 0.0f;
+
+    private int singleHandOptMode = 0;
 
     // -- OVRInput Info
 
@@ -233,33 +235,33 @@ public class HandBehaviour : MonoBehaviour {
                 break;
             case 2:
                 // paint mode
-                activeOptModePanel = OptModePanel.paint;
+                activeOptModePanel = OptModePanel.mirror;
                 break;
             case 3:
+                //High operators mode choose panel
+                activePanel = ControlPanel.high;
+                break;
+            case 4:
+                //Replay file choose panel
+                activePanel = ControlPanel.replay;
+                break;
+            case 5:
                 // Undo
                 recordBehaviour.UnDo();
                 activePanel = ControlPanel.empty;
                 activePanelContinue = true;
                 break;
-            case 4:
+            case 6:
                 // Redo
                 recordBehaviour.ReDo();
                 activePanel = ControlPanel.empty;
                 activePanelContinue = true;
                 break;
-            case 5:
+            case 7:
                 //Restart
                 RestartTerrainVolumeData();
                 activePanel = ControlPanel.empty;
                 activePanelContinue = true;
-                break;
-            case 6:
-                //Replay file choose panel
-                activePanel = ControlPanel.replay;
-                break;
-            case 7:
-                //High operators mode choose panel
-                activePanel = ControlPanel.high;
                 break;
             case 8:
                 //Save
@@ -352,48 +354,25 @@ public class HandBehaviour : MonoBehaviour {
 
         // mirror only support one hand operator
         activeHandOpt = HandOpt.singleOpt;
-        if (activeShape != OptShape.cube && activeShape != OptShape.sphere)
+        if (activeShape != OptShape.sphere)
         {
             activeShape = OptShape.sphere;
         }
 
-        if (Axis1D_LB > ButtonFilter && Axis1D_LT > ButtonFilter && optRange < 10)
+        if (Axis1D_LB > ButtonFilter)
         {
-            activeShape = OptShape.sphere;
-            activeState = OptState.smooth;
-            StateHandleOVRInput(DrawPos.left, activeMirror);
-        }
-        else if (Axis1D_LB > ButtonFilter)
-        {
-            activeState = OptState.create;
-            StateHandleOVRInput(DrawPos.left, activeMirror);
-        }
-        else if (Axis1D_LT > ButtonFilter)
-        {
-            activeState = OptState.delete;
             StateHandleOVRInput(DrawPos.left, activeMirror);
         }
 
-        if (Axis1D_RB > ButtonFilter && Axis1D_RT > ButtonFilter && optRange < 10)
+        if (Axis1D_RB > ButtonFilter)
         {
-            activeState = OptState.smooth;
-            StateHandleOVRInput(DrawPos.right, activeMirror);
-        }
-        else if (Axis1D_RB > ButtonFilter)
-        {
-            activeState = OptState.create;
-            StateHandleOVRInput(DrawPos.right, activeMirror);
-        }
-        else if (Axis1D_RT > ButtonFilter)
-        {
-            activeState = OptState.delete;
             StateHandleOVRInput(DrawPos.right, activeMirror);
         }
 
         // size
         if ((Axis2D_LB_Up || Axis2D_RB_Up) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
-            if (optRange < 10)
+            if (optRange < 12)
             {
                 optRange += 2;
             }
@@ -401,7 +380,7 @@ public class HandBehaviour : MonoBehaviour {
         }
         if ((Axis2D_LB_Down || Axis2D_RB_Down) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
-            if (optRange >= 4)
+            if (optRange >= 6)
             {
                 optRange -= 2;
             }
@@ -411,21 +390,29 @@ public class HandBehaviour : MonoBehaviour {
         // shape
         if ((Axis2D_LB_Left || Axis2D_RB_Left || Axis2D_LB_Right || Axis2D_RB_Right) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
-            if (activeShape == OptShape.cube)
-            {
-                activeShape = OptShape.sphere;
-            }
-            else
-            {
-                activeShape = OptShape.cube;
-            }
-            buttonPreTime = Time.time;
+            singleHandOptMode++;
         }
     }
 
     private void sculptorOptModePanelHandleOVRInput()
     {
         checkOptContinueState = false;
+
+        switch (singleHandOptMode % 4)
+        {
+            case 0:
+                activeState = OptState.create;
+                break;
+            case 1:
+                activeState = OptState.delete;
+                break;
+            case 2:
+                activeState = OptState.smooth;
+                break;
+            case 3:
+                activeState = OptState.paint;
+                break;
+        }
 
         if (Axis1D_LT > 0 && Axis1D_RT > 0)
         {
@@ -495,15 +482,6 @@ public class HandBehaviour : MonoBehaviour {
 
             // one hand operator
             HandleButtonInSculptor(false);
-
-            //if (Axis2D_L.y >= 0)
-            //{
-            //    leftChildPos.z = Axis2D_L.y * 20;
-            //}
-            //if (Axis2D_R.y >= 0)
-            //{
-            //    rightChildPos.z = Axis2D_R.y * 20;
-            //}
         }
 
         if (checkPreOptContinueState == true && checkOptContinueState == false)
@@ -513,24 +491,30 @@ public class HandBehaviour : MonoBehaviour {
         checkPreOptContinueState = checkOptContinueState;
     }
 
-    private void paintOptModePanelHandleOVRInput()
+    private void networkOptModePanelHandleOVRInput()
     {
-        if (Axis1D_LB > 0)
-        {
-            activeState = OptState.paint;
-            StateHandleOVRInput(DrawPos.left, false);
-        }
-        else if (Axis1D_RB > 0)
-        {
-            activeState = OptState.paint;
-            StateHandleOVRInput(DrawPos.right, false);
-        }
 
     }
 
     private void mirrorOptModePanelHandleOVRInput()
     {
         checkOptContinueState = false;
+
+        switch (singleHandOptMode % 4)
+        {
+            case 0:
+                activeState = OptState.create;
+                break;
+            case 1:
+                activeState = OptState.delete;
+                break;
+            case 2:
+                activeState = OptState.smooth;
+                break;
+            case 3:
+                activeState = OptState.paint;
+                break;
+        }
 
         if (Axis1D_LT > 0 && Axis1D_RT > 0)
         {
@@ -628,13 +612,28 @@ public class HandBehaviour : MonoBehaviour {
 
                     VoxelSetting(Pos, RotateEuler, materialSet, range, optshape, activeMirror);
                 }
-                else
+                else if (tempVSO.Type == 2)
                 {
                     Vector3 Pos = new Vector3(tempVSO.PosX, tempVSO.PosY, tempVSO.PosZ);
                     Vector3i range = new Vector3i(tempVSO.RangeX, tempVSO.RangeY, tempVSO.RangeZ);
                     bool activeMirror = tempVSO.ActiveMirror;
 
                     VoxelSmoothing(Pos, range, activeMirror);
+                }
+                else
+                {
+                    Vector3 Pos = new Vector3(tempVSO.PosX, tempVSO.PosY, tempVSO.PosZ);
+                    MaterialSet materialSet = new MaterialSet();
+                    materialSet.weights[0] = (byte)tempVSO.MaterialWeight0;
+                    materialSet.weights[1] = (byte)tempVSO.MaterialWeight1;
+                    materialSet.weights[2] = (byte)tempVSO.MaterialWeight2;
+                    materialSet.weights[3] = (byte)tempVSO.MaterialWeight3;
+                    float brushInnerRadius = tempVSO.RangeX;
+                    float brushOuterRadius = tempVSO.RangeY;
+                    float amount = tempVSO.RangeZ;
+                    bool activeMirror = tempVSO.ActiveMirror;
+
+                    VoxelPainting(Pos, new Vector3i((int)brushOuterRadius, (int)brushOuterRadius, (int)brushOuterRadius), materialSet, activeMirror);
                 }
 
                 recordBehaviour.ReplayVoxelStore.RemoveAt(0);
@@ -738,8 +737,8 @@ public class HandBehaviour : MonoBehaviour {
             case OptModePanel.sculptor:
                 sculptorOptModePanelHandleOVRInput();
                 break;
-            case OptModePanel.paint:
-                paintOptModePanelHandleOVRInput();
+            case OptModePanel.network:
+                networkOptModePanelHandleOVRInput();
                 break;
             case OptModePanel.mirror:
                 mirrorOptModePanelHandleOVRInput();
@@ -789,7 +788,7 @@ public class HandBehaviour : MonoBehaviour {
                 SmoothVoxels(tempDrawPosScaled, (Vector3i)tempDrawScale, activeMirror);
                 break;
             case OptState.paint:
-                PaintVoxels(tempDrawPosScaled, colorMaterialSet, 0, 5, 1, 0, activeMirror);
+                PaintVoxels(tempDrawPosScaled, colorMaterialSet, 0, 5, 1, activeMirror);
                 break;
         }
     }
@@ -947,7 +946,7 @@ public class HandBehaviour : MonoBehaviour {
         return tempm;
     }
 
-private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEuler, MaterialSet materialSet)
+    private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEuler, MaterialSet materialSet)
     {
         float dismax = 0;
 
@@ -997,6 +996,31 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
         {
             recordBehaviour.PushOperator(new VoxelOpt(new Vector3i(tempX, tempY, tempZ), tempMaterialSet, tempOld));
             terrainVolume.data.SetVoxel(tempX, tempY, tempZ, tempMaterialSet);
+        }
+    }
+
+    private void SingleVoxelPaintHanding(int tempX, int tempY, int tempZ, MaterialSet materialset, float distSquared, bool activeMirror)
+    {
+        MaterialSet tempOld = terrainVolume.data.GetVoxel(tempX, tempY, tempZ);
+        if (!CompareMaterialSet(materialset, tempOld))
+        {
+            int totalmold = tempOld.weights[0] + tempOld.weights[1] + tempOld.weights[2] + tempOld.weights[3];
+            int totalmset = materialset.weights[0] + materialset.weights[1] + materialset.weights[2] + materialset.weights[3];
+
+            MaterialSet mnew = new MaterialSet();
+            float temp0 = ((distSquared) * (tempOld.weights[0]) + (1 - distSquared) * (materialset.weights[0]));
+            float temp1 = ((distSquared) * (tempOld.weights[1]) + (1 - distSquared) * (materialset.weights[1]));
+            float temp2 = ((distSquared) * (tempOld.weights[2]) + (1 - distSquared) * (materialset.weights[2]));
+            float temp3 = ((distSquared) * (tempOld.weights[3]) + (1 - distSquared) * (materialset.weights[3]));
+            float totaltemp = temp0 + temp1 + temp2 + temp3;
+
+            mnew.weights[0] = (byte)(int)(temp0 * totalmold / totaltemp);
+            mnew.weights[1] = (byte)(int)(temp1 * totalmold / totaltemp);
+            mnew.weights[2] = (byte)(int)(temp2 * totalmold / totaltemp);
+            mnew.weights[3] = (byte)(int)(totalmold - (mnew.weights[0] + mnew.weights[1] + mnew.weights[2]));
+
+            recordBehaviour.PushOperator(new VoxelOpt(new Vector3i(tempX, tempY, tempZ), materialset, tempOld));
+            terrainVolume.data.SetVoxel(tempX, tempY, tempZ, mnew);
         }
     }
 
@@ -1062,7 +1086,8 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
                 {
                     Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
                     Vector3i tempPosi = new Vector3i(tempPos);
-                    TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - dismax, tempPosi.y - dismax, tempPosi.z - dismax, tempPosi.x + dismax, tempPosi.y + dismax, tempPosi.z + dismax));
+                    //TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - dismax, tempPosi.y - dismax, tempPosi.z - dismax, tempPosi.x + dismax, tempPosi.y + dismax, tempPosi.z + dismax));
+                    VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror);
                 }
                 break;
 
@@ -1091,7 +1116,7 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
                 {
                     Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
                     Vector3i tempPosi = new Vector3i(tempPos);
-                    TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - dismax, tempPosi.y - dismax, tempPosi.z - dismax, tempPosi.x + dismax, tempPosi.y + dismax, tempPosi.z + dismax));
+                    VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror);
                 }
 
                 break;
@@ -1121,7 +1146,7 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
                 {
                     Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
                     Vector3i tempPosi = new Vector3i(tempPos);
-                    TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - dismax, tempPosi.y - dismax, tempPosi.z - dismax, tempPosi.x + dismax, tempPosi.y + dismax, tempPosi.z + dismax));
+                    VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror);
                 }
 
                 break;
@@ -1197,7 +1222,7 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
                 {
                     Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
                     Vector3i tempPosi = new Vector3i(tempPos);
-                    TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - dismax, tempPosi.y - dismax, tempPosi.z - dismax, tempPosi.x + dismax, tempPosi.y + dismax, tempPosi.z + dismax));
+                    VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror);
                 }
                 break;
         }
@@ -1236,26 +1261,7 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
                     float distSquared = xDistance * xDistance / rangeX2 + yDistance * yDistance / rangeY2 + zDistance * zDistance / rangeZ2;
                     if (distSquared < 1)
                     {
-                        MaterialSet tempOld = terrainVolume.data.GetVoxel(x, y, z);
-                        if (!CompareMaterialSet(materialset, tempOld))
-                        {
-                            int totalmold = tempOld.weights[0] + tempOld.weights[1] + tempOld.weights[2] + tempOld.weights[3];
-                            int totalmset = materialset.weights[0] + materialset.weights[1] + materialset.weights[2] + materialset.weights[3];
-
-                            MaterialSet mnew = new MaterialSet();
-                            float temp0 = ((distSquared) * (tempOld.weights[0]) + (1 - distSquared) * (materialset.weights[0]));
-                            float temp1 = ((distSquared) * (tempOld.weights[1]) + (1 - distSquared) * (materialset.weights[1]));
-                            float temp2 = ((distSquared) * (tempOld.weights[2]) + (1 - distSquared) * (materialset.weights[2]));
-                            float temp3 = ((distSquared) * (tempOld.weights[3]) + (1 - distSquared) * (materialset.weights[3]));
-                            float totaltemp = temp0 + temp1 + temp2 + temp3;
-
-                            mnew.weights[0] = (byte)(int)(temp0 * totalmold / totaltemp);
-                            mnew.weights[1] = (byte)(int)(temp1 * totalmold / totaltemp);
-                            mnew.weights[2] = (byte)(int)(temp2 * totalmold / totaltemp);
-                            mnew.weights[3] = (byte)(int)(totalmold - (mnew.weights[0] + mnew.weights[1] + mnew.weights[2]));
-
-                            terrainVolume.data.SetVoxel(x, y, z, mnew);
-                        }
+                        SingleVoxelPaintHanding(x, y, z, materialset, distSquared, activeMirror);
                     }
                 }
             }
@@ -1287,12 +1293,12 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
     private void SmoothVoxels(Vector3 Pos, Vector3i range, bool activeMirror)
     {
         recordBehaviour.WriteJsonFileSmooth(Pos, range, Time.time - appStartTime, activeMirror);
-        //TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - range.x, tempPosi.y - range.y, tempPosi.z - range.z, tempPosi.x + range.x, tempPosi.y + range.y, tempPosi.z + range.z));
         VoxelSmoothing(Pos, range, activeMirror);
     }
 
-    private void PaintVoxels(Vector3 Pos, MaterialSet materialSet, float brushInnerRadius, float brushOuterRadius, float amount, uint materialIndex, bool activeMirror)
+    private void PaintVoxels(Vector3 Pos, MaterialSet materialSet, float brushInnerRadius, float brushOuterRadius, float amount, bool activeMirror)
     {
+        recordBehaviour.WriteJsonFilePaint(Pos, materialSet, brushInnerRadius, brushOuterRadius, amount, Time.time - appStartTime, activeMirror);
         VoxelPainting(Pos, new Vector3i((int)brushOuterRadius, (int)brushOuterRadius, (int)brushOuterRadius), materialSet, activeMirror);
     }
 
