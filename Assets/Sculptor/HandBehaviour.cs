@@ -947,7 +947,7 @@ public class HandBehaviour : MonoBehaviour {
         return tempm;
     }
 
-private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEuler, MaterialSet materialSet, Vector3 mirrorAnchorPoint0, Vector3 mirrorAnchorPoint1, Vector3 mirrorAnchorPoint2, bool activeMirror)
+private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEuler, MaterialSet materialSet)
     {
         float dismax = 0;
 
@@ -965,19 +965,6 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
         {
             recordBehaviour.PushOperator(new VoxelOpt(tempi, materialSet, tempOld));
             terrainVolume.data.SetVoxel(tempi.x, tempi.y, tempi.z, materialSet);
-        }
-
-        if (activeMirror)
-        {
-            Vector3 tempm2 = CalcMirrorPos(mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, temp1);
-            Vector3 tempm3 = VoxelWorldTransform.InverseTransformPoint(tempm2) * VoxelWorldTransform.localScale.x;
-            Vector3i tempmi = (Vector3i)(tempm3);
-            MaterialSet tempmOld = terrainVolume.data.GetVoxel(tempmi.x, tempmi.y, tempmi.z);
-            if (!CompareMaterialSet(materialSet, tempmOld))
-            {
-                recordBehaviour.PushOperator(new VoxelOpt(tempmi, materialSet, tempmOld));
-                terrainVolume.data.SetVoxel(tempmi.x, tempmi.y, tempmi.z, materialSet);
-            }
         }
 
         return dismax;
@@ -1015,10 +1002,6 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
 
     private void VoxelSmoothing(Vector3 pos, Vector3i range, bool activeMirror)
     {
-        Vector3 mirrorAnchorPoint0 = trackAnchor.GetMirrorAnchorPoint0();
-        Vector3 mirrorAnchorPoint1 = trackAnchor.GetMirrorAnchorPoint1();
-        Vector3 mirrorAnchorPoint2 = trackAnchor.GetMirrorAnchorPoint2();
-
         Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(pos) * VoxelWorldTransform.localScale.x;
         Region vRegion = new Region((int)tempPos.x - range.x, (int)tempPos.y - range.y, (int)tempPos.z - range.z, (int)tempPos.x + range.x, (int)tempPos.y + range.y, (int)tempPos.z + range.z);
         for (int tempX = vRegion.lowerCorner.x; tempX <= vRegion.upperCorner.x; ++tempX)
@@ -1034,6 +1017,9 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
 
         if (activeMirror)
         {
+            Vector3 mirrorAnchorPoint0 = trackAnchor.GetMirrorAnchorPoint0();
+            Vector3 mirrorAnchorPoint1 = trackAnchor.GetMirrorAnchorPoint1();
+            Vector3 mirrorAnchorPoint2 = trackAnchor.GetMirrorAnchorPoint2();
             Vector3 tempmpos = (CalcMirrorPos(mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, pos));
             VoxelSmoothing(tempmpos, range, false);
         }
@@ -1066,7 +1052,7 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
                     {
                         for (int x = xPos - range.x; x < xPos + range.x; x++)
                         {
-                            dismax = (int)SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet, mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, activeMirror);
+                            dismax = (int)SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet);
                         }
                     }
                 }
@@ -1094,7 +1080,7 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
                             float distSquared = xDistance * xDistance / rangeX2 + yDistance * yDistance / rangeY2 + zDistance * zDistance / rangeZ2;
                             if (distSquared < 1)
                             {
-                                SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet, mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, activeMirror);
+                                SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet);
                             }
                         }
                     }
@@ -1124,7 +1110,7 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
                             float distSquared = xDistance * xDistance / rangeX2 + zDistance * zDistance / rangeZ2;
                             if (distSquared < 1)
                             {
-                                dismax = (int)SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet, mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, activeMirror);
+                                dismax = (int)SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet);
                             }
                         }
                     }
@@ -1154,7 +1140,7 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
                             float distSquared = xDistance * xDistance / rangeX2 + zDistance * zDistance / rangeZ2;
                             if (distSquared < 1)
                             {
-                                SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet, mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, activeMirror);
+                                SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet);
                             }
                         }
                     }
@@ -1176,7 +1162,7 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
                             float distSquared = xDistance * xDistance / rangeX2 + yDistance * yDistance / rangeY2 + zDistance * zDistance / rangeZ2;
                             if (distSquared < 1)
                             {
-                                SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet, mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, activeMirror);
+                                SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet);
 
                             }
                         }
@@ -1199,7 +1185,7 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
                             float distSquared = xDistance * xDistance / rangeX2 + yDistance * yDistance / rangeY2 + zDistance * zDistance / rangeZ2;
                             if (distSquared < 1)
                             {
-                                SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet, mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, activeMirror);
+                                SingleVoxelHandling(new Vector3(x, y, z), new Vector3(xPos, yPos, zPos), RotateEuler, materialSet);
                             }
                         }
                     }
@@ -1213,17 +1199,25 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
                     Vector3i tempPosi = new Vector3i(tempPos);
                     TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - dismax, tempPosi.y - dismax, tempPosi.z - dismax, tempPosi.x + dismax, tempPosi.y + dismax, tempPosi.z + dismax));
                 }
-
                 break;
+        }
+
+        if (activeMirror)
+        {
+            Vector3 tempmpos = (CalcMirrorPos(mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, Pos));
+            VoxelSetting(tempmpos, RotateEuler, materialSet, range, optshape, false);
         }
 
     }
 
     private void VoxelPainting(Vector3 pos, Vector3i range, MaterialSet materialset, bool activeMirror)
     {
-        int xPos = (int)pos.x;
-        int yPos = (int)pos.y;
-        int zPos = (int)pos.z;
+        Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(pos) * VoxelWorldTransform.localScale.x;
+        Vector3i tempPosi = (Vector3i)tempPos;
+
+        int xPos = tempPosi.x;
+        int yPos = tempPosi.y;
+        int zPos = tempPosi.z;
 
         int rangeX2 = range.x * range.x;
         int rangeY2 = range.y * range.y;
@@ -1247,16 +1241,33 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
                         {
                             int totalmold = tempOld.weights[0] + tempOld.weights[1] + tempOld.weights[2] + tempOld.weights[3];
                             int totalmset = materialset.weights[0] + materialset.weights[1] + materialset.weights[2] + materialset.weights[3];
+
                             MaterialSet mnew = new MaterialSet();
-                            mnew.weights[0] = (byte)(materialset.weights[0] * totalmold / totalmset);
-                            mnew.weights[1] = (byte)(materialset.weights[1] * totalmold / totalmset);
-                            mnew.weights[2] = (byte)(materialset.weights[2] * totalmold / totalmset);
-                            mnew.weights[3] = (byte)(materialset.weights[3] * totalmold / totalmset);
+                            float temp0 = ((distSquared) * (tempOld.weights[0]) + (1 - distSquared) * (materialset.weights[0]));
+                            float temp1 = ((distSquared) * (tempOld.weights[1]) + (1 - distSquared) * (materialset.weights[1]));
+                            float temp2 = ((distSquared) * (tempOld.weights[2]) + (1 - distSquared) * (materialset.weights[2]));
+                            float temp3 = ((distSquared) * (tempOld.weights[3]) + (1 - distSquared) * (materialset.weights[3]));
+                            float totaltemp = temp0 + temp1 + temp2 + temp3;
+
+                            mnew.weights[0] = (byte)(int)(temp0 * totalmold / totaltemp);
+                            mnew.weights[1] = (byte)(int)(temp1 * totalmold / totaltemp);
+                            mnew.weights[2] = (byte)(int)(temp2 * totalmold / totaltemp);
+                            mnew.weights[3] = (byte)(int)(totalmold - (mnew.weights[0] + mnew.weights[1] + mnew.weights[2]));
+
                             terrainVolume.data.SetVoxel(x, y, z, mnew);
                         }
                     }
                 }
             }
+        }
+
+        if (activeMirror)
+        {
+            Vector3 mirrorAnchorPoint0 = trackAnchor.GetMirrorAnchorPoint0();
+            Vector3 mirrorAnchorPoint1 = trackAnchor.GetMirrorAnchorPoint1();
+            Vector3 mirrorAnchorPoint2 = trackAnchor.GetMirrorAnchorPoint2();
+            Vector3 tempmpos = (CalcMirrorPos(mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, pos));
+            VoxelPainting(tempmpos, range, materialset, false);
         }
     }
 
@@ -1282,13 +1293,7 @@ private float SingleVoxelHandling(Vector3 nowPos, Vector3 cPos, Vector3 RotateEu
 
     private void PaintVoxels(Vector3 Pos, MaterialSet materialSet, float brushInnerRadius, float brushOuterRadius, float amount, uint materialIndex, bool activeMirror)
     {
-        Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(Pos) * VoxelWorldTransform.localScale.x;
-        Vector3i tempPosi = (Vector3i)tempPos;
         VoxelPainting(Pos, new Vector3i((int)brushOuterRadius, (int)brushOuterRadius, (int)brushOuterRadius), materialSet, activeMirror);
-
-
-        //ERROR - TerrainVolumeEditor.PaintTerrainVolume(terrainVolume, Pos.x, Pos.y, Pos.z, brushInnerRadius, brushOuterRadius, amount, materialSet);
-        //TerrainVolumeEditor.PaintTerrainVolume(terrainVolume, Pos.x, Pos.y, Pos.z, brushInnerRadius, brushOuterRadius, amount, materialIndex);
     }
 
     private void RestartTerrainVolumeData()
