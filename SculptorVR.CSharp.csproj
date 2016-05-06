@@ -170,7 +170,6 @@
     <Compile Include="Assets\Sculptor\TrackAnchor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\3D Items - Wand Pack\Read Me.txt" />
     <None Include="Assets\CapturePanorama\Compute Shaders\ConvertPanoramaShader.compute" />
     <None Include="Assets\CapturePanorama\Compute Shaders\ConvertPanoramaStereoShader.compute" />
     <None Include="Assets\CapturePanorama\Compute Shaders\TextureToBufferShader.compute" />

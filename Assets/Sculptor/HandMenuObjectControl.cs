@@ -38,6 +38,9 @@ public class HandMenuObjectControl : MonoBehaviour
     private float MenuEndLocalScale = 0.08f;
     private float MenuLocalScaleMax = 0.12f;
     private float menuAlpha = 0.3f;
+    private float MenuColorStartLocalScale = 0.005f;
+    private float MenuColorEndLocalScale = 0.05f;
+    private float MenuColorObjRange = 0.03f;
 
     private GameObject MenuCenterObject;
     private List<Vector3> MenuChildLocalPos;
@@ -49,6 +52,7 @@ public class HandMenuObjectControl : MonoBehaviour
     private bool hasPlayed = false;
 
     private bool isreuseobj = false;
+    private bool iscolorobj = false;
 
     // Use this for initialization
     void Start()
@@ -87,13 +91,13 @@ public class HandMenuObjectControl : MonoBehaviour
         }
 
         colorColorList = new List<Color>();
-        for (int oi = 0; oi < 4; oi++)
+        for (int oi = 0; oi < 10; oi++)
         {
-            for (int oj = 0; oj < 4; oj++)
+            for (int oj = 0; oj < 10; oj++)
             {
-                for (int ok = 0; ok < 4; ok++)
+                for (int ok = 0; ok < 10; ok++)
                 {
-                    Color c = new Color(0.3f * oi, 0.3f * oj, 0.3f * ok);
+                    Color c = new Color(0.1f * oi, 0.1f * oj, 0.1f * ok);
                     colorColorList.Add(c);
                 }
             }
@@ -181,36 +185,61 @@ public class HandMenuObjectControl : MonoBehaviour
             handPos = trackAnchor.GetRightChildPosition();
         }
 
-        for (int ti = 0; ti < nowPosList.Count; ti++)
+        if (iscolorobj)
         {
-            float dis = Vector3.Distance(nowPosList[ti], handPos);
-
-            if (dis < MenuEndLocalScale / 2)
+            for (int ti = 0; ti < nowPosList.Count; ti++)
             {
-                audioSource.transform.position = nowPosList[ti];
-                if (hasPlayed == false)
+                float dis = Vector3.Distance(nowPosList[ti], handPos);
+
+                if (dis < MenuColorObjRange / 2)
                 {
-                    hasPlayed = true;
-                    audioSource.Play();
+                    MenuChildObject[ti].transform.localScale = new Vector3(MenuColorEndLocalScale, MenuColorEndLocalScale, MenuColorEndLocalScale);
+
+                    Color tempC = MenuChildObject[ti].transform.GetComponent<Renderer>().material.color;
+                    tempC.a = 1.0f;
+                    MenuChildObject[ti].transform.GetComponent<Renderer>().material.color = tempC;
+                    MenuChildObject[ti].transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
+
+                    return ti;
                 }
-                return ti;
+                else
+                {
+                    MenuChildObject[ti].transform.localScale = new Vector3(MenuColorStartLocalScale, MenuColorStartLocalScale, MenuColorStartLocalScale);
+                }
             }
-            else
+        }
+        else
+        {
+            for (int ti = 0; ti < nowPosList.Count; ti++)
             {
-                hasPlayed = false;
-            }
+                float dis = Vector3.Distance(nowPosList[ti], handPos);
 
-            // menu state animation
-            if (MenuChildObject[ti].transform.localScale.x < MenuEndLocalScale)
-            {
-                MenuChildObject[ti].transform.localScale += new Vector3(0.003f, 0.003f, 0.003f);
-            } 
-            else
-            {
-                float tempV = 1 - (Mathf.Clamp(dis, MenuEndLocalScale, MenuChildRadio) - MenuEndLocalScale) / (MenuChildRadio - MenuEndLocalScale);
-                MenuChildObject[ti].transform.localScale = new Vector3(MenuEndLocalScale + tempV * (MenuLocalScaleMax - MenuEndLocalScale), MenuEndLocalScale + tempV * (MenuLocalScaleMax - MenuEndLocalScale), MenuEndLocalScale + tempV * (MenuLocalScaleMax - MenuEndLocalScale));
-            }
+                if (dis < MenuEndLocalScale / 2)
+                {
+                    audioSource.transform.position = nowPosList[ti];
+                    if (hasPlayed == false)
+                    {
+                        hasPlayed = true;
+                        audioSource.Play();
+                    }
+                    return ti;
+                }
+                else
+                {
+                    hasPlayed = false;
+                }
 
+                // menu state animation
+                if (MenuChildObject[ti].transform.localScale.x < MenuEndLocalScale)
+                {
+                    MenuChildObject[ti].transform.localScale += new Vector3(0.003f, 0.003f, 0.003f);
+                }
+                else
+                {
+                    float tempV = 1 - (Mathf.Clamp(dis, MenuEndLocalScale, MenuChildRadio) - MenuEndLocalScale) / (MenuChildRadio - MenuEndLocalScale);
+                    MenuChildObject[ti].transform.localScale = new Vector3(MenuEndLocalScale + tempV * (MenuLocalScaleMax - MenuEndLocalScale), MenuEndLocalScale + tempV * (MenuLocalScaleMax - MenuEndLocalScale), MenuEndLocalScale + tempV * (MenuLocalScaleMax - MenuEndLocalScale));
+                }
+            }
         }
 
         return -1;
@@ -254,15 +283,16 @@ public class HandMenuObjectControl : MonoBehaviour
 
     private void DrawColorPanel()
     {
+        iscolorobj = true;
         clearCircleMenuObj(isreuseobj);
         isreuseobj = false;
 
-        for (int oi = 0; oi < 64; oi++)
+        for (int oi = 0; oi < colorColorList.Count; oi++)
         {
             GameObject tempObj;
             tempObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             tempObj.transform.parent = MenuCenterObject.transform;
-            tempObj.transform.localScale = new Vector3(MenuStartLocalScale, MenuStartLocalScale, MenuStartLocalScale);
+            tempObj.transform.localScale = new Vector3(0.002f, 0.002f, 0.002f);
             tempObj.transform.localPosition = MenuChildLocalPos[oi];
             tempObj.transform.GetComponent<Renderer>().material.color = colorColorList[oi];
 
@@ -279,6 +309,7 @@ public class HandMenuObjectControl : MonoBehaviour
 
     private void DrawCircleMenuObj(List<GameObject> menuobjects)
     {
+        iscolorobj = false;
         clearCircleMenuObj(isreuseobj);
         isreuseobj = true;
 
@@ -297,6 +328,7 @@ public class HandMenuObjectControl : MonoBehaviour
 
     private void DrawCircleMenuObj(int MenuPoints, List<string> textlist)
     {
+        iscolorobj = false;
         clearCircleMenuObj(isreuseobj);
         isreuseobj = false;
 
@@ -319,6 +351,7 @@ public class HandMenuObjectControl : MonoBehaviour
 
     private void DrawCircleMenuObj(int MenuPoints, List<Texture> texturelist)
     {
+        iscolorobj = false;
         clearCircleMenuObj(isreuseobj);
         isreuseobj = false;
 
@@ -343,6 +376,7 @@ public class HandMenuObjectControl : MonoBehaviour
 
     private void DrawCircleMenuObj(int MenuPoints, List<Color> colorlist)
     {
+        iscolorobj = false;
         clearCircleMenuObj(isreuseobj);
         isreuseobj = false;
 
@@ -367,6 +401,7 @@ public class HandMenuObjectControl : MonoBehaviour
 
     private void DrawCircleMenuObj(int MenuPoints)
     {
+        iscolorobj = false;
         clearCircleMenuObj(isreuseobj);
         isreuseobj = false;
 
@@ -407,14 +442,18 @@ public class HandMenuObjectControl : MonoBehaviour
     private void DrawColorPanelPoints(Vector3 center)
     {
         MenuChildLocalPos.Clear();
-        float newc_X = center.x - MenuLocalScaleMax * 3.5f;
-        float newc_y = center.y - MenuLocalScaleMax * 3.5f;
-        for (int ti = 0; ti < 8; ti++)
+        float newc_X = center.x - MenuColorObjRange * 5;
+        float newc_y = center.y - MenuColorObjRange * 5;
+        float newc_z = center.z - MenuColorObjRange * 5;
+        for (int ti = 0; ti < 10; ti++)
         {
-            for (int tj = 0; tj < 8; tj++)
+            for (int tj = 0; tj < 10; tj++)
             {
-                Vector3 p = new Vector3(newc_X + MenuLocalScaleMax * ti, newc_y + MenuLocalScaleMax * tj, 0);
-                MenuChildLocalPos.Add(p);
+                for (int tk = 0; tk < 10; tk++)
+                {
+                    Vector3 p = new Vector3(newc_X + MenuColorObjRange * ti, newc_y + MenuColorObjRange * tj, newc_z + MenuColorObjRange * tk);
+                    MenuChildLocalPos.Add(p);
+                }
             }
         }
     }
