@@ -64,6 +64,9 @@
     <Reference Include="System.Drawing">
       <HintPath>Assets\CapturePanorama\Managed Plugins\System.Drawing.dll</HintPath>
     </Reference>
+    <Reference Include="DOTween">
+      <HintPath>Assets\Demigiant\DOTween\DOTween.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>Assets\Plugins\x86_64\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -122,24 +125,8 @@
     <Compile Include="Assets\Cubiquity\Scripts\VolumeCollider.cs" />
     <Compile Include="Assets\Cubiquity\Scripts\VolumeData.cs" />
     <Compile Include="Assets\Cubiquity\Scripts\VolumeRenderer.cs" />
-    <Compile Include="Assets\LOOM Framework\Examples\Scripts\FlockingMassive\Cannon.cs" />
-    <Compile Include="Assets\LOOM Framework\Examples\Scripts\FlockingMassive\FlockHelper.cs" />
-    <Compile Include="Assets\LOOM Framework\Examples\Scripts\FlockingMassive\HUDmanager.cs" />
-    <Compile Include="Assets\LOOM Framework\Examples\Scripts\FlockingMassive\MassiveFlockingExample.cs" />
-    <Compile Include="Assets\LOOM Framework\Examples\Scripts\FlockingMassive\MovingBodies.cs" />
-    <Compile Include="Assets\LOOM Framework\Examples\Scripts\FlockingMassive\ThreadedFlocking.cs" />
-    <Compile Include="Assets\LOOM Framework\Examples\Scripts\Simple Implementations\SimpleThreadingExample.cs" />
-    <Compile Include="Assets\LOOM Framework\Examples\Scripts\TextureBlur\TextureBlurThreaded.cs" />
-    <Compile Include="Assets\LOOM Framework\LOOM\IThreadWorkerObject.cs" />
-    <Compile Include="Assets\LOOM Framework\LOOM\Internal\MainThreadDispatcher.cs" />
-    <Compile Include="Assets\LOOM Framework\LOOM\Internal\MainThreadWatchdog.cs" />
-    <Compile Include="Assets\LOOM Framework\LOOM\Internal\MultithreadedWorkloadHelper.cs" />
-    <Compile Include="Assets\LOOM Framework\LOOM\Internal\SingleThreadStarter.cs" />
-    <Compile Include="Assets\LOOM Framework\LOOM\Internal\ThreadDispatchAction.cs" />
-    <Compile Include="Assets\LOOM Framework\LOOM\Internal\ThreadPoolSchedulerWorkerObjects.cs" />
-    <Compile Include="Assets\LOOM Framework\LOOM\Internal\ThreadWaitCommands.cs" />
-    <Compile Include="Assets\LOOM Framework\LOOM\Loom.cs" />
-    <Compile Include="Assets\LOOM Framework\LOOM\ThreadPoolScheduler.cs" />
+    <Compile Include="Assets\Demigiant\DOTween\Examples\Basics.cs" />
+    <Compile Include="Assets\Demigiant\DOTween\Examples\Sequences.cs" />
     <Compile Include="Assets\OSPNative\scenes\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
     <Compile Include="Assets\OSPNative\scripts\ONSPAudioSource.cs" />
     <Compile Include="Assets\OVR\Moonlight\Scripts\OVRDebugHeadController.cs" />
@@ -167,14 +154,23 @@
     <Compile Include="Assets\OVR\Scripts\Util\OVRSceneSampleController.cs" />
     <Compile Include="Assets\OVR\Scripts\Util\OVRScreenFade.cs" />
     <Compile Include="Assets\OVR\Scripts\Util\OVRTrackerBounds.cs" />
+    <Compile Include="Assets\PowerUp\Scripts\CustomizablePowerUp.cs" />
+    <Compile Include="Assets\PowerUp\Scripts\PowerUpManager.cs" />
+    <Compile Include="Assets\PowerUp\Scripts\PowerUpRotation.cs" />
+    <Compile Include="Assets\PowerUp\Scripts\ScaleParticles.cs" />
+    <Compile Include="Assets\PowerUp\Scripts\TakeablePowerUp.cs" />
+    <Compile Include="Assets\PowerUp\Scripts\Utility\Singleton.cs" />
     <Compile Include="Assets\Sculptor\BoundIndicator.cs" />
     <Compile Include="Assets\Sculptor\HandBehaviour.cs" />
     <Compile Include="Assets\Sculptor\HandMenuControl.cs" />
+    <Compile Include="Assets\Sculptor\HandMenuObjectControl.cs" />
     <Compile Include="Assets\Sculptor\HeadCanvasControl.cs" />
     <Compile Include="Assets\Sculptor\RecordBehaviour.cs" />
+    <Compile Include="Assets\Sculptor\RotateObj.cs" />
     <Compile Include="Assets\Sculptor\TrackAnchor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\3D Items - Wand Pack\Read Me.txt" />
     <None Include="Assets\CapturePanorama\Compute Shaders\ConvertPanoramaShader.compute" />
     <None Include="Assets\CapturePanorama\Compute Shaders\ConvertPanoramaStereoShader.compute" />
     <None Include="Assets\CapturePanorama\Compute Shaders\TextureToBufferShader.compute" />
@@ -199,6 +195,9 @@
     <None Include="Assets\Cubiquity\Resources\Shaders\VisualizeLOD.shader" />
     <None Include="Assets\Cubiquity\Resources\Shaders\VisualizeNormals.shader" />
     <None Include="Assets\Cubiquity\Unsafe\README.txt" />
+    <None Include="Assets\Demigiant\DOTween\DOTween.XML" />
+    <None Include="Assets\Demigiant\DOTween\Editor\DOTweenEditor.XML" />
+    <None Include="Assets\Demigiant\DOTween\readme.txt" />
     <None Include="Assets\OVR\Moonlight\Resources\Unlit Transparent Color.shader" />
     <None Include="Assets\OVR\Moonlight\Shaders\OVRColorRampAlpha.shader" />
     <None Include="Assets\OVR\Moonlight\Shaders\Unlit Crosshair.shader" />

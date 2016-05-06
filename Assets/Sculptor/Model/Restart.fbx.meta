@@ -1,0 +1,209 @@
+fileFormatVersion: 2
+guid: 127465a90bbe2454480a34ba248651ce
+timeCreated: 1462498894
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Char_a_1
+    100002: Char_e_1
+    100004: Char_R_1
+    100006: Char_r_1
+    100008: Char_R_1_curve1
+    100010: Char_R_1_curve2
+    100012: Char_s_1
+    100014: Char_t_1
+    100016: Char_t_2
+    100018: curve1
+    100020: curve1 1
+    100022: curve10
+    100024: curve2
+    100026: curve3
+    100028: curve4
+    100030: curve5
+    100032: curve6
+    100034: curve7
+    100036: curve8
+    100038: curve9
+    100040: polySurface10
+    100042: polySurface11
+    100044: polySurface12
+    100046: polySurface13
+    100048: polySurface14
+    100050: polySurface15
+    100052: polySurface16
+    100054: polySurface17
+    100056: polySurface18
+    100058: polySurface5
+    100060: polySurface6
+    100062: polySurface7
+    100064: polySurface8
+    100066: polySurface9
+    100068: //RootNode
+    100070: Text_Restart_1
+    100072: transform14
+    100074: transform15
+    100076: transform16
+    100078: transform17
+    100080: transform18
+    100082: transform19
+    100084: transform20
+    100086: transform21
+    100088: transform22
+    100090: transform23
+    100092: transform24
+    100094: transform25
+    100096: transform26
+    100098: transform27
+    100100: transform28
+    100102: transform29
+    100104: transform30
+    100106: transform31
+    100108: transform32
+    100110: transform33
+    100112: transform34
+    100114: transform35
+    100116: transform36
+    100118: Trim_Char_a_1_1
+    100120: Trim_Char_e_1_1
+    100122: Trim_Char_r_1_1
+    100124: Trim_Char_R_1_2
+    100126: Trim_Char_s_1_1
+    100128: Trim_Char_t_1_1
+    100130: Trim_Char_t_2_1
+    100132: Trim_Text_Restart_1_1
+    400000: Char_a_1
+    400002: Char_e_1
+    400004: Char_R_1
+    400006: Char_r_1
+    400008: Char_R_1_curve1
+    400010: Char_R_1_curve2
+    400012: Char_s_1
+    400014: Char_t_1
+    400016: Char_t_2
+    400018: curve1
+    400020: curve1 1
+    400022: curve10
+    400024: curve2
+    400026: curve3
+    400028: curve4
+    400030: curve5
+    400032: curve6
+    400034: curve7
+    400036: curve8
+    400038: curve9
+    400040: polySurface10
+    400042: polySurface11
+    400044: polySurface12
+    400046: polySurface13
+    400048: polySurface14
+    400050: polySurface15
+    400052: polySurface16
+    400054: polySurface17
+    400056: polySurface18
+    400058: polySurface5
+    400060: polySurface6
+    400062: polySurface7
+    400064: polySurface8
+    400066: polySurface9
+    400068: //RootNode
+    400070: Text_Restart_1
+    400072: transform14
+    400074: transform15
+    400076: transform16
+    400078: transform17
+    400080: transform18
+    400082: transform19
+    400084: transform20
+    400086: transform21
+    400088: transform22
+    400090: transform23
+    400092: transform24
+    400094: transform25
+    400096: transform26
+    400098: transform27
+    400100: transform28
+    400102: transform29
+    400104: transform30
+    400106: transform31
+    400108: transform32
+    400110: transform33
+    400112: transform34
+    400114: transform35
+    400116: transform36
+    400118: Trim_Char_a_1_1
+    400120: Trim_Char_e_1_1
+    400122: Trim_Char_r_1_1
+    400124: Trim_Char_R_1_2
+    400126: Trim_Char_s_1_1
+    400128: Trim_Char_t_1_1
+    400130: Trim_Char_t_2_1
+    400132: Trim_Text_Restart_1_1
+    2300000: Char_R_1_curve2
+    3300000: Char_R_1_curve2
+    4300000: Char_R_1_curve2
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

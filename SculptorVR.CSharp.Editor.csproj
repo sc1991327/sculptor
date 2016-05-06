@@ -91,6 +91,12 @@
     <Reference Include="System.Drawing">
       <HintPath>Assets\CapturePanorama\Managed Plugins\System.Drawing.dll</HintPath>
     </Reference>
+    <Reference Include="DOTween">
+      <HintPath>Assets\Demigiant\DOTween\DOTween.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTweenEditor">
+      <HintPath>Assets\Demigiant\DOTween\Editor\DOTweenEditor.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>Assets\Plugins\x86_64\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -129,6 +135,7 @@
     <Compile Include="Assets\Sculptor\Scene\UnityVC\Editor\StandardShaderVCGUI.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\3D Items - Wand Pack\Read Me.txt" />
     <None Include="Assets\CapturePanorama\Compute Shaders\ConvertPanoramaShader.compute" />
     <None Include="Assets\CapturePanorama\Compute Shaders\ConvertPanoramaStereoShader.compute" />
     <None Include="Assets\CapturePanorama\Compute Shaders\TextureToBufferShader.compute" />
@@ -153,6 +160,9 @@
     <None Include="Assets\Cubiquity\Resources\Shaders\VisualizeLOD.shader" />
     <None Include="Assets\Cubiquity\Resources\Shaders\VisualizeNormals.shader" />
     <None Include="Assets\Cubiquity\Unsafe\README.txt" />
+    <None Include="Assets\Demigiant\DOTween\DOTween.XML" />
+    <None Include="Assets\Demigiant\DOTween\Editor\DOTweenEditor.XML" />
+    <None Include="Assets\Demigiant\DOTween\readme.txt" />
     <None Include="Assets\OVR\Moonlight\Resources\Unlit Transparent Color.shader" />
     <None Include="Assets\OVR\Moonlight\Shaders\OVRColorRampAlpha.shader" />
     <None Include="Assets\OVR\Moonlight\Shaders\Unlit Crosshair.shader" />

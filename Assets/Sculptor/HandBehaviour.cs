@@ -20,7 +20,7 @@ public class HandBehaviour : MonoBehaviour {
 
     private TrackAnchor trackAnchor;
     private RecordBehaviour recordBehaviour;
-    private HandMenuControl handMenuControl;
+    private HandMenuObjectControl handMenuObjectControl;
 
     private TerrainVolume terrainVolume;
     private ProceduralTerrainVolume proceduralTerrainVolume;
@@ -137,7 +137,7 @@ public class HandBehaviour : MonoBehaviour {
 
         trackAnchor = GetComponent<TrackAnchor>();
         recordBehaviour = GetComponent<RecordBehaviour>();
-        handMenuControl = GetComponent<HandMenuControl>();
+        handMenuObjectControl = GetComponent<HandMenuObjectControl>();
 
         // empty
         emptyMaterialSet = new MaterialSet();
@@ -221,7 +221,7 @@ public class HandBehaviour : MonoBehaviour {
 
     private void mainPanelHandleOVRInput()
     {
-        int tempTouchID = handMenuControl.GetTouchID();
+        int tempTouchID = handMenuObjectControl.GetTouchID();
         Debug.Log("TouchID:" + tempTouchID);
         switch (tempTouchID)
         {
@@ -279,10 +279,10 @@ public class HandBehaviour : MonoBehaviour {
     private void colorPanelHandleOVRInput()
     {
         // chose color
-        int tempTouchID = handMenuControl.GetTouchID();
+        int tempTouchID = handMenuObjectControl.GetTouchID();
         if (activePanel == ControlPanel.color && tempTouchID >= 0)
         {
-            Color tempcolor = handMenuControl.colorColorList[tempTouchID];
+            Color tempcolor = handMenuObjectControl.colorColorList[tempTouchID];
 
             if (colorChose != tempcolor)
             {
@@ -312,7 +312,7 @@ public class HandBehaviour : MonoBehaviour {
     {
         // execute once for each touch
 
-        int tempTouchID = handMenuControl.GetTouchID();
+        int tempTouchID = handMenuObjectControl.GetTouchID();
         if (tempTouchID >= 0 && tempTouchID < recordBehaviour.recordFileNames.Count)
         {
             recordBehaviour.ReadJsonFile(recordBehaviour.recordFileNames[tempTouchID]);
@@ -326,7 +326,7 @@ public class HandBehaviour : MonoBehaviour {
 
     private void loadPanelHandleOVRInput()
     {
-        int tempTouchID = handMenuControl.GetTouchID();
+        int tempTouchID = handMenuObjectControl.GetTouchID();
         if (tempTouchID >= 0 && tempTouchID < recordBehaviour.loadFileNames.Count)
         {
             proceduralTerrainVolume.LoadVDBFile(recordBehaviour.loadFileNames[tempTouchID]);
@@ -337,7 +337,7 @@ public class HandBehaviour : MonoBehaviour {
 
     private void highPanelHandleOVRInput()
     {
-        int tempTouchID = handMenuControl.GetTouchID();
+        int tempTouchID = handMenuObjectControl.GetTouchID();
         Debug.Log("TouchID:" + tempTouchID);
         switch (tempTouchID)
         {
