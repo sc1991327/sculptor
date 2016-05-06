@@ -13,10 +13,12 @@ public class TrackAnchor : MonoBehaviour {
     public Texture boundTexture = null;
     public Texture planeTexture = null;
 
-    private GameObject leftHand = null;
+    public GameObject leftHand = null;
+    public GameObject leftHandMesh = null;
     private GameObject leftHandChild = null;
 
-    private GameObject rightHand = null;
+    public GameObject rightHand = null;
+    public GameObject rightHandMesh = null;
     private GameObject rightHandChild = null;
 
     private GameObject terrainWorld = null;
@@ -55,6 +57,7 @@ public class TrackAnchor : MonoBehaviour {
     private Vector3 mirrorScale = new Vector3(30, 30, 30);
 
     private OptModePanel activeMode, nowMode;
+    private OptState activeState;
 
     //private ControlPanel showColorCube = ControlPanel.empty;
     //private Vector3 ColorBlackPoint = new Vector3(0, 0, 0);
@@ -75,12 +78,6 @@ public class TrackAnchor : MonoBehaviour {
         terrainWorld.transform.GetComponent<Renderer>().material.color = materialColor;
         terrainWorld.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
-        rightHand = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        materialColor = rightHand.transform.GetComponent<Renderer>().material.color;
-        materialColor.a = colorAlpha;
-        rightHand.transform.GetComponent<Renderer>().material.color = materialColor;
-        rightHand.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
-
         rightHandChild = GameObject.CreatePrimitive(PrimitiveType.Cube);
         rightHandChild.transform.position = rightChildPosition;
         rightHandChild.transform.parent = rightHand.transform;
@@ -88,12 +85,6 @@ public class TrackAnchor : MonoBehaviour {
         materialChildColor.a = colorChildAlpha;
         rightHandChild.transform.GetComponent<Renderer>().material.color = materialChildColor;
         rightHandChild.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
-
-        leftHand = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        materialColor = leftHand.transform.GetComponent<Renderer>().material.color;
-        materialColor.a = colorAlpha;
-        leftHand.transform.GetComponent<Renderer>().material.color = materialColor;
-        leftHand.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
         leftHandChild = GameObject.CreatePrimitive(PrimitiveType.Cube);
         leftHandChild.transform.position = leftChildPosition;
@@ -173,9 +164,7 @@ public class TrackAnchor : MonoBehaviour {
 
         var transparentLayer = LayerMask.NameToLayer("TransparentFX");
         terrainWorld.layer = transparentLayer;
-        rightHand.layer = transparentLayer;
         rightHandChild.layer = transparentLayer;
-        leftHand.layer = transparentLayer;
         leftHandChild.layer = transparentLayer;
         twiceHand.layer = transparentLayer;
         //colorCube.layer = transparentLayer;
@@ -186,64 +175,46 @@ public class TrackAnchor : MonoBehaviour {
 
         optRange = handBehaviour.GetOptRange();
 
+
+
         nowShape = handBehaviour.GetActiveShape();
         if (nowShape != activeShape)
         {
             switch (nowShape)
             {
                 case OptShape.cube:
-                    UnityEngine.Object.Destroy(rightHand.gameObject);
                     UnityEngine.Object.Destroy(rightHandChild.gameObject);
-                    UnityEngine.Object.Destroy(leftHand.gameObject);
                     UnityEngine.Object.Destroy(leftHandChild.gameObject);
                     UnityEngine.Object.Destroy(twiceHand.gameObject);
-                    leftHand = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     leftHandChild = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    rightHand = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     rightHandChild = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     twiceHand = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     break;
                 case OptShape.sphere:
-                    UnityEngine.Object.Destroy(rightHand.gameObject);
                     UnityEngine.Object.Destroy(rightHandChild.gameObject);
-                    UnityEngine.Object.Destroy(leftHand.gameObject);
                     UnityEngine.Object.Destroy(leftHandChild.gameObject);
                     UnityEngine.Object.Destroy(twiceHand.gameObject);
-                    leftHand = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     leftHandChild = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                    rightHand = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     rightHandChild = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     twiceHand = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     break;
                 case OptShape.cylinder:
-                    UnityEngine.Object.Destroy(rightHand.gameObject);
                     UnityEngine.Object.Destroy(rightHandChild.gameObject);
-                    UnityEngine.Object.Destroy(leftHand.gameObject);
                     UnityEngine.Object.Destroy(leftHandChild.gameObject);
                     UnityEngine.Object.Destroy(twiceHand.gameObject);
-                    leftHand = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                     leftHandChild = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                    rightHand = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                     rightHandChild = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                     twiceHand = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                     break;
                 case OptShape.capsule:
-                    UnityEngine.Object.Destroy(rightHand.gameObject);
                     UnityEngine.Object.Destroy(rightHandChild.gameObject);
-                    UnityEngine.Object.Destroy(leftHand.gameObject);
                     UnityEngine.Object.Destroy(leftHandChild.gameObject);
                     UnityEngine.Object.Destroy(twiceHand.gameObject);
-                    leftHand = GameObject.CreatePrimitive(PrimitiveType.Capsule);
                     leftHandChild = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-                    rightHand = GameObject.CreatePrimitive(PrimitiveType.Capsule);
                     rightHandChild = GameObject.CreatePrimitive(PrimitiveType.Capsule);
                     twiceHand = GameObject.CreatePrimitive(PrimitiveType.Capsule);
                     break;
             }
-            materialColor = rightHand.transform.GetComponent<Renderer>().material.color;
-            materialColor.a = 0.05f;
-            rightHand.transform.GetComponent<Renderer>().material.color = materialColor;
-            rightHand.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
             rightHandChild.transform.position = rightChildPosition;
             rightHandChild.transform.parent = rightHand.transform;
@@ -251,11 +222,6 @@ public class TrackAnchor : MonoBehaviour {
             materialChildColor.a = 0.3f;
             rightHandChild.transform.GetComponent<Renderer>().material.color = materialChildColor;
             rightHandChild.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
-
-            materialColor = leftHand.transform.GetComponent<Renderer>().material.color;
-            materialColor.a = 0.05f;
-            leftHand.transform.GetComponent<Renderer>().material.color = materialColor;
-            leftHand.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
             leftHandChild.transform.position = leftChildPosition;
             leftHandChild.transform.parent = leftHand.transform;
@@ -281,12 +247,30 @@ public class TrackAnchor : MonoBehaviour {
 
             var transparentLayer = LayerMask.NameToLayer("TransparentFX");
             terrainWorld.layer = transparentLayer;
-            rightHand.layer = transparentLayer;
             rightHandChild.layer = transparentLayer;
-            leftHand.layer = transparentLayer;
             leftHandChild.layer = transparentLayer;
             twiceHand.layer = transparentLayer;
-            //colorCube.layer = transparentLayer;
+        }
+
+        activeState = handBehaviour.GetActiveState();
+        switch (activeState)
+        {
+            case OptState.create:
+                leftHandMesh.transform.localEulerAngles = (new Vector3(-90, 90, 90));
+                rightHandMesh.transform.localEulerAngles = (new Vector3(-90, 90, 90));
+                break;
+            case OptState.delete:
+                leftHandMesh.transform.localEulerAngles = (new Vector3(180, 90, 90));
+                rightHandMesh.transform.localEulerAngles = (new Vector3(180, 90, 90));
+                break;
+            case OptState.smooth:
+                leftHandMesh.transform.localEulerAngles = (new Vector3(90, 90, 90));
+                rightHandMesh.transform.localEulerAngles = (new Vector3(90, 90, 90));
+                break;
+            case OptState.paint:
+                leftHandMesh.transform.localEulerAngles = (new Vector3(0, 90, 90));
+                rightHandMesh.transform.localEulerAngles = (new Vector3(0, 90, 90));
+                break;
         }
 
         // mirror

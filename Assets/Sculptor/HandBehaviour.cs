@@ -63,7 +63,7 @@ public class HandBehaviour : MonoBehaviour {
     private float ButtonTimeControlSingle = 0.3f;
     private float markTime;
 
-    private int optRange = 4;
+    private int optRange = 6;
     private Vector3 tempDrawPosScaled;
     private Vector3 tempDrawRotate;
     private Vector3 tempDrawScale;
@@ -71,8 +71,8 @@ public class HandBehaviour : MonoBehaviour {
     private Vector3 rightRotateEuler;
     private Vector3 leftRotateEuler;
 
-    private Vector3 leftChildPos = new Vector3(0, 0, 1);
-    private Vector3 rightChildPos = new Vector3(0, 0, 1);
+    private Vector3 leftChildPos = new Vector3(0, 0, 2);
+    private Vector3 rightChildPos = new Vector3(0, 0, 2);
 
     private Color colorChose = Color.white;
 
@@ -391,6 +391,7 @@ public class HandBehaviour : MonoBehaviour {
         if ((Axis2D_LB_Left || Axis2D_RB_Left || Axis2D_LB_Right || Axis2D_RB_Right) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
             singleHandOptMode++;
+            buttonPreTime = Time.time;
         }
     }
 
