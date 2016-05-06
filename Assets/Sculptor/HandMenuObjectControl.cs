@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class HandMenuObjectControl : MonoBehaviour
 {
@@ -33,8 +34,9 @@ public class HandMenuObjectControl : MonoBehaviour
 
     private int menuPoints = 0;
     private float MenuChildRadio = 0.2f;
-    private float MenuLocalScale = 0.08f;
-    private float MenuLocalScaleMax = 0.1f;
+    private float MenuStartLocalScale = 0.001f;
+    private float MenuEndLocalScale = 0.08f;
+    private float MenuLocalScaleMax = 0.12f;
     private float menuAlpha = 0.3f;
 
     private GameObject MenuCenterObject;
@@ -183,7 +185,7 @@ public class HandMenuObjectControl : MonoBehaviour
         {
             float dis = Vector3.Distance(nowPosList[ti], handPos);
 
-            if (dis < MenuLocalScale / 2)
+            if (dis < MenuEndLocalScale / 2)
             {
                 audioSource.transform.position = nowPosList[ti];
                 if (hasPlayed == false)
@@ -199,8 +201,16 @@ public class HandMenuObjectControl : MonoBehaviour
             }
 
             // menu state animation
-            float tempV = 1 - (Mathf.Clamp(dis, MenuLocalScale, MenuChildRadio) - MenuLocalScale) / (MenuChildRadio - MenuLocalScale);
-            MenuChildObject[ti].transform.localScale = new Vector3(MenuLocalScale + tempV * (MenuLocalScaleMax - MenuLocalScale), MenuLocalScale + tempV * (MenuLocalScaleMax - MenuLocalScale), MenuLocalScale + tempV * (MenuLocalScaleMax - MenuLocalScale));
+            if (MenuChildObject[ti].transform.localScale.x < MenuEndLocalScale)
+            {
+                MenuChildObject[ti].transform.localScale += new Vector3(0.003f, 0.003f, 0.003f);
+            } 
+            else
+            {
+                float tempV = 1 - (Mathf.Clamp(dis, MenuEndLocalScale, MenuChildRadio) - MenuEndLocalScale) / (MenuChildRadio - MenuEndLocalScale);
+                MenuChildObject[ti].transform.localScale = new Vector3(MenuEndLocalScale + tempV * (MenuLocalScaleMax - MenuEndLocalScale), MenuEndLocalScale + tempV * (MenuLocalScaleMax - MenuEndLocalScale), MenuEndLocalScale + tempV * (MenuLocalScaleMax - MenuEndLocalScale));
+            }
+
         }
 
         return -1;
@@ -252,7 +262,7 @@ public class HandMenuObjectControl : MonoBehaviour
             GameObject tempObj;
             tempObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             tempObj.transform.parent = MenuCenterObject.transform;
-            tempObj.transform.localScale = new Vector3(MenuLocalScale, MenuLocalScale, MenuLocalScale);
+            tempObj.transform.localScale = new Vector3(MenuStartLocalScale, MenuStartLocalScale, MenuStartLocalScale);
             tempObj.transform.localPosition = MenuChildLocalPos[oi];
             tempObj.transform.GetComponent<Renderer>().material.color = colorColorList[oi];
 
@@ -277,8 +287,8 @@ public class HandMenuObjectControl : MonoBehaviour
             GameObject tempObj = menuobjects[oi];
             tempObj.SetActive(true);
             tempObj.transform.parent = MenuCenterObject.transform;
-            tempObj.transform.localScale = new Vector3(MenuLocalScale, MenuLocalScale, MenuLocalScale);
             tempObj.transform.localPosition = MenuChildLocalPos[oi];
+            tempObj.transform.localScale = new Vector3(MenuStartLocalScale, MenuStartLocalScale, MenuStartLocalScale);
 
             MenuChildObject.Add(tempObj);
             MenuChildPos.Add(tempObj.transform.position);
@@ -295,7 +305,7 @@ public class HandMenuObjectControl : MonoBehaviour
             GameObject tempObj = new GameObject();
             tempObj.AddComponent<TextMesh>();
             tempObj.transform.parent = MenuCenterObject.transform;
-            tempObj.transform.localScale = new Vector3(MenuLocalScale, MenuLocalScale, MenuLocalScale);
+            tempObj.transform.localScale = new Vector3(MenuStartLocalScale, MenuStartLocalScale, MenuStartLocalScale);
             tempObj.transform.localPosition = MenuChildLocalPos[oi];
             tempObj.transform.GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value);
             tempObj.GetComponent<TextMesh>().text = textlist[oi].Substring(textlist[oi].LastIndexOf('\\') + 1);
@@ -317,7 +327,7 @@ public class HandMenuObjectControl : MonoBehaviour
             GameObject tempObj;
             tempObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             tempObj.transform.parent = MenuCenterObject.transform;
-            tempObj.transform.localScale = new Vector3(MenuLocalScale, MenuLocalScale, MenuLocalScale);
+            tempObj.transform.localScale = new Vector3(MenuStartLocalScale, MenuStartLocalScale, MenuStartLocalScale);
             tempObj.transform.localPosition = MenuChildLocalPos[oi];
             tempObj.transform.GetComponent<Renderer>().material.mainTexture = texturelist[oi];
 
@@ -341,7 +351,7 @@ public class HandMenuObjectControl : MonoBehaviour
             GameObject tempObj;
             tempObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             tempObj.transform.parent = MenuCenterObject.transform;
-            tempObj.transform.localScale = new Vector3(MenuLocalScale, MenuLocalScale, MenuLocalScale);
+            tempObj.transform.localScale = new Vector3(MenuStartLocalScale, MenuStartLocalScale, MenuStartLocalScale);
             tempObj.transform.localPosition = MenuChildLocalPos[oi];
             tempObj.transform.GetComponent<Renderer>().material.color = colorlist[oi];
 
@@ -365,7 +375,7 @@ public class HandMenuObjectControl : MonoBehaviour
             GameObject tempObj;
             tempObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             tempObj.transform.parent = MenuCenterObject.transform;
-            tempObj.transform.localScale = new Vector3(MenuLocalScale, MenuLocalScale, MenuLocalScale);
+            tempObj.transform.localScale = new Vector3(MenuStartLocalScale, MenuStartLocalScale, MenuStartLocalScale);
             tempObj.transform.localPosition = MenuChildLocalPos[oi];
             tempObj.transform.GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value);
 

@@ -389,7 +389,7 @@ Transform:
   - {fileID: 223191096}
   - {fileID: 1326980006}
   m_Father: {fileID: 969446408}
-  m_RootOrder: 21
+  m_RootOrder: 10
 --- !u!1001 &80624226
 Prefab:
   m_ObjectHideFlags: 0
@@ -826,7 +826,7 @@ Transform:
   - {fileID: 408841890}
   - {fileID: 1325411373}
   m_Father: {fileID: 969446408}
-  m_RootOrder: 18
+  m_RootOrder: 7
 --- !u!1001 &214576785
 Prefab:
   m_ObjectHideFlags: 0
@@ -964,20 +964,6 @@ CanvasRenderer:
 GameObject:
   m_PrefabParentObject: {fileID: 168962, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 2}
   m_PrefabInternal: {fileID: 100700749}
---- !u!114 &251598073
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5775844f6e499034eb955d3c113ed57e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  basePath: 2
-  relativePathToVoxelDatabase: D:/unitysculptor/SculptorVR/Assets/StreamingAssets/Cubiquity/VoxelDatabases/VRSculptor_1126943363.vdb
-  mWritePermissions: 1
 --- !u!4 &265474689 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400066, guid: a7a95e4157388794cb6877cb6e00dda0, type: 3}
@@ -1059,7 +1045,7 @@ Transform:
   - {fileID: 2120475147}
   - {fileID: 86427208}
   m_Father: {fileID: 969446408}
-  m_RootOrder: 11
+  m_RootOrder: 0
 --- !u!1 &322748620
 GameObject:
   m_ObjectHideFlags: 0
@@ -1482,72 +1468,11 @@ Transform:
   - {fileID: 1406752461}
   - {fileID: 1894726062}
   m_Father: {fileID: 969446408}
-  m_RootOrder: 13
+  m_RootOrder: 2
 --- !u!4 &497944644 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400042, guid: c54fa167f7ec470429bf7d5903842b36, type: 3}
   m_PrefabInternal: {fileID: 1905792707}
---- !u!1 &561470190
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 561470191}
-  - 114: {fileID: 561470192}
-  m_Layer: 0
-  m_Name: CustomizablePowerUp_Undo
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &561470191
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 561470190}
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: -0.00000016292068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
-  m_Children: []
-  m_Father: {fileID: 969446408}
-  m_RootOrder: 5
---- !u!114 &561470192
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 561470190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51803f42c5ad6ed469cd71e4b4e0dec0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  powerUpName: 
-  isTakeable: 1
-  pickUpSound: {fileID: 8300000, guid: a4a9327e98855524c846cc8e2f559e96, type: 3}
-  externHull: {fileID: 120638, guid: f8efad34b6fb67641a44679362c8f942, type: 2}
-  externHullRotSpeed: 65
-  externHullIsReverse: 0
-  externHullMaterial: {fileID: 2100000, guid: 02758698f6605d345a67239c79c069b6, type: 2}
-  internHull: {fileID: 116466, guid: 149a83b3d7325574581f93b92f7e7746, type: 2}
-  internHullRotSpeed: 65
-  internHullIsReverse: 1
-  internHullMaterial: {fileID: 2100000, guid: 78b3d2607f4c8c843b131bd40468e68a, type: 2}
-  effect: {fileID: 0}
-  effectRotSpeed: 65
-  effectIsReverse: 0
-  item: {fileID: 100044, guid: 3640fb7ce63c09c419539bda0c1a12cc, type: 3}
-  itemRotSpeed: 0
-  itemIsReverse: 0
-  itemMaterial: {fileID: 2100000, guid: 64f4603d589ad9b4fb378d4977c03317, type: 2}
-  lightColor: {r: 0, g: 0.58875424, b: 0.97647065, a: 1}
-  lightIntensity: 0.1
-  lightRange: 0.1
 --- !u!1 &567557954
 GameObject:
   m_ObjectHideFlags: 0
@@ -1613,67 +1538,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 567557954}
   m_Mesh: {fileID: 4300000, guid: 1174addb669e97c46900d23a285f8466, type: 3}
---- !u!1 &623971106
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 623971107}
-  - 114: {fileID: 623971108}
-  m_Layer: 0
-  m_Name: CustomizablePowerUp_Load
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &623971107
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 623971106}
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: -0.00000016292068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
-  m_Children: []
-  m_Father: {fileID: 969446408}
-  m_RootOrder: 8
---- !u!114 &623971108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 623971106}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51803f42c5ad6ed469cd71e4b4e0dec0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  powerUpName: 
-  isTakeable: 1
-  pickUpSound: {fileID: 8300000, guid: a4a9327e98855524c846cc8e2f559e96, type: 3}
-  externHull: {fileID: 120638, guid: f8efad34b6fb67641a44679362c8f942, type: 2}
-  externHullRotSpeed: 65
-  externHullIsReverse: 0
-  externHullMaterial: {fileID: 2100000, guid: 02758698f6605d345a67239c79c069b6, type: 2}
-  internHull: {fileID: 116466, guid: 149a83b3d7325574581f93b92f7e7746, type: 2}
-  internHullRotSpeed: 65
-  internHullIsReverse: 1
-  internHullMaterial: {fileID: 2100000, guid: 78b3d2607f4c8c843b131bd40468e68a, type: 2}
-  effect: {fileID: 0}
-  effectRotSpeed: 65
-  effectIsReverse: 0
-  item: {fileID: 100024, guid: c2bf020fbe2f9f54ba9254806620db59, type: 3}
-  itemRotSpeed: 0
-  itemIsReverse: 0
-  itemMaterial: {fileID: 2100000, guid: 64f4603d589ad9b4fb378d4977c03317, type: 2}
-  lightColor: {r: 0, g: 0.58875424, b: 0.97647065, a: 1}
-  lightIntensity: 0.1
-  lightRange: 0.1
 --- !u!1 &626622222
 GameObject:
   m_ObjectHideFlags: 0
@@ -1766,7 +1630,7 @@ Transform:
   - {fileID: 1748583842}
   - {fileID: 1202040885}
   m_Father: {fileID: 969446408}
-  m_RootOrder: 15
+  m_RootOrder: 4
 --- !u!1 &684943092
 GameObject:
   m_ObjectHideFlags: 0
@@ -1919,7 +1783,7 @@ Transform:
   - {fileID: 28875074}
   - {fileID: 265474689}
   m_Father: {fileID: 969446408}
-  m_RootOrder: 14
+  m_RootOrder: 3
 --- !u!1 &753399018 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 116466, guid: 149a83b3d7325574581f93b92f7e7746, type: 2}
@@ -2221,7 +2085,7 @@ Transform:
   - {fileID: 214576786}
   - {fileID: 497944644}
   m_Father: {fileID: 969446408}
-  m_RootOrder: 19
+  m_RootOrder: 8
 --- !u!1 &826901847
 GameObject:
   m_ObjectHideFlags: 0
@@ -2299,7 +2163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045d67dae0d4c514a8e6add34c63a804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mData: {fileID: 251598073}
+  mData: {fileID: 1367174537}
 --- !u!114 &826901852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2508,17 +2372,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 1474321758}
-  - {fileID: 1924714298}
-  - {fileID: 1761822942}
-  - {fileID: 1980421955}
-  - {fileID: 1157765321}
-  - {fileID: 561470191}
-  - {fileID: 2104254282}
-  - {fileID: 1574821063}
-  - {fileID: 623971107}
-  - {fileID: 1772584611}
-  - {fileID: 1738072382}
   - {fileID: 313972762}
   - {fileID: 1612153391}
   - {fileID: 486246193}
@@ -2610,67 +2463,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a7a95e4157388794cb6877cb6e00dda0, type: 3}
   m_IsPrefabParent: 0
---- !u!1 &1157765320
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1157765321}
-  - 114: {fileID: 1157765322}
-  m_Layer: 0
-  m_Name: CustomizablePowerUp_Replay
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1157765321
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1157765320}
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: -0.00000016292068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
-  m_Children: []
-  m_Father: {fileID: 969446408}
-  m_RootOrder: 4
---- !u!114 &1157765322
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1157765320}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51803f42c5ad6ed469cd71e4b4e0dec0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  powerUpName: 
-  isTakeable: 1
-  pickUpSound: {fileID: 8300000, guid: a4a9327e98855524c846cc8e2f559e96, type: 3}
-  externHull: {fileID: 120638, guid: f8efad34b6fb67641a44679362c8f942, type: 2}
-  externHullRotSpeed: 65
-  externHullIsReverse: 0
-  externHullMaterial: {fileID: 2100000, guid: 02758698f6605d345a67239c79c069b6, type: 2}
-  internHull: {fileID: 116466, guid: 149a83b3d7325574581f93b92f7e7746, type: 2}
-  internHullRotSpeed: 65
-  internHullIsReverse: 1
-  internHullMaterial: {fileID: 2100000, guid: 78b3d2607f4c8c843b131bd40468e68a, type: 2}
-  effect: {fileID: 0}
-  effectRotSpeed: 65
-  effectIsReverse: 0
-  item: {fileID: 100048, guid: 4c3482a9c6e00e34b89ca26d6971f9ad, type: 3}
-  itemRotSpeed: 0
-  itemIsReverse: 0
-  itemMaterial: {fileID: 2100000, guid: 64f4603d589ad9b4fb378d4977c03317, type: 2}
-  lightColor: {r: 0, g: 0.58875424, b: 0.97647065, a: 1}
-  lightIntensity: 0.1
-  lightRange: 0.1
 --- !u!1001 &1187235822
 Prefab:
   m_ObjectHideFlags: 0
@@ -3047,7 +2839,7 @@ Transform:
   - {fileID: 2719143}
   - {fileID: 1433833483}
   m_Father: {fileID: 969446408}
-  m_RootOrder: 20
+  m_RootOrder: 9
 --- !u!4 &1325411373 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400068, guid: 127465a90bbe2454480a34ba248651ce, type: 3}
@@ -3086,7 +2878,21 @@ Transform:
   - {fileID: 448611636}
   - {fileID: 1389736296}
   m_Father: {fileID: 969446408}
-  m_RootOrder: 17
+  m_RootOrder: 6
+--- !u!114 &1367174537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5775844f6e499034eb955d3c113ed57e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  basePath: 2
+  relativePathToVoxelDatabase: D:/unitysculptor/SculptorVR/Assets/StreamingAssets/Cubiquity/VoxelDatabases/VRSculptor_1147793679.vdb
+  mWritePermissions: 1
 --- !u!4 &1389736296 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400010, guid: b17480b3d32893144bf81fee7b3e9910, type: 3}
@@ -3322,67 +3128,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1469372163}
---- !u!1 &1474321757
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1474321758}
-  - 114: {fileID: 1474321759}
-  m_Layer: 0
-  m_Name: CustomizablePowerUp_Color
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1474321758
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1474321757}
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: -0.00000016292068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
-  m_Children: []
-  m_Father: {fileID: 969446408}
-  m_RootOrder: 0
---- !u!114 &1474321759
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1474321757}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51803f42c5ad6ed469cd71e4b4e0dec0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  powerUpName: 
-  isTakeable: 1
-  pickUpSound: {fileID: 8300000, guid: a4a9327e98855524c846cc8e2f559e96, type: 3}
-  externHull: {fileID: 120638, guid: f8efad34b6fb67641a44679362c8f942, type: 2}
-  externHullRotSpeed: 65
-  externHullIsReverse: 0
-  externHullMaterial: {fileID: 2100000, guid: 02758698f6605d345a67239c79c069b6, type: 2}
-  internHull: {fileID: 116466, guid: 149a83b3d7325574581f93b92f7e7746, type: 2}
-  internHullRotSpeed: 65
-  internHullIsReverse: 1
-  internHullMaterial: {fileID: 2100000, guid: 78b3d2607f4c8c843b131bd40468e68a, type: 2}
-  effect: {fileID: 0}
-  effectRotSpeed: 65
-  effectIsReverse: 0
-  item: {fileID: 100024, guid: d1bcc6eb0141b204db6561cb49be440f, type: 3}
-  itemRotSpeed: 0
-  itemIsReverse: 0
-  itemMaterial: {fileID: 2100000, guid: 64f4603d589ad9b4fb378d4977c03317, type: 2}
-  lightColor: {r: 0, g: 0.58875424, b: 0.97647065, a: 1}
-  lightIntensity: 0.1
-  lightRange: 0.1
 --- !u!1 &1478270620
 GameObject:
   m_ObjectHideFlags: 0
@@ -3697,67 +3442,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ac8e11b29e55cfb4591c35004e77d6ca, type: 3}
   m_IsPrefabParent: 0
---- !u!1 &1574821062
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1574821063}
-  - 114: {fileID: 1574821064}
-  m_Layer: 0
-  m_Name: CustomizablePowerUp_Restart
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1574821063
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1574821062}
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: -0.00000016292068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
-  m_Children: []
-  m_Father: {fileID: 969446408}
-  m_RootOrder: 7
---- !u!114 &1574821064
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1574821062}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51803f42c5ad6ed469cd71e4b4e0dec0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  powerUpName: 
-  isTakeable: 1
-  pickUpSound: {fileID: 8300000, guid: a4a9327e98855524c846cc8e2f559e96, type: 3}
-  externHull: {fileID: 120638, guid: f8efad34b6fb67641a44679362c8f942, type: 2}
-  externHullRotSpeed: 65
-  externHullIsReverse: 0
-  externHullMaterial: {fileID: 2100000, guid: 02758698f6605d345a67239c79c069b6, type: 2}
-  internHull: {fileID: 116466, guid: 149a83b3d7325574581f93b92f7e7746, type: 2}
-  internHullRotSpeed: 65
-  internHullIsReverse: 1
-  internHullMaterial: {fileID: 2100000, guid: 78b3d2607f4c8c843b131bd40468e68a, type: 2}
-  effect: {fileID: 0}
-  effectRotSpeed: 65
-  effectIsReverse: 0
-  item: {fileID: 100068, guid: 127465a90bbe2454480a34ba248651ce, type: 3}
-  itemRotSpeed: 0
-  itemIsReverse: 0
-  itemMaterial: {fileID: 2100000, guid: 64f4603d589ad9b4fb378d4977c03317, type: 2}
-  lightColor: {r: 0, g: 0.58875424, b: 0.97647065, a: 1}
-  lightIntensity: 0.1
-  lightRange: 0.1
 --- !u!1 &1595255100 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 120638, guid: f8efad34b6fb67641a44679362c8f942, type: 2}
@@ -3804,7 +3488,7 @@ Transform:
   - {fileID: 1861956778}
   - {fileID: 1310273348}
   m_Father: {fileID: 969446408}
-  m_RootOrder: 12
+  m_RootOrder: 1
 --- !u!1 &1634124945
 GameObject:
   m_ObjectHideFlags: 0
@@ -4181,67 +3865,6 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 493792, guid: 149a83b3d7325574581f93b92f7e7746, type: 2}
   m_PrefabInternal: {fileID: 1737864962}
---- !u!1 &1738072381
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1738072382}
-  - 114: {fileID: 1738072383}
-  m_Layer: 0
-  m_Name: CustomizablePowerUp_Network
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1738072382
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1738072381}
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: -0.00000016292068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
-  m_Children: []
-  m_Father: {fileID: 969446408}
-  m_RootOrder: 10
---- !u!114 &1738072383
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1738072381}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51803f42c5ad6ed469cd71e4b4e0dec0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  powerUpName: 
-  isTakeable: 1
-  pickUpSound: {fileID: 8300000, guid: a4a9327e98855524c846cc8e2f559e96, type: 3}
-  externHull: {fileID: 120638, guid: f8efad34b6fb67641a44679362c8f942, type: 2}
-  externHullRotSpeed: 65
-  externHullIsReverse: 0
-  externHullMaterial: {fileID: 2100000, guid: 02758698f6605d345a67239c79c069b6, type: 2}
-  internHull: {fileID: 116466, guid: 149a83b3d7325574581f93b92f7e7746, type: 2}
-  internHullRotSpeed: 65
-  internHullIsReverse: 1
-  internHullMaterial: {fileID: 2100000, guid: 78b3d2607f4c8c843b131bd40468e68a, type: 2}
-  effect: {fileID: 0}
-  effectRotSpeed: 65
-  effectIsReverse: 0
-  item: {fileID: 100058, guid: 47ba070e9f2a72f40b24aab61c15c05e, type: 3}
-  itemRotSpeed: 0
-  itemIsReverse: 0
-  itemMaterial: {fileID: 2100000, guid: 64f4603d589ad9b4fb378d4977c03317, type: 2}
-  lightColor: {r: 0, g: 0.58875424, b: 0.97647065, a: 1}
-  lightIntensity: 0.1
-  lightRange: 0.1
 --- !u!1 &1747002387 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 120638, guid: f8efad34b6fb67641a44679362c8f942, type: 2}
@@ -4304,128 +3927,6 @@ Prefab:
 Transform:
   m_PrefabParentObject: {fileID: 462918, guid: f8efad34b6fb67641a44679362c8f942, type: 2}
   m_PrefabInternal: {fileID: 1748583841}
---- !u!1 &1761822941
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1761822942}
-  - 114: {fileID: 1761822943}
-  m_Layer: 0
-  m_Name: CustomizablePowerUp_Mirror
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1761822942
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1761822941}
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: -0.00000016292068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
-  m_Children: []
-  m_Father: {fileID: 969446408}
-  m_RootOrder: 2
---- !u!114 &1761822943
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1761822941}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51803f42c5ad6ed469cd71e4b4e0dec0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  powerUpName: 
-  isTakeable: 1
-  pickUpSound: {fileID: 8300000, guid: a4a9327e98855524c846cc8e2f559e96, type: 3}
-  externHull: {fileID: 120638, guid: f8efad34b6fb67641a44679362c8f942, type: 2}
-  externHullRotSpeed: 65
-  externHullIsReverse: 0
-  externHullMaterial: {fileID: 2100000, guid: 02758698f6605d345a67239c79c069b6, type: 2}
-  internHull: {fileID: 116466, guid: 149a83b3d7325574581f93b92f7e7746, type: 2}
-  internHullRotSpeed: 65
-  internHullIsReverse: 1
-  internHullMaterial: {fileID: 2100000, guid: 78b3d2607f4c8c843b131bd40468e68a, type: 2}
-  effect: {fileID: 0}
-  effectRotSpeed: 65
-  effectIsReverse: 0
-  item: {fileID: 100056, guid: 8f2d685804c9fd644b1f70856b2d75ee, type: 3}
-  itemRotSpeed: 0
-  itemIsReverse: 0
-  itemMaterial: {fileID: 2100000, guid: 64f4603d589ad9b4fb378d4977c03317, type: 2}
-  lightColor: {r: 0, g: 0.58875424, b: 0.97647065, a: 1}
-  lightIntensity: 0.1
-  lightRange: 0.1
---- !u!1 &1772584610
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1772584611}
-  - 114: {fileID: 1772584612}
-  m_Layer: 0
-  m_Name: CustomizablePowerUp_Save
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1772584611
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1772584610}
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: -0.00000016292068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
-  m_Children: []
-  m_Father: {fileID: 969446408}
-  m_RootOrder: 9
---- !u!114 &1772584612
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1772584610}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51803f42c5ad6ed469cd71e4b4e0dec0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  powerUpName: 
-  isTakeable: 0
-  pickUpSound: {fileID: 8300000, guid: a4a9327e98855524c846cc8e2f559e96, type: 3}
-  externHull: {fileID: 120638, guid: f8efad34b6fb67641a44679362c8f942, type: 2}
-  externHullRotSpeed: 65
-  externHullIsReverse: 0
-  externHullMaterial: {fileID: 2100000, guid: 02758698f6605d345a67239c79c069b6, type: 2}
-  internHull: {fileID: 116466, guid: 149a83b3d7325574581f93b92f7e7746, type: 2}
-  internHullRotSpeed: 65
-  internHullIsReverse: 1
-  internHullMaterial: {fileID: 2100000, guid: 78b3d2607f4c8c843b131bd40468e68a, type: 2}
-  effect: {fileID: 0}
-  effectRotSpeed: 65
-  effectIsReverse: 0
-  item: {fileID: 100042, guid: c54fa167f7ec470429bf7d5903842b36, type: 3}
-  itemRotSpeed: 0
-  itemIsReverse: 0
-  itemMaterial: {fileID: 2100000, guid: 64f4603d589ad9b4fb378d4977c03317, type: 2}
-  lightColor: {r: 0, g: 0.58875424, b: 0.97647065, a: 1}
-  lightIntensity: 0.1
-  lightRange: 0.1
 --- !u!1 &1822243809
 GameObject:
   m_ObjectHideFlags: 0
@@ -4693,67 +4194,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c54fa167f7ec470429bf7d5903842b36, type: 3}
   m_IsPrefabParent: 0
---- !u!1 &1924714297
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1924714298}
-  - 114: {fileID: 1924714299}
-  m_Layer: 0
-  m_Name: CustomizablePowerUp_Sculptor
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1924714298
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1924714297}
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: -0.00000016292068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
-  m_Children: []
-  m_Father: {fileID: 969446408}
-  m_RootOrder: 1
---- !u!114 &1924714299
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1924714297}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51803f42c5ad6ed469cd71e4b4e0dec0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  powerUpName: 
-  isTakeable: 1
-  pickUpSound: {fileID: 8300000, guid: a4a9327e98855524c846cc8e2f559e96, type: 3}
-  externHull: {fileID: 120638, guid: f8efad34b6fb67641a44679362c8f942, type: 2}
-  externHullRotSpeed: 65
-  externHullIsReverse: 0
-  externHullMaterial: {fileID: 2100000, guid: 02758698f6605d345a67239c79c069b6, type: 2}
-  internHull: {fileID: 116466, guid: 149a83b3d7325574581f93b92f7e7746, type: 2}
-  internHullRotSpeed: 65
-  internHullIsReverse: 1
-  internHullMaterial: {fileID: 2100000, guid: 78b3d2607f4c8c843b131bd40468e68a, type: 2}
-  effect: {fileID: 0}
-  effectRotSpeed: 65
-  effectIsReverse: 0
-  item: {fileID: 100112, guid: ac8e11b29e55cfb4591c35004e77d6ca, type: 3}
-  itemRotSpeed: 0
-  itemIsReverse: 0
-  itemMaterial: {fileID: 2100000, guid: 64f4603d589ad9b4fb378d4977c03317, type: 2}
-  lightColor: {r: 0, g: 0.58875424, b: 0.97647065, a: 1}
-  lightIntensity: 0.1
-  lightRange: 0.1
 --- !u!21 &1944232371
 Material:
   serializedVersion: 6
@@ -4958,67 +4398,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1959319876}
---- !u!1 &1980421954
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1980421955}
-  - 114: {fileID: 1980421956}
-  m_Layer: 0
-  m_Name: CustomizablePowerUp_High
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1980421955
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1980421954}
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: -0.00000016292068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
-  m_Children: []
-  m_Father: {fileID: 969446408}
-  m_RootOrder: 3
---- !u!114 &1980421956
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1980421954}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51803f42c5ad6ed469cd71e4b4e0dec0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  powerUpName: 
-  isTakeable: 1
-  pickUpSound: {fileID: 8300000, guid: a4a9327e98855524c846cc8e2f559e96, type: 3}
-  externHull: {fileID: 120638, guid: f8efad34b6fb67641a44679362c8f942, type: 2}
-  externHullRotSpeed: 65
-  externHullIsReverse: 0
-  externHullMaterial: {fileID: 2100000, guid: 02758698f6605d345a67239c79c069b6, type: 2}
-  internHull: {fileID: 116466, guid: 149a83b3d7325574581f93b92f7e7746, type: 2}
-  internHullRotSpeed: 65
-  internHullIsReverse: 1
-  internHullMaterial: {fileID: 2100000, guid: 78b3d2607f4c8c843b131bd40468e68a, type: 2}
-  effect: {fileID: 0}
-  effectRotSpeed: 65
-  effectIsReverse: 0
-  item: {fileID: 100066, guid: a7a95e4157388794cb6877cb6e00dda0, type: 3}
-  itemRotSpeed: 0
-  itemIsReverse: 0
-  itemMaterial: {fileID: 2100000, guid: 64f4603d589ad9b4fb378d4977c03317, type: 2}
-  lightColor: {r: 0, g: 0.58875424, b: 0.97647065, a: 1}
-  lightIntensity: 0.1
-  lightRange: 0.1
 --- !u!1001 &2002581960
 Prefab:
   m_ObjectHideFlags: 0
@@ -5081,67 +4460,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotateSpeed: {x: 0.5, y: 2, z: 1}
---- !u!1 &2104254281
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 2104254282}
-  - 114: {fileID: 2104254283}
-  m_Layer: 0
-  m_Name: CustomizablePowerUp_Redo
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &2104254282
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2104254281}
-  m_LocalRotation: {x: 0, y: -1, z: 0, w: -0.00000016292068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
-  m_Children: []
-  m_Father: {fileID: 969446408}
-  m_RootOrder: 6
---- !u!114 &2104254283
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2104254281}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51803f42c5ad6ed469cd71e4b4e0dec0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  powerUpName: 
-  isTakeable: 1
-  pickUpSound: {fileID: 8300000, guid: a4a9327e98855524c846cc8e2f559e96, type: 3}
-  externHull: {fileID: 120638, guid: f8efad34b6fb67641a44679362c8f942, type: 2}
-  externHullRotSpeed: 65
-  externHullIsReverse: 0
-  externHullMaterial: {fileID: 2100000, guid: 02758698f6605d345a67239c79c069b6, type: 2}
-  internHull: {fileID: 116466, guid: 149a83b3d7325574581f93b92f7e7746, type: 2}
-  internHullRotSpeed: 65
-  internHullIsReverse: 1
-  internHullMaterial: {fileID: 2100000, guid: 78b3d2607f4c8c843b131bd40468e68a, type: 2}
-  effect: {fileID: 0}
-  effectRotSpeed: 65
-  effectIsReverse: 0
-  item: {fileID: 100010, guid: b17480b3d32893144bf81fee7b3e9910, type: 3}
-  itemRotSpeed: 0
-  itemIsReverse: 0
-  itemMaterial: {fileID: 2100000, guid: 64f4603d589ad9b4fb378d4977c03317, type: 2}
-  lightColor: {r: 0, g: 0.58875424, b: 0.97647065, a: 1}
-  lightIntensity: 0.1
-  lightRange: 0.1
 --- !u!1 &2111843863
 GameObject:
   m_ObjectHideFlags: 0
@@ -5172,7 +4490,7 @@ Transform:
   - {fileID: 756663846}
   - {fileID: 1664510926}
   m_Father: {fileID: 969446408}
-  m_RootOrder: 16
+  m_RootOrder: 5
 --- !u!1001 &2120475146
 Prefab:
   m_ObjectHideFlags: 0
