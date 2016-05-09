@@ -78,7 +78,7 @@ public class TrackAnchor : MonoBehaviour {
         terrainWorld.transform.GetComponent<Renderer>().material.color = materialColor;
         terrainWorld.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
-        rightHandChild = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        rightHandChild = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         rightHandChild.transform.position = rightChildPosition;
         rightHandChild.transform.parent = rightHand.transform;
         materialChildColor = rightHandChild.transform.GetComponent<Renderer>().material.color;
@@ -86,7 +86,7 @@ public class TrackAnchor : MonoBehaviour {
         rightHandChild.transform.GetComponent<Renderer>().material.color = materialChildColor;
         rightHandChild.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
-        leftHandChild = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        leftHandChild = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         leftHandChild.transform.position = leftChildPosition;
         leftHandChild.transform.parent = leftHand.transform;
         materialChildColor = leftHandChild.transform.GetComponent<Renderer>().material.color;
@@ -94,7 +94,7 @@ public class TrackAnchor : MonoBehaviour {
         leftHandChild.transform.GetComponent<Renderer>().material.color = materialChildColor;
         leftHandChild.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
-        twiceHand = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        twiceHand = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         materialColor = twiceHand.transform.GetComponent<Renderer>().material.color;
         materialColor.a = colorChildAlpha;
         twiceHand.transform.GetComponent<Renderer>().material.color = materialColor;
@@ -175,43 +175,25 @@ public class TrackAnchor : MonoBehaviour {
 
         optRange = handBehaviour.GetOptRange();
 
-
-
         nowShape = handBehaviour.GetActiveShape();
         if (nowShape != activeShape)
         {
             switch (nowShape)
             {
                 case OptShape.cube:
-                    UnityEngine.Object.Destroy(rightHandChild.gameObject);
-                    UnityEngine.Object.Destroy(leftHandChild.gameObject);
                     UnityEngine.Object.Destroy(twiceHand.gameObject);
-                    leftHandChild = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    rightHandChild = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     twiceHand = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     break;
                 case OptShape.sphere:
-                    UnityEngine.Object.Destroy(rightHandChild.gameObject);
-                    UnityEngine.Object.Destroy(leftHandChild.gameObject);
                     UnityEngine.Object.Destroy(twiceHand.gameObject);
-                    leftHandChild = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                    rightHandChild = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     twiceHand = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     break;
                 case OptShape.cylinder:
-                    UnityEngine.Object.Destroy(rightHandChild.gameObject);
-                    UnityEngine.Object.Destroy(leftHandChild.gameObject);
                     UnityEngine.Object.Destroy(twiceHand.gameObject);
-                    leftHandChild = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                    rightHandChild = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                     twiceHand = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                     break;
                 case OptShape.capsule:
-                    UnityEngine.Object.Destroy(rightHandChild.gameObject);
-                    UnityEngine.Object.Destroy(leftHandChild.gameObject);
                     UnityEngine.Object.Destroy(twiceHand.gameObject);
-                    leftHandChild = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-                    rightHandChild = GameObject.CreatePrimitive(PrimitiveType.Capsule);
                     twiceHand = GameObject.CreatePrimitive(PrimitiveType.Capsule);
                     break;
             }
@@ -234,14 +216,10 @@ public class TrackAnchor : MonoBehaviour {
 
             if (activeHandOpt == HandOpt.pairOpt)
             {
-                leftHandChild.SetActive(false);
-                rightHandChild.SetActive(false);
                 twiceHand.SetActive(true);
             }
             else
             {
-                leftHandChild.SetActive(true);
-                rightHandChild.SetActive(true);
                 twiceHand.SetActive(false);
             }
 
@@ -308,9 +286,9 @@ public class TrackAnchor : MonoBehaviour {
         rightHand.transform.rotation = rightHandAnchor.transform.rotation;
         rightHand.transform.localScale = VoxelWorldTransform.localScale * optRange;
 
-        Vector3 temp = rightHandAnchor.transform.position - leftHandAnchor.transform.position;
+        Vector3 temp = rightHandChild.transform.position - leftHandChild.transform.position;
         //twiceHand.transform.rotation = Quaternion.Euler(0, 0, 90);
-        twiceHand.transform.position = leftHandAnchor.transform.position + temp / 2;
+        twiceHand.transform.position = leftHandChild.transform.position + temp / 2;
         twiceHand.transform.localScale = new Vector3(System.Math.Abs(temp.x), System.Math.Abs(temp.y), System.Math.Abs(temp.z));
 
         // twice hand
@@ -319,14 +297,10 @@ public class TrackAnchor : MonoBehaviour {
         {
             if (tempActiveHandOpt == HandOpt.pairOpt)
             {
-                leftHandChild.SetActive(false);
-                rightHandChild.SetActive(false);
                 twiceHand.SetActive(true);
             }
             else
             {
-                leftHandChild.SetActive(true);
-                rightHandChild.SetActive(true);
                 twiceHand.SetActive(false);
             }
         }
