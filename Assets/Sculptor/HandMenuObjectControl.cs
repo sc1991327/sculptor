@@ -187,26 +187,28 @@ public class HandMenuObjectControl : MonoBehaviour
 
         if (iscolorobj)
         {
-            for (int ti = 0; ti < nowPosList.Count; ti++)
+            int minPos = 0;
+            float minPosDist = Vector3.Distance(nowPosList[0], handPos);
+            for (int ti = 1; ti < nowPosList.Count; ti++)
             {
-                float dis = Vector3.Distance(nowPosList[ti], handPos);
+                MenuChildObject[ti].transform.localScale = new Vector3(MenuColorStartLocalScale, MenuColorStartLocalScale, MenuColorStartLocalScale);
 
-                if (dis < MenuColorObjRange / 2)
+                float tempdis = Vector3.Distance(nowPosList[ti], handPos);
+                if (tempdis < minPosDist)
                 {
-                    MenuChildObject[ti].transform.localScale = new Vector3(MenuColorEndLocalScale, MenuColorEndLocalScale, MenuColorEndLocalScale);
-
-                    Color tempC = MenuChildObject[ti].transform.GetComponent<Renderer>().material.color;
-                    tempC.a = 1.0f;
-                    MenuChildObject[ti].transform.GetComponent<Renderer>().material.color = tempC;
-                    MenuChildObject[ti].transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
-
-                    return ti;
-                }
-                else
-                {
-                    MenuChildObject[ti].transform.localScale = new Vector3(MenuColorStartLocalScale, MenuColorStartLocalScale, MenuColorStartLocalScale);
+                    minPosDist = tempdis;
+                    minPos = ti;
                 }
             }
+
+            MenuChildObject[minPos].transform.localScale = new Vector3(MenuColorEndLocalScale, MenuColorEndLocalScale, MenuColorEndLocalScale);
+
+            Color tempC = MenuChildObject[minPos].transform.GetComponent<Renderer>().material.color;
+            tempC.a = 1.0f;
+            MenuChildObject[minPos].transform.GetComponent<Renderer>().material.color = tempC;
+            MenuChildObject[minPos].transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
+
+            return minPos;
         }
         else
         {
