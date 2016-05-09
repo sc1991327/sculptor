@@ -53,15 +53,15 @@ public class HandBehaviour : MonoBehaviour {
     private ControlPanel activePanel;
     private bool activePanelContinue;
     private OptModePanel activeOptModePanel;
-    private InfoPanel activeInfoPanel;
     private OptState activeState;
     private OptShape activeShape;
     private DrawPos activeDrawPos;
     private HandOpt activeHandOpt;
 
+    private int activeInfoPanelTimes;
+
     private float buttonPreTime = 0.0f;
     private float ButtonTimeControlSingle = 0.3f;
-    private float markTime;
 
     private int optRange = 6;
     private Vector3 tempDrawPosScaled;
@@ -158,8 +158,7 @@ public class HandBehaviour : MonoBehaviour {
         activeOptModePanel = OptModePanel.sculptor;
         activeState = OptState.create;
 
-        markTime = Time.time;
-        activeInfoPanel = InfoPanel.start;
+        activeInfoPanelTimes = 0;
 
         activeShape = OptShape.sphere;
         activeHandOpt = HandOpt.singleOpt;
@@ -178,13 +177,6 @@ public class HandBehaviour : MonoBehaviour {
         if (terrainVolume == null)
         {
             return;
-        }
-
-        // show the begining HMD info
-        if (activeInfoPanel != InfoPanel.empty && (Time.time - markTime) > 5)
-        {
-            activeInfoPanel = InfoPanel.empty;
-            markTime = Time.time;
         }
 
         leftChildPosition = trackAnchor.GetLeftChildPosition() - VoxelWorldTransform.position;
@@ -698,14 +690,14 @@ public class HandBehaviour : MonoBehaviour {
         if (Button_B && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
             activeDrawPos = DrawPos.right;
-            activeInfoPanel = InfoPanel.info;
+            activeInfoPanelTimes++;
             buttonPreTime = Time.time;
         }
 
         if (Button_Y && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
             activeDrawPos = DrawPos.left;
-            activeInfoPanel = InfoPanel.info;
+            activeInfoPanelTimes++;
             buttonPreTime = Time.time;
         }
 
@@ -1364,6 +1356,11 @@ public class HandBehaviour : MonoBehaviour {
         //return new Vector3(tempx1 + pivot.x, tempy1 + pivot.y, tempz1 + pivot.z);
     }
 
+    public int GetActiveInfoPanelTimes()
+    {
+        return activeInfoPanelTimes;
+    }
+
     public int GetOptRange()
     {
         return optRange;
@@ -1372,11 +1369,6 @@ public class HandBehaviour : MonoBehaviour {
     public ControlPanel GetActivePanel()
     {
         return activePanel;
-    }
-
-    public InfoPanel GetActiveInfoPanel()
-    {
-        return activeInfoPanel;
     }
 
     public OptState GetActiveState()
