@@ -59,6 +59,8 @@ public class TrackAnchor : MonoBehaviour {
     private OptModePanel activeMode, nowMode;
     private OptState activeState;
 
+    private float twoHandObjSizeMax = 60;
+
     //private ControlPanel showColorCube = ControlPanel.empty;
     //private Vector3 ColorBlackPoint = new Vector3(0, 0, 0);
     //private Color ColorChose = Color.white;
@@ -287,9 +289,12 @@ public class TrackAnchor : MonoBehaviour {
         rightHand.transform.localScale = VoxelWorldTransform.localScale * optRange;
 
         Vector3 temp = rightHandChild.transform.position - leftHandChild.transform.position;
+        float tempvx = Mathf.Abs(Mathf.Min(temp.x, twoHandObjSizeMax * VoxelWorldTransform.localScale.x));
+        float tempvy = Mathf.Abs(Mathf.Min(temp.y, twoHandObjSizeMax * VoxelWorldTransform.localScale.y));
+        float tempvz = Mathf.Abs(Mathf.Min(temp.z, twoHandObjSizeMax * VoxelWorldTransform.localScale.z));
         //twiceHand.transform.rotation = Quaternion.Euler(0, 0, 90);
         twiceHand.transform.position = leftHandChild.transform.position + temp / 2;
-        twiceHand.transform.localScale = new Vector3(System.Math.Abs(temp.x), System.Math.Abs(temp.y), System.Math.Abs(temp.z));
+        twiceHand.transform.localScale = new Vector3(tempvx, tempvy, tempvz);
 
         // twice hand
         HandOpt tempActiveHandOpt = handBehaviour.GetActiveHandOpt();

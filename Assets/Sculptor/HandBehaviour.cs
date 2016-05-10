@@ -86,9 +86,9 @@ public class HandBehaviour : MonoBehaviour {
 
     private float replayStartTime = 0.0f;
 
-    private int singleHandOptMode = 0;
+    private int singleHandOptMode = 10000;
 
-    private int CoroutineRange = 100;
+    private int CoroutineRange = 10000;
 
     // -- OVRInput Info
 
@@ -385,7 +385,13 @@ public class HandBehaviour : MonoBehaviour {
         }
 
         // shape
-        if ((Axis2D_LB_Left || Axis2D_RB_Left || Axis2D_LB_Right || Axis2D_RB_Right) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
+        if ((Axis2D_LB_Left || Axis2D_RB_Left) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
+        {
+            singleHandOptMode--;
+            buttonPreTime = Time.time;
+        }
+
+        if ((Axis2D_LB_Right || Axis2D_RB_Right) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
             singleHandOptMode++;
             buttonPreTime = Time.time;
@@ -396,7 +402,7 @@ public class HandBehaviour : MonoBehaviour {
     {
         checkOptContinueState = false;
 
-        switch (singleHandOptMode % 4)
+        switch (Mathf.Abs(singleHandOptMode) % 4)
         {
             case 0:
                 activeState = OptState.create;
@@ -608,7 +614,7 @@ public class HandBehaviour : MonoBehaviour {
                     OptShape optshape = (OptShape)tempVSO.Optshape;
                     bool activeMirror = tempVSO.ActiveMirror;
 
-                    VoxelSetting(Pos, RotateEuler, materialSet, range, optshape, activeMirror);
+                    StartCoroutine(VoxelSetting(Pos, RotateEuler, materialSet, range, optshape, activeMirror));
                 }
                 else if (tempVSO.Type == 2)
                 {
@@ -1087,7 +1093,7 @@ public class HandBehaviour : MonoBehaviour {
                     SingleVoxelSmoothHanding(voxelHandleRegion, regionLowerPos, tempX + 1, tempY + 1, tempZ + 1, activeMirror);
                     itimes++;
                     if (itimes % CoroutineRange == 0)
-                        yield return 0;
+                        yield return null;
                 }
             }
         }
@@ -1103,7 +1109,7 @@ public class HandBehaviour : MonoBehaviour {
 
     }
 
-    private void VoxelSetting(Vector3 Pos, Vector3 RotateEuler, MaterialSet materialSet, Vector3i range, OptShape optshape, bool activeMirror)
+    IEnumerator VoxelSetting(Vector3 Pos, Vector3 RotateEuler, MaterialSet materialSet, Vector3i range, OptShape optshape, bool activeMirror)
     {
         int xPos = (int)Pos.x;
         int yPos = (int)Pos.y;
@@ -1137,10 +1143,11 @@ public class HandBehaviour : MonoBehaviour {
                 dismax += adsrange;
                 for ( int i=0; i < Mathf.Clamp(dismax / 3, 2, 6); i++ )
                 {
-                    Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
-                    Vector3i tempPosi = new Vector3i(tempPos);
+                    //Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
+                    //Vector3i tempPosi = new Vector3i(tempPos);
                     //TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - dismax, tempPosi.y - dismax, tempPosi.z - dismax, tempPosi.x + dismax, tempPosi.y + dismax, tempPosi.z + dismax));
                     StartCoroutine(VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror));
+                    yield return null;
                 }
                 break;
 
@@ -1167,10 +1174,9 @@ public class HandBehaviour : MonoBehaviour {
                 int itimes = (range.x + range.y + range.z) / 3 > optRangeSingleHandMax ? 5 : 1;
                 for (int i = 0; i < itimes; i++)
                 {
-                    int maxR = Mathf.Max(range.x, range.y, range.z);
-                    int minR = Mathf.Min(range.x, range.y, range.z);
-                    StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
-                    //TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(new Vector3i(xPos - range.x, yPos - range.y, zPos - range.z), new Vector3i(xPos + range.x, yPos + range.y, zPos + range.z)));
+                    int rmax = Mathf.Max(range.x, range.y, range.z);
+                    StartCoroutine(VoxelSmoothing(Pos, new Vector3i(rmax, rmax, rmax), activeMirror));
+                    yield return null;
                 }
 
                 break;
@@ -1198,9 +1204,8 @@ public class HandBehaviour : MonoBehaviour {
                 dismax += adsrange;
                 for (int i = 0; i < Mathf.Clamp((range.x + range.y + range.z) / 6, 3, 6); i++)
                 {
-                    Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
-                    Vector3i tempPosi = new Vector3i(tempPos);
                     StartCoroutine(VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror));
+                    yield return null;
                 }
 
                 break;
@@ -1277,6 +1282,7 @@ public class HandBehaviour : MonoBehaviour {
                     Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
                     Vector3i tempPosi = new Vector3i(tempPos);
                     StartCoroutine(VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror));
+                    yield return null;
                 }
                 break;
         }
@@ -1284,7 +1290,7 @@ public class HandBehaviour : MonoBehaviour {
         if (activeMirror)
         {
             Vector3 tempmpos = (CalcMirrorPos(mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, Pos));
-            VoxelSetting(tempmpos, RotateEuler, materialSet, range, optshape, false);
+            StartCoroutine(VoxelSetting(tempmpos, RotateEuler, materialSet, range, optshape, false));
         }
 
     }
@@ -1335,13 +1341,13 @@ public class HandBehaviour : MonoBehaviour {
     {
         MaterialSet emptyMaterialSet = new MaterialSet();
         recordBehaviour.WriteJsonFile(Pos, RotateEular, emptyMaterialSet, range, optshape, Time.time - appStartTime, activeMirror);
-        VoxelSetting(Pos, RotateEular, emptyMaterialSet, range, optshape, activeMirror);
+        StartCoroutine(VoxelSetting(Pos, RotateEular, emptyMaterialSet, range, optshape, activeMirror));
     }
 
     private void CreateVoxels(Vector3 Pos, Vector3 RotateEular, MaterialSet materialSet, Vector3i range, OptShape optshape, bool activeMirror)
     {
         recordBehaviour.WriteJsonFile(Pos, RotateEular, materialSet, range, optshape, Time.time - appStartTime, activeMirror);
-        VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror);
+        StartCoroutine(VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror));
     }
 
     private void SmoothVoxels(Vector3 Pos, Vector3i range, bool activeMirror)
