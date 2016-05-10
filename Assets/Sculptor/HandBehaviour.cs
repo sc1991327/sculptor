@@ -64,6 +64,9 @@ public class HandBehaviour : MonoBehaviour {
     private float ButtonTimeControlSingle = 0.3f;
 
     private int optRange = 6;
+    private int optRangeSingleHandMax = 12;
+    private int optRangeSingleHandMin = 4;
+
     private Vector3 tempDrawPosScaled;
     private Vector3 tempDrawRotate;
     private Vector3 tempDrawScale;
@@ -84,6 +87,8 @@ public class HandBehaviour : MonoBehaviour {
     private float replayStartTime = 0.0f;
 
     private int singleHandOptMode = 0;
+
+    private int CoroutineRange = 100;
 
     // -- OVRInput Info
 
@@ -364,7 +369,7 @@ public class HandBehaviour : MonoBehaviour {
         // size
         if ((Axis2D_LB_Up || Axis2D_RB_Up) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
-            if (optRange < 12)
+            if (optRange < optRangeSingleHandMax)
             {
                 optRange += 2;
             }
@@ -372,7 +377,7 @@ public class HandBehaviour : MonoBehaviour {
         }
         if ((Axis2D_LB_Down || Axis2D_RB_Down) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
-            if (optRange >= 6)
+            if (optRange > optRangeSingleHandMin)
             {
                 optRange -= 2;
             }
@@ -430,7 +435,7 @@ public class HandBehaviour : MonoBehaviour {
 
                 terrainVolume.transform.position = VoxelWorldCenterPos + (leftChildPosition - VoxelWorldLeftHandPos);
                 terrainVolume.transform.rotation = Quaternion.FromToRotation(VoxelWorldPreAngleDir, VoxelWorldNowAngleDir) * VoxelWorldBasicAngle;
-                terrainVolume.transform.localScale = VoxelWorldBasicScale * (VoxelWorldNowScale / VoxelWorldPreScale);
+                terrainVolume.transform.localScale = VoxelWorldBasicScale * ( Mathf.Clamp(VoxelWorldNowScale / VoxelWorldPreScale, 0.2f, 5));
             }
             activeHandOpt = HandOpt.voxelWorldOpt;
         }
@@ -611,7 +616,7 @@ public class HandBehaviour : MonoBehaviour {
                     Vector3i range = new Vector3i(tempVSO.RangeX, tempVSO.RangeY, tempVSO.RangeZ);
                     bool activeMirror = tempVSO.ActiveMirror;
 
-                    VoxelSmoothing(Pos, range, activeMirror);
+                    StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
                 }
                 else
                 {
@@ -781,7 +786,7 @@ public class HandBehaviour : MonoBehaviour {
                 SmoothVoxels(tempDrawPosScaled, (Vector3i)tempDrawScale, activeMirror);
                 break;
             case OptState.paint:
-                PaintVoxels(tempDrawPosScaled, colorMaterialSet, 0, 5, 1, activeMirror);
+                PaintVoxels(tempDrawPosScaled, colorMaterialSet, (Vector3i)tempDrawScale, 1, activeMirror);
                 break;
         }
     }
@@ -962,34 +967,64 @@ public class HandBehaviour : MonoBehaviour {
         return dismax;
     }
 
-    private void SingleVoxelSmoothHanding(int tempX, int tempY, int tempZ, bool activeMirror)
+    private void SingleVoxelSmoothHanding(MaterialSet[,,] voxelHandleRegion, Vector3i regionLowerPos, int tempX, int tempY, int tempZ, bool activeMirror)
     {
-        // only support 4 material channel
-        MaterialSet tempMaterialSet = terrainVolume.data.GetVoxel(tempX, tempY, tempZ);
+        int x = regionLowerPos.x + tempX;
+        int y = regionLowerPos.y + tempY;
+        int z = regionLowerPos.z + tempZ;
+
+        MaterialSet tempMaterialSet = voxelHandleRegion[tempX, tempY, tempZ];
         for (uint tempM = 0; tempM < 4; tempM++)
         {
             int originalMaterialWeight = tempMaterialSet.weights[tempM];
 
             int sum = 0;
-            sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ).weights[tempM];
-            sum += terrainVolume.data.GetVoxel(tempX + 1, tempY, tempZ).weights[tempM];
-            sum += terrainVolume.data.GetVoxel(tempX - 1, tempY, tempZ).weights[tempM];
-            sum += terrainVolume.data.GetVoxel(tempX, tempY + 1, tempZ).weights[tempM];
-            sum += terrainVolume.data.GetVoxel(tempX, tempY - 1, tempZ).weights[tempM];
-            sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ + 1).weights[tempM];
-            sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ - 1).weights[tempM];
+            sum += voxelHandleRegion[tempX, tempY, tempZ].weights[tempM];
+            sum += voxelHandleRegion[tempX + 1, tempY, tempZ].weights[tempM];
+            sum += voxelHandleRegion[tempX - 1, tempY, tempZ].weights[tempM];
+            sum += voxelHandleRegion[tempX, tempY + 1, tempZ].weights[tempM];
+            sum += voxelHandleRegion[tempX, tempY - 1, tempZ].weights[tempM];
+            sum += voxelHandleRegion[tempX, tempY, tempZ + 1].weights[tempM];
+            sum += voxelHandleRegion[tempX, tempY, tempZ - 1].weights[tempM];
 
             int avg = (int)((float)(sum) / 7.0f + 0.5f);
             avg = Mathf.Clamp(avg, 0, 255);
             tempMaterialSet.weights[tempM] = (byte)avg;
         }
 
-        MaterialSet tempOld = terrainVolume.data.GetVoxel(tempX, tempY, tempZ);
+        MaterialSet tempOld = terrainVolume.data.GetVoxel(x, y, x);
         if (!CompareMaterialSet(tempMaterialSet, tempOld))
         {
-            recordBehaviour.PushOperator(new VoxelOpt(new Vector3i(tempX, tempY, tempZ), tempMaterialSet, tempOld));
-            terrainVolume.data.SetVoxel(tempX, tempY, tempZ, tempMaterialSet);
+            recordBehaviour.PushOperator(new VoxelOpt(new Vector3i(x, y, z), tempMaterialSet, tempOld));
+            terrainVolume.data.SetVoxel(x, y, z, tempMaterialSet);
         }
+
+        // only support 4 material channel
+        //MaterialSet tempMaterialSet = terrainVolume.data.GetVoxel(tempX, tempY, tempZ);
+        //for (uint tempM = 0; tempM < 4; tempM++)
+        //{
+        //    int originalMaterialWeight = tempMaterialSet.weights[tempM];
+
+        //    int sum = 0;
+        //    sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ).weights[tempM];
+        //    sum += terrainVolume.data.GetVoxel(tempX + 1, tempY, tempZ).weights[tempM];
+        //    sum += terrainVolume.data.GetVoxel(tempX - 1, tempY, tempZ).weights[tempM];
+        //    sum += terrainVolume.data.GetVoxel(tempX, tempY + 1, tempZ).weights[tempM];
+        //    sum += terrainVolume.data.GetVoxel(tempX, tempY - 1, tempZ).weights[tempM];
+        //    sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ + 1).weights[tempM];
+        //    sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ - 1).weights[tempM];
+
+        //    int avg = (int)((float)(sum) / 7.0f + 0.5f);
+        //    avg = Mathf.Clamp(avg, 0, 255);
+        //    tempMaterialSet.weights[tempM] = (byte)avg;
+        //}
+
+        //MaterialSet tempOld = terrainVolume.data.GetVoxel(tempX, tempY, tempZ);
+        //if (!CompareMaterialSet(tempMaterialSet, tempOld))
+        //{
+        //    recordBehaviour.PushOperator(new VoxelOpt(new Vector3i(tempX, tempY, tempZ), tempMaterialSet, tempOld));
+        //    terrainVolume.data.SetVoxel(tempX, tempY, tempZ, tempMaterialSet);
+        //}
     }
 
     private void SingleVoxelPaintHanding(int tempX, int tempY, int tempZ, MaterialSet materialset, float distSquared, bool activeMirror)
@@ -1017,17 +1052,42 @@ public class HandBehaviour : MonoBehaviour {
         }
     }
 
-    private void VoxelSmoothing(Vector3 pos, Vector3i range, bool activeMirror)
+    IEnumerator VoxelSmoothing(Vector3 pos, Vector3i range, bool activeMirror)
     {
         Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(pos) * VoxelWorldTransform.localScale.x;
         Region vRegion = new Region((int)tempPos.x - range.x, (int)tempPos.y - range.y, (int)tempPos.z - range.z, (int)tempPos.x + range.x, (int)tempPos.y + range.y, (int)tempPos.z + range.z);
-        for (int tempX = vRegion.lowerCorner.x; tempX <= vRegion.upperCorner.x; ++tempX)
+
+        Vector3i regionLowerPos = new Vector3i(vRegion.lowerCorner.x - 1, vRegion.lowerCorner.y - 1, vRegion.lowerCorner.z - 1);
+        Vector3i regionUpperPos = new Vector3i(vRegion.upperCorner.x + 1, vRegion.upperCorner.y + 1, vRegion.upperCorner.z + 1);
+
+        // obtain operator data.
+        int rsizex = regionUpperPos.x - regionLowerPos.x + 1;
+        int rsizey = regionUpperPos.y - regionLowerPos.y + 1;
+        int rsizez = regionUpperPos.z - regionLowerPos.z + 1;
+        MaterialSet[,,] voxelHandleRegion = new MaterialSet[rsizex, rsizey, rsizez];
+        for (int tempX = 0; tempX < rsizex; ++tempX)
         {
-            for (int tempY = vRegion.lowerCorner.y; tempY <= vRegion.upperCorner.y; ++tempY)
+            for (int tempY = 0; tempY < rsizey; ++tempY)
             {
-                for (int tempZ = vRegion.lowerCorner.z; tempZ <= vRegion.upperCorner.z; ++tempZ)
+                for (int tempZ = 0; tempZ < rsizez; ++tempZ)
                 {
-                    SingleVoxelSmoothHanding(tempX, tempY, tempZ, activeMirror);
+                    voxelHandleRegion[tempX, tempY, tempZ] = terrainVolume.data.GetVoxel(regionLowerPos.x + tempX, regionLowerPos.y + tempY, regionLowerPos.z + tempZ);
+                }
+            }
+        }
+
+        // calculate
+        int itimes = 0;
+        for (int tempX = 0; tempX < rsizex - 2; ++tempX)
+        {
+            for (int tempY = 0; tempY < rsizey - 2; ++tempY)
+            {
+                for (int tempZ = 0; tempZ < rsizez - 2; ++tempZ)
+                {
+                    SingleVoxelSmoothHanding(voxelHandleRegion, regionLowerPos, tempX + 1, tempY + 1, tempZ + 1, activeMirror);
+                    itimes++;
+                    if (itimes % CoroutineRange == 0)
+                        yield return 0;
                 }
             }
         }
@@ -1038,7 +1098,7 @@ public class HandBehaviour : MonoBehaviour {
             Vector3 mirrorAnchorPoint1 = trackAnchor.GetMirrorAnchorPoint1();
             Vector3 mirrorAnchorPoint2 = trackAnchor.GetMirrorAnchorPoint2();
             Vector3 tempmpos = (CalcMirrorPos(mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, pos));
-            VoxelSmoothing(tempmpos, range, false);
+            StartCoroutine(VoxelSmoothing(pos, range, false));
         }
 
     }
@@ -1080,7 +1140,7 @@ public class HandBehaviour : MonoBehaviour {
                     Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
                     Vector3i tempPosi = new Vector3i(tempPos);
                     //TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - dismax, tempPosi.y - dismax, tempPosi.z - dismax, tempPosi.x + dismax, tempPosi.y + dismax, tempPosi.z + dismax));
-                    VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror);
+                    StartCoroutine(VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror));
                 }
                 break;
 
@@ -1104,12 +1164,13 @@ public class HandBehaviour : MonoBehaviour {
                     }
                 }
 
-                dismax += adsrange;
-                for (int i = 0; i < Mathf.Clamp((range.x + range.y + range.z) / 6, 1, 6); i++)
+                int itimes = (range.x + range.y + range.z) / 3 > optRangeSingleHandMax ? 5 : 1;
+                for (int i = 0; i < itimes; i++)
                 {
-                    Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
-                    Vector3i tempPosi = new Vector3i(tempPos);
-                    VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror);
+                    int maxR = Mathf.Max(range.x, range.y, range.z);
+                    int minR = Mathf.Min(range.x, range.y, range.z);
+                    StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
+                    //TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(new Vector3i(xPos - range.x, yPos - range.y, zPos - range.z), new Vector3i(xPos + range.x, yPos + range.y, zPos + range.z)));
                 }
 
                 break;
@@ -1139,7 +1200,7 @@ public class HandBehaviour : MonoBehaviour {
                 {
                     Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
                     Vector3i tempPosi = new Vector3i(tempPos);
-                    VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror);
+                    StartCoroutine(VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror));
                 }
 
                 break;
@@ -1215,7 +1276,7 @@ public class HandBehaviour : MonoBehaviour {
                 {
                     Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
                     Vector3i tempPosi = new Vector3i(tempPos);
-                    VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror);
+                    StartCoroutine(VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror));
                 }
                 break;
         }
@@ -1286,13 +1347,13 @@ public class HandBehaviour : MonoBehaviour {
     private void SmoothVoxels(Vector3 Pos, Vector3i range, bool activeMirror)
     {
         recordBehaviour.WriteJsonFileSmooth(Pos, range, Time.time - appStartTime, activeMirror);
-        VoxelSmoothing(Pos, range, activeMirror);
+        StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
     }
 
-    private void PaintVoxels(Vector3 Pos, MaterialSet materialSet, float brushInnerRadius, float brushOuterRadius, float amount, bool activeMirror)
+    private void PaintVoxels(Vector3 Pos, MaterialSet materialSet, Vector3i range, float amount, bool activeMirror)
     {
-        recordBehaviour.WriteJsonFilePaint(Pos, materialSet, brushInnerRadius, brushOuterRadius, amount, Time.time - appStartTime, activeMirror);
-        VoxelPainting(Pos, new Vector3i((int)brushOuterRadius, (int)brushOuterRadius, (int)brushOuterRadius), materialSet, activeMirror);
+        recordBehaviour.WriteJsonFilePaint(Pos, materialSet, range, amount, Time.time - appStartTime, activeMirror);
+        VoxelPainting(Pos, range, materialSet, activeMirror);
     }
 
     private void RestartTerrainVolumeData()

@@ -305,7 +305,7 @@ public class RecordBehaviour : MonoBehaviour {
         RecordVoxelStore.Add(temp);
     }
 
-    public void WriteJsonFilePaint(Vector3 Pos, MaterialSet materialSet, float brushInnerRadius, float brushOuterRadius, float amount, float mtime, bool activeMirror)
+    public void WriteJsonFilePaint(Vector3 Pos, MaterialSet materialSet, Vector3i range, float amount, float mtime, bool activeMirror)
     {
         VoxelStoreObj temp = new VoxelStoreObj
         {
@@ -318,9 +318,9 @@ public class RecordBehaviour : MonoBehaviour {
             MaterialWeight1 = materialSet.weights[1],
             MaterialWeight2 = materialSet.weights[2],
             MaterialWeight3 = materialSet.weights[3],
-            RangeX = (int)brushInnerRadius,
-            RangeY = (int)brushOuterRadius,
-            RangeZ = (int)amount,
+            RangeX = range.x,
+            RangeY = range.y,
+            RangeZ = range.z,
             ActiveMirror = activeMirror
         };
         RecordVoxelStore.Add(temp);
