@@ -184,6 +184,7 @@
     <Compile Include="Assets\Sculptor\RecordBehaviour.cs" />
     <Compile Include="Assets\Sculptor\RotateObj.cs" />
     <Compile Include="Assets\Sculptor\TrackAnchor.cs" />
+    <Compile Include="Assets\Sculptor\handAnchor.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_LaserPointer.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_Teleporter.cs" />

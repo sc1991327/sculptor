@@ -68,20 +68,8 @@ public enum VRMode
 
 public class CameraManager : MonoBehaviour {
 
-    public bool UseOculusRift = false;
-
-    public GameObject LeftHandAnchor;
-    public GameObject RightHandAnchor;
-
     public GameObject OculusCamera;
     public GameObject SteamCamera;
-
-    public Transform OculusLeftHandTransform;
-    public Transform OculusRightHandTransform;
-    public Transform SteamLeftHandTransform;
-    public Transform SteamRightHandTransform;
-
-    private Transform leftHandAnchor, rightHandAnchor;
 
     private VRMode vrMode = VRMode.None;
 
@@ -195,14 +183,10 @@ public class CameraManager : MonoBehaviour {
         switch (vrMode)
         {
             case VRMode.SteamVR:
-                leftHandAnchor = SteamLeftHandTransform;
-                rightHandAnchor = SteamRightHandTransform;
                 GetSteamOpt();
                 break;
 
             case VRMode.OculusVR:
-                leftHandAnchor = OculusLeftHandTransform;
-                rightHandAnchor = OculusRightHandTransform;
                 GetOculusOpt();
                 break;
 
@@ -346,15 +330,4 @@ public class CameraManager : MonoBehaviour {
     {
         return vOpt;
     }
-
-    public Transform GetLeftHandAnchorTransform()
-    {
-        return leftHandAnchor;
-    }
-
-    public Transform GetRightHandAnchorTransform()
-    {
-        return rightHandAnchor;
-    }
-
 }
