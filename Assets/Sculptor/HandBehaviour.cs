@@ -13,6 +13,7 @@ public enum HandOpt { singleOpt, pairOpt, voxelWorldOpt };
 
 public class HandBehaviour : MonoBehaviour {
 
+    public GameObject cameraManagerObj = null;
     public GameObject BasicProceduralVolume = null;
 
     public GameObject leftHandAnchor = null;
@@ -21,6 +22,8 @@ public class HandBehaviour : MonoBehaviour {
     private TrackAnchor trackAnchor;
     private RecordBehaviour recordBehaviour;
     private HandMenuObjectControl handMenuObjectControl;
+
+    private CameraManager cameraManager;
 
     private TerrainVolume terrainVolume;
     private ProceduralTerrainVolume proceduralTerrainVolume;
@@ -126,16 +129,18 @@ public class HandBehaviour : MonoBehaviour {
 
         appStartTime = Time.time;
 
+        cameraManager = cameraManagerObj.GetComponent<CameraManager>();
+
         terrainVolume = BasicProceduralVolume.GetComponent<TerrainVolume>();
         proceduralTerrainVolume = BasicProceduralVolume.GetComponent<ProceduralTerrainVolume>();
 
-        if (leftHandAnchor == null || rightHandAnchor == null || BasicProceduralVolume == null)
+        if (leftHandAnchor == null || rightHandAnchor == null || BasicProceduralVolume == null || cameraManager == null)
         {
             Debug.LogError("Please assign the GameObject first.");
         }
-        if (terrainVolume == null)
+        if (terrainVolume == null || cameraManager == null)
         {
-            Debug.LogError("This 'BasicProceduralVolume' script should be attached to a game object with a TerrainVolume component");
+            Debug.LogError("This script should be attached to a game object with a right component");
         }
 
         VoxelWorldTransform = terrainVolume.transform;
@@ -647,34 +652,34 @@ public class HandBehaviour : MonoBehaviour {
 
     private void HandleOVRInput()
     {
+        VirtualOpt vOpt = new VirtualOpt();
+        vOpt = cameraManager.GetVirtualOpt();
+
         // Axis2D
-        Axis2D_L = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
-        Axis2D_R = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
+        Axis2D_LB_Center = vOpt.Axis2D_LB_Center;
+        Axis2D_LB_Left = vOpt.Axis2D_LB_Left;
+        Axis2D_LB_Right = vOpt.Axis2D_LB_Right;
+        Axis2D_LB_Up = vOpt.Axis2D_LB_Up;
+        Axis2D_LB_Down = vOpt.Axis2D_LB_Down;
 
-        Axis2D_LB_Center = OVRInput.Get(OVRInput.Button.PrimaryThumbstick);
-        Axis2D_LB_Left = OVRInput.Get(OVRInput.Button.PrimaryThumbstickLeft);
-        Axis2D_LB_Right = OVRInput.Get(OVRInput.Button.PrimaryThumbstickRight);
-        Axis2D_LB_Up = OVRInput.Get(OVRInput.Button.PrimaryThumbstickUp);
-        Axis2D_LB_Down = OVRInput.Get(OVRInput.Button.PrimaryThumbstickDown);
-
-        Axis2D_RB_Center = OVRInput.Get(OVRInput.Button.SecondaryThumbstick);
-        Axis2D_RB_Left = OVRInput.Get(OVRInput.Button.SecondaryThumbstickLeft);
-        Axis2D_RB_Right = OVRInput.Get(OVRInput.Button.SecondaryThumbstickRight);
-        Axis2D_RB_Up = OVRInput.Get(OVRInput.Button.SecondaryThumbstickUp);
-        Axis2D_RB_Down = OVRInput.Get(OVRInput.Button.SecondaryThumbstickDown);
+        Axis2D_RB_Center = vOpt.Axis2D_RB_Center;
+        Axis2D_RB_Left = vOpt.Axis2D_RB_Left;
+        Axis2D_RB_Right = vOpt.Axis2D_RB_Right;
+        Axis2D_RB_Up = vOpt.Axis2D_RB_Up;
+        Axis2D_RB_Down = vOpt.Axis2D_RB_Down;
 
         // Axis1D
-        Axis1D_LB = OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch);
-        Axis1D_LT = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch);
+        Axis1D_LB = vOpt.Axis1D_LB;
+        Axis1D_LT = vOpt.Axis1D_LT;
 
-        Axis1D_RB = OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch);
-        Axis1D_RT = OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch);
+        Axis1D_RB = vOpt.Axis1D_RB;
+        Axis1D_RT = vOpt.Axis1D_RT;
 
         // Button
-        Button_A = OVRInput.Get(OVRInput.Button.One);
-        Button_B = OVRInput.Get(OVRInput.Button.Two);
-        Button_X = OVRInput.Get(OVRInput.Button.Three);
-        Button_Y = OVRInput.Get(OVRInput.Button.Four);
+        Button_A = vOpt.Button_A;
+        Button_B = vOpt.Button_B;
+        Button_X = vOpt.Button_X;
+        Button_Y = vOpt.Button_Y;
 
         if (Button_A)
         {
@@ -796,115 +801,6 @@ public class HandBehaviour : MonoBehaviour {
                 break;
         }
     }
-
-    /*
-    private void testHandleOVRInput()
-    {
-        // please see https://developer.oculus.com/documentation/game-engines/latest/concepts/unity-ovrinput/ to known the mapping
-
-        // Axis2D
-        Axis2D_L = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
-        Axis2D_R = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
-
-        Axis2D_LB_Center = OVRInput.Get(OVRInput.Button.PrimaryThumbstick);
-        Axis2D_LB_Left = OVRInput.Get(OVRInput.Button.PrimaryThumbstickLeft);
-        Axis2D_LB_Right = OVRInput.Get(OVRInput.Button.PrimaryThumbstickRight);
-        Axis2D_LB_Up = OVRInput.Get(OVRInput.Button.PrimaryThumbstickUp);
-        Axis2D_LB_Down = OVRInput.Get(OVRInput.Button.PrimaryThumbstickDown);
-
-        Axis2D_RB_Center = OVRInput.Get(OVRInput.Button.SecondaryThumbstick);
-        Axis2D_RB_Left = OVRInput.Get(OVRInput.Button.SecondaryThumbstickLeft);
-        Axis2D_RB_Right = OVRInput.Get(OVRInput.Button.SecondaryThumbstickRight);
-        Axis2D_RB_Up = OVRInput.Get(OVRInput.Button.SecondaryThumbstickUp);
-        Axis2D_RB_Down = OVRInput.Get(OVRInput.Button.SecondaryThumbstickDown);
-
-        // Axis1D
-        Axis1D_LB = OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch);
-        Axis1D_LT = OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch);
-
-        Axis1D_RB = OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch);
-        Axis1D_RT = OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch);
-
-        // Button
-        Button_A = OVRInput.Get(OVRInput.Button.One);
-        Button_B = OVRInput.Get(OVRInput.Button.Two);
-        Button_X = OVRInput.Get(OVRInput.Button.Three);
-        Button_Y = OVRInput.Get(OVRInput.Button.Four);
-
-        if (Axis1D_LB > 0)
-        {
-            colorMaterialSet.weights[2] = 255;
-            colorMaterialSet.weights[1] = 0;
-            colorMaterialSet.weights[0] = 0;
-            CreateVoxels((Vector3i)leftPosition, colorMaterialSet, drawRange / 2, -1);
-        }
-
-        if (Axis1D_RB > 0)
-        {
-            colorMaterialSet.weights[2] = 0;
-            colorMaterialSet.weights[1] = 255;
-            colorMaterialSet.weights[0] = 0;
-            CreateVoxels((Vector3i)rightPosition, colorMaterialSet, smoothRange / 2, 1);
-        }
-
-        if (Axis1D_LT > 0)
-        {
-            DestroyVoxels((Vector3i)leftPosition, drawRange / 2, -1);
-        }
-
-        if (Axis1D_RT > 0)
-        {
-            SmoothVoxels((Vector3i)rightPosition, smoothRange / 2);
-        }
-
-        if (Button_A)
-        {
-            if(smoothRange > 2 && preButtonState == false)
-            {
-                smoothRange -= 2;
-                //OVRInput.SetControllerVibration(1.0f, 1.0f, OVRInput.Controller.RTouch);
-            }
-        }
-
-        if (Button_B)
-        {
-            if (smoothRange < 10 && preButtonState == false)
-            {
-                smoothRange += 2;
-                //OVRInput.SetControllerVibration(1.0f, 1.0f, OVRInput.Controller.RTouch);
-            }
-        }
-
-        if (Button_X)
-        {
-            if (drawRange > 2 && preButtonState == false)
-            {
-                drawRange -= 2;
-                //OVRInput.SetControllerVibration(1.0f, 1.0f, OVRInput.Controller.LTouch);
-            }
-        }
-
-        if (Button_Y)
-        {
-            if (drawRange < 10 && preButtonState == false)
-            {
-                drawRange += 2;
-                //OVRInput.SetControllerVibration(1.0f, 1.0f, OVRInput.Controller.LTouch);
-            }
-        }
-
-        // the end to record the state
-        if (Button_A || Button_B || Button_X || Button_Y)
-        {
-            preButtonState = true;
-        }
-        else
-        {
-            preButtonState = false;
-        }
-
-    }
-    */
 
     private bool CompareMaterialSet(MaterialSet ms1, MaterialSet ms2)
     {
