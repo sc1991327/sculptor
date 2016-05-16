@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Cubiquity;
 
 public enum ControlPanel { empty, main, color, replay, load, high };
-public enum OptModePanel { sculptor, network, replay, mirror };
+public enum OptModePanel { sculptor, network, rotate, replay, mirror };
 public enum InfoPanel { empty, start, info};
 public enum OptState { create, delete, smooth, paint };
 public enum OptShape { cube, sphere, capsule, cylinder };
@@ -232,46 +232,38 @@ public class HandBehaviour : MonoBehaviour {
                 activePanel = ControlPanel.color;
                 break;
             case 1:
-                // sculptor mode
-                activeOptModePanel = OptModePanel.sculptor;
-                break;
-            case 2:
-                // paint mode
-                activeOptModePanel = OptModePanel.mirror;
-                break;
-            case 3:
                 //High operators mode choose panel
                 activePanel = ControlPanel.high;
                 break;
-            case 4:
+            case 2:
                 //Replay file choose panel
                 activePanel = ControlPanel.replay;
                 break;
-            case 5:
+            case 3:
                 // Undo
                 recordBehaviour.UnDo();
                 activePanel = ControlPanel.empty;
                 activePanelContinue = true;
                 break;
-            case 6:
+            case 4:
                 // Redo
                 recordBehaviour.ReDo();
                 activePanel = ControlPanel.empty;
                 activePanelContinue = true;
                 break;
-            case 7:
+            case 5:
                 //Restart
                 RestartTerrainVolumeData();
                 activePanel = ControlPanel.empty;
                 activePanelContinue = true;
                 break;
-            case 8:
+            case 6:
                 //Save
                 SaveVDBFile();
                 activePanel = ControlPanel.empty;
                 activePanelContinue = true;
                 break;
-            case 9:
+            case 7:
                 //Load files choose panel
                 activePanel = ControlPanel.load;
                 break;
@@ -344,8 +336,16 @@ public class HandBehaviour : MonoBehaviour {
         switch (tempTouchID)
         {
             case 0:
-                // mirror sculptor panel
+                activeOptModePanel = OptModePanel.sculptor;
+                break;
+            case 1:
                 activeOptModePanel = OptModePanel.mirror;
+                break;
+            case 2:
+                activeOptModePanel = OptModePanel.rotate;
+                break;
+            case 3:
+                activeOptModePanel = OptModePanel.network;
                 break;
         }
     }
@@ -403,10 +403,8 @@ public class HandBehaviour : MonoBehaviour {
         }
     }
 
-    private void sculptorOptModePanelHandleOVRInput()
+    private void SwitchOptState()
     {
-        checkOptContinueState = false;
-
         switch (Mathf.Abs(singleHandOptMode) % 4)
         {
             case 0:
@@ -422,6 +420,13 @@ public class HandBehaviour : MonoBehaviour {
                 activeState = OptState.paint;
                 break;
         }
+    }
+
+    private void sculptorOptModePanelHandleOVRInput()
+    {
+        checkOptContinueState = false;
+
+        SwitchOptState();
 
         if (Axis1D_LT > 0 && Axis1D_RT > 0)
         {
@@ -500,6 +505,25 @@ public class HandBehaviour : MonoBehaviour {
         checkPreOptContinueState = checkOptContinueState;
     }
 
+    private void rotateOptModePanelHandleOVRInput()
+    {
+        checkOptContinueState = false;
+
+        SwitchOptState();
+
+        // rotate
+        terrainVolume.transform.Rotate(0, 1, 0);
+
+        // only one hand operator
+        HandleButtonInSculptor(false);
+
+        if (checkPreOptContinueState == true && checkOptContinueState == false)
+        {
+            recordBehaviour.NewDo();
+        }
+        checkPreOptContinueState = checkOptContinueState;
+    }
+
     private void networkOptModePanelHandleOVRInput()
     {
 
@@ -509,21 +533,7 @@ public class HandBehaviour : MonoBehaviour {
     {
         checkOptContinueState = false;
 
-        switch (singleHandOptMode % 4)
-        {
-            case 0:
-                activeState = OptState.create;
-                break;
-            case 1:
-                activeState = OptState.delete;
-                break;
-            case 2:
-                activeState = OptState.smooth;
-                break;
-            case 3:
-                activeState = OptState.paint;
-                break;
-        }
+        SwitchOptState();
 
         if (Axis1D_LT > 0 && Axis1D_RT > 0)
         {
@@ -745,6 +755,9 @@ public class HandBehaviour : MonoBehaviour {
         {
             case OptModePanel.sculptor:
                 sculptorOptModePanelHandleOVRInput();
+                break;
+            case OptModePanel.rotate:
+                rotateOptModePanelHandleOVRInput();
                 break;
             case OptModePanel.network:
                 networkOptModePanelHandleOVRInput();

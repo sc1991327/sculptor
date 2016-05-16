@@ -7,21 +7,22 @@ public class HandMenuObjectControl : MonoBehaviour
 {
 
     public GameObject mainColorChoose;
-    public GameObject mainSculptorMode;
-    public GameObject mainMirrorMode;
-    public GameObject mainHighEditorMode;
+    public GameObject mainEditorMode;
     public GameObject mainReplayMode;
     public GameObject mainUndo;
     public GameObject mainRedo;
     public GameObject mainRestart;
     public GameObject mainSave;
     public GameObject mainLoad;
-    public GameObject highNetwork;
+    public GameObject editSculptorMode;
+    public GameObject editMirrorMode;
+    public GameObject editRotateMode;
+    public GameObject editNetworkMode;
 
     public AudioSource audioSource;
 
     private List<GameObject> mainMenuObjectList;
-    private List<GameObject> highMenuObjectList;
+    private List<GameObject> editMenuObjectList;
     public List<Color> colorColorList;
 
     private RecordBehaviour recordBehaviour;
@@ -67,9 +68,7 @@ public class HandMenuObjectControl : MonoBehaviour
 
         mainMenuObjectList = new List<GameObject>();
         mainMenuObjectList.Add(mainColorChoose);
-        mainMenuObjectList.Add(mainSculptorMode);
-        mainMenuObjectList.Add(mainMirrorMode);
-        mainMenuObjectList.Add(mainHighEditorMode);
+        mainMenuObjectList.Add(mainEditorMode);
         mainMenuObjectList.Add(mainReplayMode);
         mainMenuObjectList.Add(mainUndo);
         mainMenuObjectList.Add(mainRedo);
@@ -77,15 +76,18 @@ public class HandMenuObjectControl : MonoBehaviour
         mainMenuObjectList.Add(mainSave);
         mainMenuObjectList.Add(mainLoad);
 
-        highMenuObjectList = new List<GameObject>();
-        highMenuObjectList.Add(highNetwork);
+        editMenuObjectList = new List<GameObject>();
+        editMenuObjectList.Add(editSculptorMode);
+        editMenuObjectList.Add(editMirrorMode);
+        editMenuObjectList.Add(editRotateMode);
+        editMenuObjectList.Add(editNetworkMode);
 
         foreach(GameObject temp in mainMenuObjectList)
         {
             temp.SetActive(false);
         }
 
-        foreach (GameObject temp in highMenuObjectList)
+        foreach (GameObject temp in editMenuObjectList)
         {
             temp.SetActive(false);
         }
@@ -155,10 +157,10 @@ public class HandMenuObjectControl : MonoBehaviour
                     DrawCircleMenuObj(menuPoints, recordBehaviour.loadFileNames);
                     break;
                 case ControlPanel.high:
-                    menuPoints = highMenuObjectList.Count;
+                    menuPoints = editMenuObjectList.Count;
                     DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
                     UpdateMenuCenterPos(nowPos);
-                    DrawCircleMenuObj(highMenuObjectList);
+                    DrawCircleMenuObj(editMenuObjectList);
                     break;
             }
             activePanel = nowPanel;
