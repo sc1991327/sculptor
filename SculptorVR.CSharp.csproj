@@ -181,6 +181,7 @@
     <Compile Include="Assets\Sculptor\HandMenuControl.cs" />
     <Compile Include="Assets\Sculptor\HandMenuObjectControl.cs" />
     <Compile Include="Assets\Sculptor\HeadCanvasControl.cs" />
+    <Compile Include="Assets\Sculptor\NetManager.cs" />
     <Compile Include="Assets\Sculptor\RecordBehaviour.cs" />
     <Compile Include="Assets\Sculptor\RotateObj.cs" />
     <Compile Include="Assets\Sculptor\TrackAnchor.cs" />
