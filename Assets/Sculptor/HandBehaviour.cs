@@ -13,6 +13,7 @@ public enum HandOpt { singleOpt, pairOpt, voxelWorldOpt };
 
 public class HandBehaviour : MonoBehaviour {
 
+    public GameObject networkManagerObj = null;
     public GameObject cameraManagerObj = null;
     public GameObject BasicProceduralVolume = null;
 
@@ -23,6 +24,7 @@ public class HandBehaviour : MonoBehaviour {
     private RecordBehaviour recordBehaviour;
     private HandMenuObjectControl handMenuObjectControl;
 
+    private NetManager networkManager;
     private CameraManager cameraManager;
 
     private TerrainVolume terrainVolume;
@@ -129,12 +131,13 @@ public class HandBehaviour : MonoBehaviour {
 
         appStartTime = Time.time;
 
+        networkManager = networkManagerObj.GetComponent<NetManager>();
         cameraManager = cameraManagerObj.GetComponent<CameraManager>();
 
         terrainVolume = BasicProceduralVolume.GetComponent<TerrainVolume>();
         proceduralTerrainVolume = BasicProceduralVolume.GetComponent<ProceduralTerrainVolume>();
 
-        if (leftHandAnchor == null || rightHandAnchor == null || BasicProceduralVolume == null || cameraManager == null)
+        if (leftHandAnchor == null || rightHandAnchor == null || BasicProceduralVolume == null || cameraManager == null || networkManager == null)
         {
             Debug.LogError("Please assign the GameObject first.");
         }
@@ -526,7 +529,18 @@ public class HandBehaviour : MonoBehaviour {
 
     private void networkOptModePanelHandleOVRInput()
     {
+        checkOptContinueState = false;
 
+        SwitchOptState();
+
+        // only one hand operator
+        HandleButtonInSculptor(false);
+
+        if (checkPreOptContinueState == true && checkOptContinueState == false)
+        {
+            recordBehaviour.NewDo();
+        }
+        checkPreOptContinueState = checkOptContinueState;
     }
 
     private void mirrorOptModePanelHandleOVRInput()
@@ -812,6 +826,26 @@ public class HandBehaviour : MonoBehaviour {
             case OptState.paint:
                 PaintVoxels(tempDrawPosScaled, colorMaterialSet, (Vector3i)tempDrawScale, 1, activeMirror);
                 break;
+        }
+
+        if (activeOptModePanel == OptModePanel.network)
+        {
+            switch (activeState)
+            {
+                case OptState.create:
+                    networkManager.SendOptMessage(tempDrawPosScaled, tempDrawRotate, colorMaterialSet, (Vector3i)tempDrawScale, activeShape, activeMirror);
+                    break;
+                case OptState.delete:
+                    MaterialSet emptyMaterialSet = new MaterialSet();
+                    networkManager.SendOptMessage(tempDrawPosScaled, tempDrawRotate, emptyMaterialSet, (Vector3i)tempDrawScale, activeShape, activeMirror);
+                    break;
+                case OptState.smooth:
+                    networkManager.SendOptMessage(tempDrawPosScaled, (Vector3i)tempDrawScale, activeMirror);
+                    break;
+                case OptState.paint:
+
+                    break;
+            }
         }
     }
 
@@ -1393,5 +1427,21 @@ public class HandBehaviour : MonoBehaviour {
 
         //  360 angle
         return (signed_angle + 180) % 360;
+    }
+
+    public void NetVoxelSetting(Vector3 Pos, Vector3 RotateEular, MaterialSet materialSet, Vector3i range, OptShape optshape, bool activeMirror)
+    {
+        StartCoroutine(VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror));
+    }
+    
+    public void NetVoxelSmoothing(Vector3 Pos, Vector3i range, bool activeMirror)
+    {
+        StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
+    }
+
+    public void NetVoxelPainting(Vector3 Pos, MaterialSet materialSet, Vector3i range, bool activeMirror)
+    {
+        VoxelPainting(Pos, range, materialSet, activeMirror);
+        Debug.Log("VoxelPainting!");
     }
 }
