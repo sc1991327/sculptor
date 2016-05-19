@@ -677,6 +677,108 @@ ModelImporter:
     101338: Trim_Text_Mode_4_1
     101340: Trim_Text_Network_1_1
     101342: Trim_Text_Replay_1_1
+    101344: Char_H_1_curve57
+    101346: polySurface124
+    101348: polySurface125
+    101350: polySurface126
+    101352: polySurface127
+    101354: polySurface128
+    101356: polySurface129
+    101358: polySurface130
+    101360: polySurface131
+    101362: polySurface132
+    101364: transform218
+    101366: transform219
+    101368: transform220
+    101370: transform221
+    101372: transform222
+    101374: transform223
+    101376: transform224
+    101378: transform225
+    101380: transform226
+    101382: transform227
+    101384: Char_a_5
+    101386: Char_a_6
+    101388: Char_d_7
+    101390: Char_e_10
+    101392: Char_e_11
+    101394: Char_i_4
+    101396: Char_M_6
+    101398: Char_n_1
+    101400: Char_o_13
+    101402: Char_o_14
+    101404: Char_P_1
+    101406: Char_R_3
+    101408: Char_t_6
+    101410: Char_t_7
+    101412: Char_t_8
+    101414: curve117
+    101416: curve117 1
+    101418: curve118
+    101420: curve119
+    101422: curve120
+    101424: curve121
+    101426: curve122
+    101428: curve123
+    101430: curve124
+    101432: curve125
+    101434: curve126
+    101436: curve127
+    101438: curve128
+    101440: curve129
+    101442: curve130
+    101444: curve131
+    101446: curve132
+    101448: curve133
+    101450: polySurface133
+    101452: polySurface133 1
+    101454: polySurface134
+    101456: polySurface135
+    101458: polySurface136
+    101460: polySurface137
+    101462: polySurface138
+    101464: polySurface139
+    101466: polySurface140
+    101468: polySurface141
+    101470: polySurface142
+    101472: polySurface143
+    101474: Text_Paint_1
+    101476: Text_RotateMode_1
+    101478: transform228
+    101480: transform229
+    101482: transform230
+    101484: transform231
+    101486: transform232
+    101488: transform233
+    101490: transform234
+    101492: transform235
+    101494: transform236
+    101496: transform237
+    101498: transform238
+    101500: transform239
+    101502: transform240
+    101504: transform241
+    101506: transform242
+    101508: transform243
+    101510: transform244
+    101512: transform245
+    101514: transform246
+    101516: transform247
+    101518: transform248
+    101520: transform249
+    101522: transform250
+    101524: Trim_Char_a_6_1
+    101526: Trim_Char_d_7_1
+    101528: Trim_Char_e_10_1
+    101530: Trim_Char_e_11_1
+    101532: Trim_Char_M_6_1
+    101534: Trim_Char_o_13_1
+    101536: Trim_Char_o_14_1
+    101538: Trim_Char_R_3_1
+    101540: Trim_Char_t_7_1
+    101542: Trim_Char_t_8_1
+    101544: Trim_Text_RotateMode_1_1
+    101546: Trim_Text_RotateMode_1_2
     400000: Char_a_1
     400002: Char_a_2
     400004: Char_a_3
@@ -1349,6 +1451,108 @@ ModelImporter:
     401338: Trim_Text_Mode_4_1
     401340: Trim_Text_Network_1_1
     401342: Trim_Text_Replay_1_1
+    401344: Char_H_1_curve57
+    401346: polySurface124
+    401348: polySurface125
+    401350: polySurface126
+    401352: polySurface127
+    401354: polySurface128
+    401356: polySurface129
+    401358: polySurface130
+    401360: polySurface131
+    401362: polySurface132
+    401364: transform218
+    401366: transform219
+    401368: transform220
+    401370: transform221
+    401372: transform222
+    401374: transform223
+    401376: transform224
+    401378: transform225
+    401380: transform226
+    401382: transform227
+    401384: Char_a_5
+    401386: Char_a_6
+    401388: Char_d_7
+    401390: Char_e_10
+    401392: Char_e_11
+    401394: Char_i_4
+    401396: Char_M_6
+    401398: Char_n_1
+    401400: Char_o_13
+    401402: Char_o_14
+    401404: Char_P_1
+    401406: Char_R_3
+    401408: Char_t_6
+    401410: Char_t_7
+    401412: Char_t_8
+    401414: curve117
+    401416: curve117 1
+    401418: curve118
+    401420: curve119
+    401422: curve120
+    401424: curve121
+    401426: curve122
+    401428: curve123
+    401430: curve124
+    401432: curve125
+    401434: curve126
+    401436: curve127
+    401438: curve128
+    401440: curve129
+    401442: curve130
+    401444: curve131
+    401446: curve132
+    401448: curve133
+    401450: polySurface133
+    401452: polySurface133 1
+    401454: polySurface134
+    401456: polySurface135
+    401458: polySurface136
+    401460: polySurface137
+    401462: polySurface138
+    401464: polySurface139
+    401466: polySurface140
+    401468: polySurface141
+    401470: polySurface142
+    401472: polySurface143
+    401474: Text_Paint_1
+    401476: Text_RotateMode_1
+    401478: transform228
+    401480: transform229
+    401482: transform230
+    401484: transform231
+    401486: transform232
+    401488: transform233
+    401490: transform234
+    401492: transform235
+    401494: transform236
+    401496: transform237
+    401498: transform238
+    401500: transform239
+    401502: transform240
+    401504: transform241
+    401506: transform242
+    401508: transform243
+    401510: transform244
+    401512: transform245
+    401514: transform246
+    401516: transform247
+    401518: transform248
+    401520: transform249
+    401522: transform250
+    401524: Trim_Char_a_6_1
+    401526: Trim_Char_d_7_1
+    401528: Trim_Char_e_10_1
+    401530: Trim_Char_e_11_1
+    401532: Trim_Char_M_6_1
+    401534: Trim_Char_o_13_1
+    401536: Trim_Char_o_14_1
+    401538: Trim_Char_R_3_1
+    401540: Trim_Char_t_7_1
+    401542: Trim_Char_t_8_1
+    401544: Trim_Text_RotateMode_1_1
+    401546: Trim_Text_RotateMode_1_2
     2300000: Char_R_1_curve2
     2300002: curve17
     2300004: polySurface1
@@ -1360,6 +1564,8 @@ ModelImporter:
     2300016: Char_C_1_curve101
     2300018: Char_N_1_curve75
     2300020: Char_R_2_curve91
+    2300022: Char_H_1_curve57
+    2300024: polySurface143
     3300000: Char_R_1_curve2
     3300002: curve17
     3300004: polySurface1
@@ -1371,6 +1577,8 @@ ModelImporter:
     3300016: Char_C_1_curve101
     3300018: Char_N_1_curve75
     3300020: Char_R_2_curve91
+    3300022: Char_H_1_curve57
+    3300024: polySurface143
     4300000: Trim_Char_U_2_1
     4300002: polySurface1
     4300004: Char_R_1_curve2
@@ -1382,6 +1590,8 @@ ModelImporter:
     4300016: Char_N_1_curve75
     4300018: Char_R_2_curve91
     4300020: Char_C_1_curve101
+    4300022: Char_H_1_curve57
+    4300024: polySurface143
     9500000: //RootNode
   materials:
     importMaterials: 1

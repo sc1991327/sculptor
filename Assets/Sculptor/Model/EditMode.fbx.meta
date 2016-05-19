@@ -98,6 +98,26 @@ ModelImporter:
     100180: Trim_Text_Edit_1_1
     100182: Trim_Text_High_1_1
     100184: Trim_Text_Mode_3_1
+    100186: Char_H_1_curve57
+    100188: polySurface124
+    100190: polySurface125
+    100192: polySurface126
+    100194: polySurface127
+    100196: polySurface128
+    100198: polySurface129
+    100200: polySurface130
+    100202: polySurface131
+    100204: polySurface132
+    100206: transform218
+    100208: transform219
+    100210: transform220
+    100212: transform221
+    100214: transform222
+    100216: transform223
+    100218: transform224
+    100220: transform225
+    100222: transform226
+    100224: transform227
     400000: Char_d_4
     400002: Char_d_5
     400004: Char_E_1
@@ -191,9 +211,32 @@ ModelImporter:
     400180: Trim_Text_Edit_1_1
     400182: Trim_Text_High_1_1
     400184: Trim_Text_Mode_3_1
+    400186: Char_H_1_curve57
+    400188: polySurface124
+    400190: polySurface125
+    400192: polySurface126
+    400194: polySurface127
+    400196: polySurface128
+    400198: polySurface129
+    400200: polySurface130
+    400202: polySurface131
+    400204: polySurface132
+    400206: transform218
+    400208: transform219
+    400210: transform220
+    400212: transform221
+    400214: transform222
+    400216: transform223
+    400218: transform224
+    400220: transform225
+    400222: transform226
+    400224: transform227
     2300000: Char_H_1_curve56
+    2300002: Char_H_1_curve57
     3300000: Char_H_1_curve56
+    3300002: Char_H_1_curve57
     4300000: Char_H_1_curve56
+    4300002: Char_H_1_curve57
     9500000: //RootNode
   materials:
     importMaterials: 1

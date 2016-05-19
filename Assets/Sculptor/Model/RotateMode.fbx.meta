@@ -1,0 +1,229 @@
+fileFormatVersion: 2
+guid: 13406acf874eb4741bd54c6ab1b48a19
+timeCreated: 1463648741
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Char_a_6
+    100002: Char_d_7
+    100004: Char_e_10
+    100006: Char_e_11
+    100008: Char_M_6
+    100010: Char_o_13
+    100012: Char_o_14
+    100014: Char_R_3
+    100016: Char_t_7
+    100018: Char_t_8
+    100020: curve117
+    100022: curve117 1
+    100024: curve118
+    100026: curve119
+    100028: curve120
+    100030: curve121
+    100032: curve122
+    100034: curve123
+    100036: curve124
+    100038: curve125
+    100040: curve126
+    100042: curve127
+    100044: curve128
+    100046: curve129
+    100048: curve130
+    100050: curve131
+    100052: curve132
+    100054: curve133
+    100056: polySurface133
+    100058: polySurface133 1
+    100060: polySurface134
+    100062: polySurface135
+    100064: polySurface136
+    100066: polySurface137
+    100068: polySurface138
+    100070: polySurface139
+    100072: polySurface140
+    100074: polySurface141
+    100076: polySurface142
+    100078: polySurface143
+    100080: //RootNode
+    100082: Text_RotateMode_1
+    100084: transform228
+    100086: transform229
+    100088: transform230
+    100090: transform231
+    100092: transform232
+    100094: transform233
+    100096: transform234
+    100098: transform235
+    100100: transform236
+    100102: transform237
+    100104: transform238
+    100106: transform239
+    100108: transform240
+    100110: transform241
+    100112: transform242
+    100114: transform243
+    100116: transform244
+    100118: transform245
+    100120: transform246
+    100122: transform247
+    100124: transform248
+    100126: transform249
+    100128: transform250
+    100130: Trim_Char_a_6_1
+    100132: Trim_Char_d_7_1
+    100134: Trim_Char_e_10_1
+    100136: Trim_Char_e_11_1
+    100138: Trim_Char_M_6_1
+    100140: Trim_Char_o_13_1
+    100142: Trim_Char_o_14_1
+    100144: Trim_Char_R_3_1
+    100146: Trim_Char_t_7_1
+    100148: Trim_Char_t_8_1
+    100150: Trim_Text_RotateMode_1_1
+    100152: Trim_Text_RotateMode_1_2
+    400000: Char_a_6
+    400002: Char_d_7
+    400004: Char_e_10
+    400006: Char_e_11
+    400008: Char_M_6
+    400010: Char_o_13
+    400012: Char_o_14
+    400014: Char_R_3
+    400016: Char_t_7
+    400018: Char_t_8
+    400020: curve117
+    400022: curve117 1
+    400024: curve118
+    400026: curve119
+    400028: curve120
+    400030: curve121
+    400032: curve122
+    400034: curve123
+    400036: curve124
+    400038: curve125
+    400040: curve126
+    400042: curve127
+    400044: curve128
+    400046: curve129
+    400048: curve130
+    400050: curve131
+    400052: curve132
+    400054: curve133
+    400056: polySurface133
+    400058: polySurface133 1
+    400060: polySurface134
+    400062: polySurface135
+    400064: polySurface136
+    400066: polySurface137
+    400068: polySurface138
+    400070: polySurface139
+    400072: polySurface140
+    400074: polySurface141
+    400076: polySurface142
+    400078: polySurface143
+    400080: //RootNode
+    400082: Text_RotateMode_1
+    400084: transform228
+    400086: transform229
+    400088: transform230
+    400090: transform231
+    400092: transform232
+    400094: transform233
+    400096: transform234
+    400098: transform235
+    400100: transform236
+    400102: transform237
+    400104: transform238
+    400106: transform239
+    400108: transform240
+    400110: transform241
+    400112: transform242
+    400114: transform243
+    400116: transform244
+    400118: transform245
+    400120: transform246
+    400122: transform247
+    400124: transform248
+    400126: transform249
+    400128: transform250
+    400130: Trim_Char_a_6_1
+    400132: Trim_Char_d_7_1
+    400134: Trim_Char_e_10_1
+    400136: Trim_Char_e_11_1
+    400138: Trim_Char_M_6_1
+    400140: Trim_Char_o_13_1
+    400142: Trim_Char_o_14_1
+    400144: Trim_Char_R_3_1
+    400146: Trim_Char_t_7_1
+    400148: Trim_Char_t_8_1
+    400150: Trim_Text_RotateMode_1_1
+    400152: Trim_Text_RotateMode_1_2
+    2300000: polySurface143
+    3300000: polySurface143
+    4300000: polySurface143
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
