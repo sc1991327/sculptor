@@ -58,12 +58,6 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
@@ -190,6 +184,7 @@
     <Compile Include="Assets\Sculptor\NetManager.cs" />
     <Compile Include="Assets\Sculptor\RecordBehaviour.cs" />
     <Compile Include="Assets\Sculptor\RotateObj.cs" />
+    <Compile Include="Assets\Sculptor\SceneManager.cs" />
     <Compile Include="Assets\Sculptor\TrackAnchor.cs" />
     <Compile Include="Assets\Sculptor\handAnchor.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />

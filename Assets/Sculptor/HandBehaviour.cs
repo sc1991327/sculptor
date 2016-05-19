@@ -947,33 +947,6 @@ public class HandBehaviour : MonoBehaviour {
             recordBehaviour.PushOperator(new VoxelOpt(new Vector3i(x, y, z), tempMaterialSet, tempOld));
             terrainVolume.data.SetVoxel(x, y, z, tempMaterialSet);
         }
-
-        // only support 4 material channel
-        //MaterialSet tempMaterialSet = terrainVolume.data.GetVoxel(tempX, tempY, tempZ);
-        //for (uint tempM = 0; tempM < 4; tempM++)
-        //{
-        //    int originalMaterialWeight = tempMaterialSet.weights[tempM];
-
-        //    int sum = 0;
-        //    sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ).weights[tempM];
-        //    sum += terrainVolume.data.GetVoxel(tempX + 1, tempY, tempZ).weights[tempM];
-        //    sum += terrainVolume.data.GetVoxel(tempX - 1, tempY, tempZ).weights[tempM];
-        //    sum += terrainVolume.data.GetVoxel(tempX, tempY + 1, tempZ).weights[tempM];
-        //    sum += terrainVolume.data.GetVoxel(tempX, tempY - 1, tempZ).weights[tempM];
-        //    sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ + 1).weights[tempM];
-        //    sum += terrainVolume.data.GetVoxel(tempX, tempY, tempZ - 1).weights[tempM];
-
-        //    int avg = (int)((float)(sum) / 7.0f + 0.5f);
-        //    avg = Mathf.Clamp(avg, 0, 255);
-        //    tempMaterialSet.weights[tempM] = (byte)avg;
-        //}
-
-        //MaterialSet tempOld = terrainVolume.data.GetVoxel(tempX, tempY, tempZ);
-        //if (!CompareMaterialSet(tempMaterialSet, tempOld))
-        //{
-        //    recordBehaviour.PushOperator(new VoxelOpt(new Vector3i(tempX, tempY, tempZ), tempMaterialSet, tempOld));
-        //    terrainVolume.data.SetVoxel(tempX, tempY, tempZ, tempMaterialSet);
-        //}
     }
 
     private void SingleVoxelPaintHanding(int tempX, int tempY, int tempZ, MaterialSet materialset, float distSquared, bool activeMirror)

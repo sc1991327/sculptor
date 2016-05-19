@@ -33,7 +33,6 @@ public class TrackAnchor : MonoBehaviour {
 
     private HandBehaviour handBehaviour;
     private TerrainVolume terrainVolume;
-    private Transform VoxelWorldTransform;
 
     private int optRange;
     private OptShape activeShape, nowShape;
@@ -69,7 +68,6 @@ public class TrackAnchor : MonoBehaviour {
     void Start () {
 
         terrainVolume = BasicProceduralVolume.GetComponent<TerrainVolume>();
-        VoxelWorldTransform = terrainVolume.transform;
 
         handBehaviour = GetComponent<HandBehaviour>();
 
@@ -282,16 +280,16 @@ public class TrackAnchor : MonoBehaviour {
 
         leftHand.transform.position = leftHandAnchor.transform.position;
         leftHand.transform.rotation = leftHandAnchor.transform.rotation;
-        leftHand.transform.localScale = VoxelWorldTransform.localScale * optRange;
+        leftHand.transform.localScale = terrainVolume.transform.localScale * optRange;
 
         rightHand.transform.position = rightHandAnchor.transform.position;
         rightHand.transform.rotation = rightHandAnchor.transform.rotation;
-        rightHand.transform.localScale = VoxelWorldTransform.localScale * optRange;
+        rightHand.transform.localScale = terrainVolume.transform.localScale * optRange;
 
         Vector3 temp = rightHandChild.transform.position - leftHandChild.transform.position;
-        float tempvx = Mathf.Abs(Mathf.Min(temp.x, twoHandObjSizeMax * VoxelWorldTransform.localScale.x));
-        float tempvy = Mathf.Abs(Mathf.Min(temp.y, twoHandObjSizeMax * VoxelWorldTransform.localScale.y));
-        float tempvz = Mathf.Abs(Mathf.Min(temp.z, twoHandObjSizeMax * VoxelWorldTransform.localScale.z));
+        float tempvx = Mathf.Abs(Mathf.Min(temp.x, twoHandObjSizeMax * terrainVolume.transform.localScale.x));
+        float tempvy = Mathf.Abs(Mathf.Min(temp.y, twoHandObjSizeMax * terrainVolume.transform.localScale.y));
+        float tempvz = Mathf.Abs(Mathf.Min(temp.z, twoHandObjSizeMax * terrainVolume.transform.localScale.z));
         //twiceHand.transform.rotation = Quaternion.Euler(0, 0, 90);
         twiceHand.transform.position = leftHandChild.transform.position + temp / 2;
         twiceHand.transform.localScale = new Vector3(tempvx, tempvy, tempvz);
@@ -376,22 +374,6 @@ public class TrackAnchor : MonoBehaviour {
             leftHandChild.GetComponent<Renderer>().material.color = ColorChose;
             rightHandChild.GetComponent<Renderer>().material.color = ColorChose;
         }*/
-    }
-
-    private bool IsHandInVolume(bool leftHand = true)
-    {
-        if (proceduralTerrainVolume == null)
-        {
-            return false;
-        }
-
-        Vector3 handPos = leftHand ? leftHandChild.transform.position : rightHandChild.transform.position;
-
-        //todo: worldSpace
-        return (
-                handPos.x <= proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.x && handPos.x >= -proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.x &&
-                handPos.y <= proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.y && handPos.y >= -proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.y &&
-                handPos.z <= proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.z && handPos.z >= -proceduralTerrainVolume.planetRadius * VoxelWorldTransform.localScale.z);
     }
 
     public Vector3 GetRightChildPosition()
