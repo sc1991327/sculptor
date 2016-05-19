@@ -178,6 +178,7 @@
     <Compile Include="Assets\Sculptor\BoundIndicator.cs" />
     <Compile Include="Assets\Sculptor\CameraManager.cs" />
     <Compile Include="Assets\Sculptor\HandBehaviour.cs" />
+    <Compile Include="Assets\Sculptor\HandManager.cs" />
     <Compile Include="Assets\Sculptor\HandMenuControl.cs" />
     <Compile Include="Assets\Sculptor\HandMenuObjectControl.cs" />
     <Compile Include="Assets\Sculptor\HeadCanvasControl.cs" />

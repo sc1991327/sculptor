@@ -1,0 +1,163 @@
+fileFormatVersion: 2
+guid: b145762b5edffd94c9b734ea2420fe27
+timeCreated: 1463643177
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Char_h_1
+    100002: Char_m_1
+    100004: Char_o_1
+    100006: Char_o_2
+    100008: Char_S_1
+    100010: Char_S_2
+    100012: Char_t_4
+    100014: curve70
+    100016: curve70 1
+    100018: curve71
+    100020: curve72
+    100022: curve73
+    100024: curve74
+    100026: curve75
+    100028: curve76
+    100030: curve77
+    100032: curve78
+    100034: curve79
+    100036: curve80
+    100038: curve81
+    100040: //RootNode
+    100042: Text_S_1
+    100044: Text_Smooth_1
+    100046: transform100
+    100048: transform101
+    100050: transform102
+    100052: transform97
+    100054: transform98
+    100056: transform99
+    100058: Trim_Char_h_1_1
+    100060: Trim_Char_m_1_1
+    100062: Trim_Char_o_1_1
+    100064: Trim_Char_o_2_1
+    100066: Trim_Char_S_1_1
+    100068: Trim_Char_S_2_1
+    100070: Trim_Char_t_4_1
+    100072: Trim_Text_S_1_1
+    100074: Trim_Text_Smooth_1_1
+    400000: Char_h_1
+    400002: Char_m_1
+    400004: Char_o_1
+    400006: Char_o_2
+    400008: Char_S_1
+    400010: Char_S_2
+    400012: Char_t_4
+    400014: curve70
+    400016: curve70 1
+    400018: curve71
+    400020: curve72
+    400022: curve73
+    400024: curve74
+    400026: curve75
+    400028: curve76
+    400030: curve77
+    400032: curve78
+    400034: curve79
+    400036: curve80
+    400038: curve81
+    400040: //RootNode
+    400042: Text_S_1
+    400044: Text_Smooth_1
+    400046: transform100
+    400048: transform101
+    400050: transform102
+    400052: transform97
+    400054: transform98
+    400056: transform99
+    400058: Trim_Char_h_1_1
+    400060: Trim_Char_m_1_1
+    400062: Trim_Char_o_1_1
+    400064: Trim_Char_o_2_1
+    400066: Trim_Char_S_1_1
+    400068: Trim_Char_S_2_1
+    400070: Trim_Char_t_4_1
+    400072: Trim_Text_S_1_1
+    400074: Trim_Text_Smooth_1_1
+    2300000: curve70
+    2300002: curve78
+    2300004: curve79
+    2300006: curve81
+    2300008: Trim_Char_S_2_1
+    3300000: curve70
+    3300002: curve78
+    3300004: curve79
+    3300006: curve81
+    3300008: Trim_Char_S_2_1
+    4300000: curve70
+    4300002: curve78
+    4300004: curve79
+    4300006: Trim_Char_S_2_1
+    4300008: curve81
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 80
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

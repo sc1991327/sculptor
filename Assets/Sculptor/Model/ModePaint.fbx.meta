@@ -1,0 +1,153 @@
+fileFormatVersion: 2
+guid: b071d1ac0211c69469560d026ed247ec
+timeCreated: 1463643665
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Char_a_3
+    100002: Char_i_1
+    100004: Char_n_1
+    100006: Char_P_1
+    100008: Char_t_5
+    100010: curve82
+    100012: curve82 1
+    100014: curve83
+    100016: curve84
+    100018: curve85
+    100020: curve86
+    100022: curve87
+    100024: curve88
+    100026: curve89
+    100028: curve90
+    100030: curve91
+    100032: curve92
+    100034: curve93
+    100036: //RootNode
+    100038: polySurface85
+    100040: Text_Paint_1
+    100042: transform103
+    100044: transform104
+    100046: transform105
+    100048: transform106
+    100050: transform107
+    100052: transform108
+    100054: Trim_Char_a_3_1
+    100056: Trim_Char_i_1_1
+    100058: Trim_Char_n_1_1
+    100060: Trim_Char_P_1_1
+    100062: Trim_Char_t_5_1
+    100064: Trim_Text_Paint_1_1
+    400000: Char_a_3
+    400002: Char_i_1
+    400004: Char_n_1
+    400006: Char_P_1
+    400008: Char_t_5
+    400010: curve82
+    400012: curve82 1
+    400014: curve83
+    400016: curve84
+    400018: curve85
+    400020: curve86
+    400022: curve87
+    400024: curve88
+    400026: curve89
+    400028: curve90
+    400030: curve91
+    400032: curve92
+    400034: curve93
+    400036: //RootNode
+    400038: polySurface85
+    400040: Text_Paint_1
+    400042: transform103
+    400044: transform104
+    400046: transform105
+    400048: transform106
+    400050: transform107
+    400052: transform108
+    400054: Trim_Char_a_3_1
+    400056: Trim_Char_i_1_1
+    400058: Trim_Char_n_1_1
+    400060: Trim_Char_P_1_1
+    400062: Trim_Char_t_5_1
+    400064: Trim_Text_Paint_1_1
+    2300000: curve82
+    2300002: curve90
+    2300004: curve91
+    2300006: curve92
+    2300008: polySurface85
+    3300000: curve82
+    3300002: curve90
+    3300004: curve91
+    3300006: curve92
+    3300008: polySurface85
+    4300000: curve82
+    4300002: curve90
+    4300004: curve91
+    4300006: curve92
+    4300008: polySurface85
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 80
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
