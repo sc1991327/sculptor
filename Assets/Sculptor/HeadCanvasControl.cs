@@ -5,80 +5,101 @@ using System.Collections.Generic;
 
 public class HeadCanvasControl : MonoBehaviour {
 
+    public float HMDDistanceToEye = 0.8f;
+
     public GameObject HandObject = null;
+    public GameObject CameraManagerObject = null;
 
-    public GameObject startPanel;
-    public GameObject infoPanel;
+    public GameObject steamStep0;
+    public GameObject steamStep1;
+    public GameObject steamStep2;
+    public GameObject steamStep3;
+    public GameObject steamStep4;
+    public GameObject steamStep5;
+    public GameObject steamStep6;
+    private List<GameObject> steamSteps;
 
-    public GameObject textStep1;
-    public GameObject textStep2;
-    public GameObject textStep3;
-    public GameObject textStep4;
-    public GameObject textStep5;
-    public GameObject textStep6;
-    private List<GameObject> textSteps;
-
-    public GameObject textSculptor;
-    public GameObject textMirror;
-    public GameObject textNetwork;
-    public GameObject textReplay;
+    public GameObject oculusStep0;
+    public GameObject oculusStep1;
+    public GameObject oculusStep2;
+    public GameObject oculusStep3;
+    public GameObject oculusStep4;
+    public GameObject oculusStep5;
+    public GameObject oculusStep6;
+    private List<GameObject> oculusSteps;
 
     private HandBehaviour handBehaviour;
+    private CameraManager cameraManager;
 
     private OptModePanel activeMode;
+    private VRMode vrMode;
 
     private int activeInfoPanelTimes;
+    private int menusize;
 
     void Start()
     {
         handBehaviour = HandObject.GetComponent<HandBehaviour>();
+        cameraManager = CameraManagerObject.GetComponent<CameraManager>();
 
-        startPanel.SetActive(false);
-        infoPanel.SetActive(false);
+        vrMode = cameraManager.GetVRMode();
 
-        textSteps = new List<GameObject>();
-        textSteps.Add(textStep1);
-        textSteps.Add(textStep2);
-        textSteps.Add(textStep3);
-        textSteps.Add(textStep4);
-        textSteps.Add(textStep5);
-        textSteps.Add(textStep6);
+        GameObject tempGObject = new GameObject();
 
-        startPanel.SetActive(true);
-        infoPanel.SetActive(false);
-        activeInfoPanelTimes = 0;
-        startPanelHandle(activeInfoPanelTimes);
+        steamSteps = new List<GameObject>();
+        steamSteps.Add(tempGObject);
+        steamSteps.Add(steamStep0);
+        steamSteps.Add(steamStep1);
+        steamSteps.Add(steamStep2);
+        steamSteps.Add(steamStep3);
+        steamSteps.Add(steamStep4);
+        steamSteps.Add(steamStep5);
+        steamSteps.Add(steamStep6);
+
+        oculusSteps = new List<GameObject>();
+        steamSteps.Add(tempGObject);
+        oculusSteps.Add(oculusStep0);
+        oculusSteps.Add(oculusStep1);
+        oculusSteps.Add(oculusStep2);
+        oculusSteps.Add(oculusStep3);
+        oculusSteps.Add(oculusStep4);
+        oculusSteps.Add(oculusStep5);
+        oculusSteps.Add(oculusStep6);
+
+        for (int tempi = 0; tempi < steamSteps.Count; tempi++)
+        {
+            steamSteps[tempi].SetActive(false);
+        }
+        for (int tempi = 0; tempi < oculusSteps.Count; tempi++)
+        {
+            oculusSteps[tempi].SetActive(false);
+        }
+
+        if (vrMode == VRMode.SteamVR)
+        {
+            menusize = steamSteps.Count;
+        }
+        else if (vrMode == VRMode.OculusVR)
+        {
+            menusize = oculusSteps.Count;
+        }else
+        {
+            menusize = 0;
+        }
+
     }
 
     void Update()
     {
 
-        transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, 0.6f));
+        transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, HMDDistanceToEye));
         transform.rotation = Camera.main.transform.rotation;
 
-        int temptimes = handBehaviour.GetActiveInfoPanelTimes();
+        int temptimes = handBehaviour.GetActiveInfoPanelTimes() % menusize;
         if (temptimes != activeInfoPanelTimes)
         {
-            if (temptimes < textSteps.Count)
-            {
-                // start panel
-                startPanel.SetActive(true);
-                infoPanel.SetActive(false);
-                startPanelHandle(temptimes);
-            }
-            else if ((temptimes - textSteps.Count) % 2 == 1)
-            {
-                // info panel
-                startPanel.SetActive(false);
-                infoPanel.SetActive(true);
-                infoPanelHandle();
-            }
-            else
-            {
-                // empty panel
-                startPanel.SetActive(false);
-                infoPanel.SetActive(false);
-            }
+            startPanelHandle(temptimes);
+
             activeInfoPanelTimes = temptimes;
         }
 
@@ -92,46 +113,47 @@ public class HeadCanvasControl : MonoBehaviour {
         switch (activeMode)
         {
             case OptModePanel.sculptor:
-                textSculptor.SetActive(true);
-                textMirror.SetActive(false);
-                textNetwork.SetActive(false);
-                textReplay.SetActive(false);
                 break;
 
             case OptModePanel.mirror:
-                textSculptor.SetActive(false);
-                textMirror.SetActive(true);
-                textNetwork.SetActive(false);
-                textReplay.SetActive(false);
                 break;
 
             case OptModePanel.network:
-                textSculptor.SetActive(false);
-                textMirror.SetActive(false);
-                textNetwork.SetActive(true);
-                textReplay.SetActive(false);
                 break;
 
             case OptModePanel.replay:
-                textSculptor.SetActive(false);
-                textMirror.SetActive(false);
-                textNetwork.SetActive(false);
-                textReplay.SetActive(true);
                 break;
         }
-        infoPanel.GetComponentInChildren<Text>().color = Color.green;
     }
 
-    void startPanelHandle(int activeText)
+    void startPanelHandle(int activeTimes)
     {
-        for (int tempi = 0; tempi < textSteps.Count; tempi++)
+        switch (vrMode)
         {
-            if (tempi == activeText)
-                textSteps[tempi].SetActive(true);
-            else
-                textSteps[tempi].SetActive(false);
+            case VRMode.None:
+                break;
+
+            case VRMode.OculusVR:
+                for (int tempi = 0; tempi < menusize; tempi++)
+                {
+                    if (tempi == activeTimes)
+                        oculusSteps[tempi].SetActive(true);
+                    else
+                        oculusSteps[tempi].SetActive(false);
+                }
+                break;
+
+            case VRMode.SteamVR:
+                for (int tempi = 0; tempi < menusize; tempi++)
+                {
+                    if (tempi == activeTimes)
+                        steamSteps[tempi].SetActive(true);
+                    else
+                        steamSteps[tempi].SetActive(false);
+                }
+                break;
         }
-        startPanel.GetComponentInChildren<Text>().color = Color.red;
+
     }
 
 }

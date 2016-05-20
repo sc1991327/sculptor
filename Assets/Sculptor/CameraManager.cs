@@ -246,7 +246,8 @@ public class CameraManager : MonoBehaviour {
                     Vector2 axis = deviceHand.GetAxis(EVRButtonId.k_EButton_Axis0);
                     float maxaxis = Mathf.Max(Mathf.Abs(axis.x), Mathf.Abs(axis.y));
 
-                    if (maxaxis < 0.5f){tempVirtualOpt.Axis2D_LB_Center = true;}
+                    //if (maxaxis < 0.5f){tempVirtualOpt.Axis2D_LB_Center = true;}
+                    if (maxaxis < 0.5f) { tempVirtualOpt.Button_Y = true; }
                     else if(maxaxis == -axis.x){tempVirtualOpt.Axis2D_LB_Left = true;}
                     else if (maxaxis == axis.x) {tempVirtualOpt.Axis2D_LB_Right = true;}
                     else if (maxaxis == -axis.y){tempVirtualOpt.Axis2D_LB_Down = true;}
@@ -266,7 +267,8 @@ public class CameraManager : MonoBehaviour {
                     Vector2 axis = deviceHand.GetAxis(EVRButtonId.k_EButton_Axis0);
                     float maxaxis = Mathf.Max(Mathf.Abs(axis.x), Mathf.Abs(axis.y));
 
-                    if (maxaxis < 0.5f) { tempVirtualOpt.Axis2D_RB_Center = true; }
+                    //if (maxaxis < 0.5f) { tempVirtualOpt.Axis2D_RB_Center = true; }
+                    if (maxaxis < 0.5f) { tempVirtualOpt.Button_B = true; }
                     else if (maxaxis == -axis.x) { tempVirtualOpt.Axis2D_RB_Left = true; }
                     else if (maxaxis == axis.x) { tempVirtualOpt.Axis2D_RB_Right = true; }
                     else if (maxaxis == -axis.y) { tempVirtualOpt.Axis2D_RB_Down = true; }
