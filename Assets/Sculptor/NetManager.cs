@@ -76,7 +76,8 @@ public class NetManager : MonoBehaviour {
 
     private TerrainVolume terrainVolume;
     private HandBehaviour handBehaviour;
-    private int optRange;
+    private int optRangeOrg;
+    private OptModePanel activeOptModePanel;
 
     private static object lockObj = new object();
     private Vector3 HeadTransPos = new Vector3(0, 0, 0);
@@ -113,6 +114,12 @@ public class NetManager : MonoBehaviour {
 
         ConnectToServer();
 
+        optRangeOrg = handBehaviour.GetOptRange();
+
+        headAnchorRecv.SetActive(false);
+        leftHandAnchorRecv.SetActive(false);
+        rightHandAnchorRecv.SetActive(false);
+
     }
 
     void ConnectToServer()
@@ -145,47 +152,70 @@ public class NetManager : MonoBehaviour {
 
     void Update()
     {
-        if (Time.time - PreSendTime > 0.1f)
+        // check network edit mode.
+        OptModePanel tempOMP = handBehaviour.GetActiveOptModePanel();
+        if (tempOMP != activeOptModePanel)
         {
-            SendPosMessage(NetMark.headpos, headAnchorSend.transform);
-            SendPosMessage(NetMark.lefthandpos, leftHandAnchorSend.transform);
-            SendPosMessage(NetMark.righthandpos, rightHandAnchorSend.transform);
-            PreSendTime = Time.time;
+
+            if (tempOMP == OptModePanel.network)
+            {
+                headAnchorRecv.SetActive(true);
+                leftHandAnchorRecv.SetActive(true);
+                rightHandAnchorRecv.SetActive(true);
+            }
+            else
+            {
+                headAnchorRecv.SetActive(false);
+                leftHandAnchorRecv.SetActive(false);
+                rightHandAnchorRecv.SetActive(false);
+            }
+
+            activeOptModePanel = tempOMP;
         }
 
-        lock (lockObj)
+        if (activeOptModePanel == OptModePanel.network)
         {
-            optRange = handBehaviour.GetOptRange();
+            if (Time.time - PreSendTime > 0.05f)
+            {
+                SendPosMessage(NetMark.headpos, headAnchorSend.transform);
+                SendPosMessage(NetMark.lefthandpos, leftHandAnchorSend.transform);
+                SendPosMessage(NetMark.righthandpos, rightHandAnchorSend.transform);
+                PreSendTime = Time.time;
+            }
 
-            headAnchorRecv.transform.position = HeadTransPos;
-            headAnchorRecv.transform.eulerAngles = HeadTransRot;
-            headAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRange;
+            lock (lockObj)
+            {
 
-            leftHandAnchorRecv.transform.position = LeftHandTransPos;
-            leftHandAnchorRecv.transform.eulerAngles = LeftHandTransRot;
-            leftHandAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRange;
+                headAnchorRecv.transform.position = HeadTransPos;
+                headAnchorRecv.transform.eulerAngles = HeadTransRot;
+                headAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRangeOrg;
 
-            rightHandAnchorRecv.transform.position = RightHandTransPos;
-            rightHandAnchorRecv.transform.eulerAngles = RightHandTransRot;
-            rightHandAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRange;
-        }
+                leftHandAnchorRecv.transform.position = LeftHandTransPos;
+                leftHandAnchorRecv.transform.eulerAngles = LeftHandTransRot;
+                leftHandAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRangeOrg;
 
-        if (doNetVC)
-        {
-            handBehaviour.NetVoxelSetting(NetVCPos, NetVCRot, NetVCMaterialSet, NetVCRng, NetVCOpt, NetVCMirror);
-            lock (lockObj) { doNetVC = false; }
-        }
+                rightHandAnchorRecv.transform.position = RightHandTransPos;
+                rightHandAnchorRecv.transform.eulerAngles = RightHandTransRot;
+                rightHandAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRangeOrg;
+            }
 
-        if (doNetVS)
-        {
-            handBehaviour.NetVoxelSmoothing(NetVSPos, NetVSRng, NetVSMirror);
-            lock (lockObj) { doNetVS = false; }
-        }
+            if (doNetVC)
+            {
+                handBehaviour.NetVoxelSetting(NetVCPos, NetVCRot, NetVCMaterialSet, NetVCRng, NetVCOpt, NetVCMirror);
+                lock (lockObj) { doNetVC = false; }
+            }
 
-        if (doNetVP)
-        {
-            handBehaviour.NetVoxelPainting(NetVPPos, NetVPMaterialSet, NetVPRng, NetVPMirror);
-            lock (lockObj) { doNetVP = false; }
+            if (doNetVS)
+            {
+                handBehaviour.NetVoxelSmoothing(NetVSPos, NetVSRng, NetVSMirror);
+                lock (lockObj) { doNetVS = false; }
+            }
+
+            if (doNetVP)
+            {
+                handBehaviour.NetVoxelPainting(NetVPPos, NetVPMaterialSet, NetVPRng, NetVPMirror);
+                lock (lockObj) { doNetVP = false; }
+            }
         }
     }
 
