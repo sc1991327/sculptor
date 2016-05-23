@@ -356,6 +356,11 @@ public class HandBehaviour : MonoBehaviour {
                 activeOptModePanel = OptModePanel.network;
                 break;
         }
+        if (tempTouchID >= 0)
+        {
+            activePanel = ControlPanel.empty;
+            activePanelContinue = true;
+        }
     }
 
     private void HandleButtonInSculptor(bool activeMirror)

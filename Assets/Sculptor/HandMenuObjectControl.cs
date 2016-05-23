@@ -6,6 +6,8 @@ using DG.Tweening;
 public class HandMenuObjectControl : MonoBehaviour
 {
 
+    public GameObject headAnchor;
+
     public GameObject mainColorChoose;
     public GameObject mainEditorMode;
     public GameObject mainReplayMode;
@@ -254,12 +256,12 @@ public class HandMenuObjectControl : MonoBehaviour
         if (nowPos == DrawPos.left)
         {
             MenuCenterObject.transform.position = trackAnchor.GetLeftChildPosition();
-            MenuCenterObject.transform.LookAt(Camera.main.transform.position);
+            MenuCenterObject.transform.LookAt(headAnchor.transform.position);
         }
         else
         {
             MenuCenterObject.transform.position = trackAnchor.GetRightChildPosition();
-            MenuCenterObject.transform.LookAt(Camera.main.transform.position);
+            MenuCenterObject.transform.LookAt(headAnchor.transform.position);
         }
     }
 
