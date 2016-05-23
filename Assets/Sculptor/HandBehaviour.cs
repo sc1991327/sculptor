@@ -89,11 +89,15 @@ public class HandBehaviour : MonoBehaviour {
     private bool checkOptContinueState = false;
     private bool checkPreOptContinueState = false;
 
-    private float replayStartTime = 0.0f;
-
     private int singleHandOptMode = 10000;
 
     private int CoroutineRange = 10000;
+
+    private float replayStartTime = 0.0f;
+
+    private float rotateSpeed = 60;
+    private float preRotateTime = Time.time;
+
 
     // -- OVRInput Info
 
@@ -346,6 +350,7 @@ public class HandBehaviour : MonoBehaviour {
                 break;
             case 2:
                 activeOptModePanel = OptModePanel.rotate;
+                preRotateTime = Time.time;
                 break;
             case 3:
                 activeOptModePanel = OptModePanel.network;
@@ -515,7 +520,9 @@ public class HandBehaviour : MonoBehaviour {
         SwitchOptState();
 
         // rotate
-        terrainVolume.transform.Rotate(0, 1, 0);
+        float rotateValue = Time.time - preRotateTime;
+        terrainVolume.transform.Rotate(0, rotateValue * rotateSpeed, 0);
+        preRotateTime += rotateValue;
 
         // only one hand operator
         HandleButtonInSculptor(false);
