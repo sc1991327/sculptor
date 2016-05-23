@@ -82,6 +82,9 @@ ModelImporter:
     100148: Trim_Char_t_8_1
     100150: Trim_Text_RotateMode_1_1
     100152: Trim_Text_RotateMode_1_2
+    100154: pCylinder2
+    100156: pCylinder3
+    100158: pSphere6
     400000: Char_a_6
     400002: Char_d_7
     400004: Char_e_10
@@ -159,9 +162,21 @@ ModelImporter:
     400148: Trim_Char_t_8_1
     400150: Trim_Text_RotateMode_1_1
     400152: Trim_Text_RotateMode_1_2
+    400154: pCylinder2
+    400156: pCylinder3
+    400158: pSphere6
     2300000: polySurface143
+    2300002: pCylinder2
+    2300004: pCylinder3
+    2300006: pSphere6
     3300000: polySurface143
+    3300002: pCylinder2
+    3300004: pCylinder3
+    3300006: pSphere6
     4300000: polySurface143
+    4300002: pCylinder2
+    4300004: pCylinder3
+    4300006: pSphere6
     9500000: //RootNode
   materials:
     importMaterials: 1

@@ -21,10 +21,13 @@ public class TrackAnchor : MonoBehaviour {
     public GameObject rightHandMesh = null;
     private GameObject rightHandChild = null;
 
-    private GameObject terrainWorld = null;
+    public GameObject sculptorCenterObject = null;              // 1
+    public GameObject rotateCenterObject = null;                // 2
 
-    private BoundIndicator boundIndicator;
+    private BoundIndicator boundIndicator;                      // 3
     private ProceduralTerrainVolume proceduralTerrainVolume;
+
+    private GameObject terrainWorld;
 
     //private GameObject colorCube = null;
     //private Vector3 colorCubeSize = new Vector3(0.2f, 0.2f, 0.2f);
@@ -47,7 +50,7 @@ public class TrackAnchor : MonoBehaviour {
     private GameObject twiceHand;
     private HandOpt activeHandOpt = HandOpt.singleOpt;
 
-    private GameObject mirrorPlane;
+    private GameObject mirrorPlane;                             // 4
     private GameObject mirrorChildPlane1;
     private GameObject mirrorChildPlane2;
     private GameObject mirrorAnchorPoint0;
@@ -56,7 +59,6 @@ public class TrackAnchor : MonoBehaviour {
     private Vector3 mirrorScale = new Vector3(30, 30, 30);
 
     private OptModePanel activeMode, nowMode;
-    private OptState activeState;
 
     private float twoHandObjSizeMax = 60;
 
@@ -71,12 +73,13 @@ public class TrackAnchor : MonoBehaviour {
 
         handBehaviour = GetComponent<HandBehaviour>();
 
-        terrainWorld = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        terrainWorld.transform.GetComponent<Renderer>().material.mainTexture = planeTexture;
-        materialColor = terrainWorld.transform.GetComponent<Renderer>().material.color;
-        materialColor.a = 0.6f;
-        terrainWorld.transform.GetComponent<Renderer>().material.color = materialColor;
-        terrainWorld.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
+        terrainWorld = new GameObject("TerrainWorld");
+        //terrainWorld = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        //terrainWorld.transform.GetComponent<Renderer>().material.mainTexture = planeTexture;
+        //materialColor = terrainWorld.transform.GetComponent<Renderer>().material.color;
+        //materialColor.a = 0.6f;
+        //terrainWorld.transform.GetComponent<Renderer>().material.color = materialColor;
+        //terrainWorld.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
         rightHandChild = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         rightHandChild.transform.position = rightChildPosition;
@@ -143,7 +146,12 @@ public class TrackAnchor : MonoBehaviour {
         mirrorAnchorPoint1.transform.parent = mirrorPlane.transform;
         mirrorAnchorPoint2.transform.parent = mirrorPlane.transform;
 
+        mirrorPlane.transform.localEulerAngles = new Vector3(0, 0, 270);
         mirrorPlane.transform.parent = terrainWorld.transform;
+        sculptorCenterObject.transform.parent = terrainWorld.transform;
+        rotateCenterObject.transform.position = new Vector3(0, -128, 0);
+        rotateCenterObject.transform.localScale = new Vector3(16, 16, 16);
+        rotateCenterObject.transform.parent = terrainWorld.transform;
 
         proceduralTerrainVolume = BasicProceduralVolume.GetComponent<ProceduralTerrainVolume>();
         boundIndicator = proceduralTerrainVolume.gameObject.GetComponent<BoundIndicator>();
@@ -157,17 +165,14 @@ public class TrackAnchor : MonoBehaviour {
         rightHandChild.SetActive(true);
         twiceHand.SetActive(false);
 
+        boundIndicator.Show();
+        sculptorCenterObject.SetActive(true);
+        rotateCenterObject.SetActive(false);
         mirrorPlane.SetActive(false);
+
         activeMode = OptModePanel.sculptor;
 
         //colorCube.SetActive(false);
-
-        var transparentLayer = LayerMask.NameToLayer("TransparentFX");
-        terrainWorld.layer = transparentLayer;
-        rightHandChild.layer = transparentLayer;
-        leftHandChild.layer = transparentLayer;
-        twiceHand.layer = transparentLayer;
-        //colorCube.layer = transparentLayer;
     }
 
     // Update is called once per frame
@@ -223,45 +228,44 @@ public class TrackAnchor : MonoBehaviour {
                 twiceHand.SetActive(false);
             }
 
-            var transparentLayer = LayerMask.NameToLayer("TransparentFX");
-            terrainWorld.layer = transparentLayer;
-            rightHandChild.layer = transparentLayer;
-            leftHandChild.layer = transparentLayer;
-            twiceHand.layer = transparentLayer;
-        }
-
-        activeState = handBehaviour.GetActiveState();
-        switch (activeState)
-        {
-            case OptState.create:
-                leftHandMesh.transform.localEulerAngles = (new Vector3(-90, 90, 90));
-                rightHandMesh.transform.localEulerAngles = (new Vector3(-90, 90, 90));
-                break;
-            case OptState.delete:
-                leftHandMesh.transform.localEulerAngles = (new Vector3(180, 90, 90));
-                rightHandMesh.transform.localEulerAngles = (new Vector3(180, 90, 90));
-                break;
-            case OptState.smooth:
-                leftHandMesh.transform.localEulerAngles = (new Vector3(90, 90, 90));
-                rightHandMesh.transform.localEulerAngles = (new Vector3(90, 90, 90));
-                break;
-            case OptState.paint:
-                leftHandMesh.transform.localEulerAngles = (new Vector3(0, 90, 90));
-                rightHandMesh.transform.localEulerAngles = (new Vector3(0, 90, 90));
-                break;
         }
 
         // mirror
         nowMode = handBehaviour.GetActiveOptModePanel();
         if (nowMode != activeMode)
         {
-            if (nowMode == OptModePanel.mirror)
+            switch (nowMode)
             {
-                mirrorPlane.SetActive(true);
-            }
-            else
-            {
-                mirrorPlane.SetActive(false);
+                case OptModePanel.sculptor:
+                    boundIndicator.Show();
+                    sculptorCenterObject.SetActive(true);
+                    rotateCenterObject.SetActive(false);
+                    mirrorPlane.SetActive(false);
+                    break;
+                case OptModePanel.mirror:
+                    boundIndicator.Hide();
+                    sculptorCenterObject.SetActive(false);
+                    rotateCenterObject.SetActive(false);
+                    mirrorPlane.SetActive(true);
+                    break;
+                case OptModePanel.rotate:
+                    boundIndicator.Hide();
+                    sculptorCenterObject.SetActive(false);
+                    rotateCenterObject.SetActive(true);
+                    mirrorPlane.SetActive(false);
+                    break;
+                case OptModePanel.network:
+                    boundIndicator.Show();
+                    sculptorCenterObject.SetActive(false);
+                    rotateCenterObject.SetActive(false);
+                    mirrorPlane.SetActive(false);
+                    break;
+                case OptModePanel.replay:
+                    boundIndicator.Show();
+                    sculptorCenterObject.SetActive(false);
+                    rotateCenterObject.SetActive(false);
+                    mirrorPlane.SetActive(false);
+                    break;
             }
 
             activeMode = nowMode;
@@ -308,18 +312,6 @@ public class TrackAnchor : MonoBehaviour {
             }
         }
         activeHandOpt = tempActiveHandOpt;
-
-        // bound
-
-        //if (IsHandInVolume(true) && IsHandInVolume(false))
-        //{
-        //    boundIndicator.Hide();
-        //}
-        //else
-        //{
-        //    boundIndicator.Show();
-        //}
-        boundIndicator.Show();
 
         // color 
         /*ControlPanel tempShowColorCube = handBehaviour.GetActivePanel();
