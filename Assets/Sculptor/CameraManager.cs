@@ -226,6 +226,9 @@ public class CameraManager : MonoBehaviour {
         tempVirtualOpt.Button_X = OVRInput.Get(OVRInput.Button.Three);
         tempVirtualOpt.Button_Y = OVRInput.Get(OVRInput.Button.Four);
 
+        // Haptic Example
+        // OVRInput.SetControllerVibration(...);
+
         vOpt = tempVirtualOpt;
     }
 
@@ -278,6 +281,9 @@ public class CameraManager : MonoBehaviour {
                 if (deviceHand.GetPress(EVRButtonId.k_EButton_ApplicationMenu)) { tempVirtualOpt.Button_A = true; }
                 if (deviceHand.GetPress(EVRButtonId.k_EButton_SteamVR_Trigger)) { tempVirtualOpt.Axis1D_RB = 1; }
                 if (deviceHand.GetPress(EVRButtonId.k_EButton_Grip)) { tempVirtualOpt.Axis1D_RT = 1; }
+
+                // Haptic Example
+                // if (deviceHand.GetPress(EVRButtonId.k_EButton_SteamVR_Trigger)) { tempVirtualOpt.Axis1D_RB = 1;  deviceHand.TriggerHapticPulse(500); }
             }
         }
 
