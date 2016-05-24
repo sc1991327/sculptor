@@ -72,10 +72,6 @@ public class HandBehaviour : MonoBehaviour {
     private int optRangeSingleHandMax = 12;
     private int optRangeSingleHandMin = 4;
 
-    private Vector3 tempDrawPosScaled;
-    private Vector3 tempDrawRotate;
-    private Vector3 tempDrawScale;
-
     private Vector3 rightRotateEuler;
     private Vector3 leftRotateEuler;
 
@@ -98,6 +94,10 @@ public class HandBehaviour : MonoBehaviour {
     private float rotateSpeed = 60;
     private float preRotateTime = Time.time;
 
+    private float preOptTime = Time.time;
+    private float preOptRate = 0.05f;
+    private bool preOptState = false;
+    private Vector3 preOptPos;
 
     // -- OVRInput Info
 
@@ -158,6 +158,7 @@ public class HandBehaviour : MonoBehaviour {
 
         // empty
         emptyMaterialSet = new MaterialSet();
+        emptyMaterialSet.weights[4] = 0;
         emptyMaterialSet.weights[3] = 0;
         emptyMaterialSet.weights[2] = 0;
         emptyMaterialSet.weights[1] = 0;
@@ -165,6 +166,7 @@ public class HandBehaviour : MonoBehaviour {
 
         // color control
         colorMaterialSet = new MaterialSet();
+        colorMaterialSet.weights[4] = 0;    // white
         colorMaterialSet.weights[3] = 0;    // black
         colorMaterialSet.weights[2] = 127;  // b
         colorMaterialSet.weights[1] = 64;  // g
@@ -290,14 +292,16 @@ public class HandBehaviour : MonoBehaviour {
                 float temptotal = tempcolor.r + tempcolor.g + tempcolor.b;
                 if (temptotal == 0)
                 {
-                    colorMaterialSet.weights[3] = 255;    // black
-                    colorMaterialSet.weights[2] = 0;  // b
-                    colorMaterialSet.weights[1] = 0;  // g
-                    colorMaterialSet.weights[0] = 0;  // r
+                    colorMaterialSet.weights[4] = 255;        // white
+                    colorMaterialSet.weights[3] = 0;      // black
+                    colorMaterialSet.weights[2] = 0;        // b
+                    colorMaterialSet.weights[1] = 0;        // g
+                    colorMaterialSet.weights[0] = 0;        // r
                 }
                 else
                 {
-                    colorMaterialSet.weights[3] = 0;    // black
+                    colorMaterialSet.weights[4] = 0;        // white
+                    colorMaterialSet.weights[3] = 0;        // black
                     colorMaterialSet.weights[2] = (byte)(int)(254 * (tempcolor.b / temptotal));  // b
                     colorMaterialSet.weights[1] = (byte)(int)(254 * (tempcolor.g / temptotal));  // g
                     colorMaterialSet.weights[0] = (byte)(int)(254 * (tempcolor.r / temptotal));  // r
@@ -377,11 +381,18 @@ public class HandBehaviour : MonoBehaviour {
         if (Axis1D_LB > ButtonFilter)
         {
             StateHandleOVRInput(DrawPos.left, activeMirror);
+            preOptState = true;
         }
 
         if (Axis1D_RB > ButtonFilter)
         {
             StateHandleOVRInput(DrawPos.right, activeMirror);
+            preOptState = true;
+        }
+        
+        if (Axis1D_LB <= ButtonFilter && Axis1D_RB <= ButtonFilter)
+        {
+            preOptState = false;
         }
 
         // size
@@ -800,30 +811,8 @@ public class HandBehaviour : MonoBehaviour {
 
     }
 
-    private void StateHandleOVRInput(DrawPos drawPos, bool activeMirror)
+    private void SingleStateHandleOVRInput(Vector3 tempDrawPosScaled, Vector3 tempDrawRotate, Vector3 tempDrawScale, bool activeMirror)
     {
-        checkOptContinueState = true;
-
-        if (drawPos == DrawPos.left)
-        {
-            tempDrawPosScaled = leftChildPositionScaled;
-            tempDrawRotate = leftRotateEuler;
-            tempDrawScale = new Vector3(optRange / 2, optRange / 2, optRange / 2);
-        }
-        else if (drawPos == DrawPos.right)
-        {
-            tempDrawPosScaled = rightChildPositionScaled;
-            tempDrawRotate = rightRotateEuler;
-            tempDrawScale = new Vector3(optRange / 2, optRange / 2, optRange / 2);
-        }
-        else
-        {
-            tempDrawPosScaled = twiceChildPositionScale;
-            tempDrawRotate = new Vector3(0, 0, 0);
-            Vector3 tempTwiceScale = trackAnchor.GetTwiceChildLocalScale() / 2;
-            tempDrawScale = (new Vector3(tempTwiceScale.x / VoxelWorldTransform.localScale.x, tempTwiceScale.y / VoxelWorldTransform.localScale.y, tempTwiceScale.z / VoxelWorldTransform.localScale.z));
-        }
-
         switch (activeState)
         {
             case OptState.create:
@@ -858,6 +847,63 @@ public class HandBehaviour : MonoBehaviour {
 
                     break;
             }
+        }
+    }
+
+    private void StateHandleOVRInput(DrawPos drawPos, bool activeMirror)
+    {
+        checkOptContinueState = true;
+
+        Vector3 tempDrawPosScaled;
+        Vector3 tempDrawRotate;
+        Vector3 tempDrawScale;
+
+        float nowOptTime = Time.time;
+        if (nowOptTime - preOptTime > preOptRate)
+        {
+            if (drawPos == DrawPos.left)
+            {
+                tempDrawPosScaled = leftChildPositionScaled;
+                tempDrawRotate = leftRotateEuler;
+                tempDrawScale = new Vector3(optRange / 2, optRange / 2, optRange / 2);
+            }
+            else if (drawPos == DrawPos.right)
+            {
+                tempDrawPosScaled = rightChildPositionScaled;
+                tempDrawRotate = rightRotateEuler;
+                tempDrawScale = new Vector3(optRange / 2, optRange / 2, optRange / 2);
+            }
+            else
+            {
+                tempDrawPosScaled = twiceChildPositionScale;
+                tempDrawRotate = new Vector3(0, 0, 0);
+                Vector3 tempTwiceScale = trackAnchor.GetTwiceChildLocalScale() / 2;
+                tempDrawScale = (new Vector3(tempTwiceScale.x / VoxelWorldTransform.localScale.x, tempTwiceScale.y / VoxelWorldTransform.localScale.y, tempTwiceScale.z / VoxelWorldTransform.localScale.z));
+            }
+
+            if (drawPos == DrawPos.twice)
+            {
+                SingleStateHandleOVRInput(tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror);
+            }
+            else if (preOptState)
+            {
+                List<Vector3> tempDraw = calcDiffPos(preOptPos, tempDrawPosScaled, tempDrawScale);
+                if (tempDraw.Count > 0)
+                {
+                    foreach (Vector3 temp in tempDraw)
+                    {
+                        SingleStateHandleOVRInput(temp, tempDrawRotate, tempDrawScale, activeMirror);
+                    }
+                    preOptPos = tempDrawPosScaled;
+                }
+            }
+            else
+            {
+                SingleStateHandleOVRInput(tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror);
+                preOptPos = tempDrawPosScaled;
+            }
+
+            nowOptTime = preOptTime;
         }
     }
 
@@ -1349,6 +1395,27 @@ public class HandBehaviour : MonoBehaviour {
         //float tempy1 = m20 * tempx + m21 * tempy + m22 * tempz;
 
         //return new Vector3(tempx1 + pivot.x, tempy1 + pivot.y, tempz1 + pivot.z);
+    }
+
+    public List<Vector3> calcDiffPos(Vector3 prePos, Vector3 nowPos, Vector3 scale)
+    {
+        List<Vector3> reList = new List<Vector3>();
+
+        Vector3 Diff = nowPos - prePos;
+        float MaxDiff = Mathf.Max(Mathf.Abs(Diff.x), Mathf.Abs(Diff.y), Mathf.Abs(Diff.z));
+        float MaxScale = Mathf.Max(scale.x, scale.y, scale.z) / 2;
+        float dnum = MaxDiff / MaxScale - 1;
+
+        for (float lpos = 0; lpos < dnum; lpos++)
+        {
+            float tempx = prePos.x + Diff.x * (lpos / dnum);
+            float tempy = prePos.y + Diff.y * (lpos / dnum);
+            float tempz = prePos.z + Diff.z * (lpos / dnum);
+            Vector3 temp = new Vector3(tempx, tempy, tempz);
+            reList.Add(temp);
+        }
+
+        return reList;
     }
 
     public int GetActiveInfoPanelTimes()
