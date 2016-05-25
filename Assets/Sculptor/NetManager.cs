@@ -287,7 +287,7 @@ public class NetManager : MonoBehaviour {
     private void NetDataHandling(NetData netData)
     {
         int userID = netData.ClientID;
-        //if (userID != myID)
+        if (userID != myID)
         {
             // update user's transform
             NetMark userPos = (NetMark)netData.ClientNetMark;

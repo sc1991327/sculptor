@@ -886,6 +886,11 @@ public class HandBehaviour : MonoBehaviour {
                     }
                     preOptPos = tempDrawPosScaled;
                 }
+                else if (activeOptModePanel == OptModePanel.rotate)
+                {
+                    SingleStateHandleOVRInput(tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror);
+                    preOptPos = tempDrawPosScaled;
+                }
             }
             else
             {
@@ -1308,7 +1313,7 @@ public class HandBehaviour : MonoBehaviour {
     private void CreateVoxels(Vector3 Pos, Vector3 RotateEular, MaterialSet materialSet, Vector3i range, OptShape optshape, bool activeMirror)
     {
         recordBehaviour.WriteJsonFile(Pos, RotateEular, materialSet, range, optshape, Time.time - appStartTime, activeMirror);
-        //StartCoroutine(VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror));
+        StartCoroutine(VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror));
     }
 
     private void SmoothVoxels(Vector3 Pos, Vector3i range, bool activeMirror)
