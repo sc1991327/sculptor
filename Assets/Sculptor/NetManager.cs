@@ -46,6 +46,8 @@ public class NetData
     public int M3 { get; set; }
     [JsonProperty(PropertyName = "Optshape")]
     public int Optshape { get; set; }
+    [JsonProperty(PropertyName = "CalcContinue")]
+    public bool CalcContinue { get; set; }
     [JsonProperty(PropertyName = "ActiveMirror")]
     public bool ActiveMirror { get; set; }
 }
@@ -93,17 +95,20 @@ public class NetManager : MonoBehaviour {
     private Vector3i NetVCRng = new Vector3i(0, 0, 0);
     private MaterialSet NetVCMaterialSet = new MaterialSet();
     private OptShape NetVCOpt = OptShape.sphere;
+    private bool NetVCContinue = false;
     private bool NetVCMirror = false;
 
     private bool doNetVS = false;
     private Vector3 NetVSPos = new Vector3(0, 0, 0);
     private Vector3i NetVSRng = new Vector3i(0, 0, 0);
+    private bool NetVSContinue = false;
     private bool NetVSMirror = false;
 
     private bool doNetVP = false;
     private Vector3 NetVPPos = new Vector3(0, 0, 0);
     private Vector3i NetVPRng = new Vector3i(0, 0, 0);
     private MaterialSet NetVPMaterialSet = new MaterialSet();
+    private bool NetVPContinue = false;
     private bool NetVPMirror = false;
 
     // Use this for initialization
@@ -201,19 +206,19 @@ public class NetManager : MonoBehaviour {
 
             if (doNetVC)
             {
-                handBehaviour.NetVoxelSetting(NetVCPos, NetVCRot, NetVCMaterialSet, NetVCRng, NetVCOpt, NetVCMirror);
+                handBehaviour.NetVoxelSetting(NetVCPos, NetVCRot, NetVCMaterialSet, NetVCRng, NetVCOpt, NetVCContinue, NetVCMirror);
                 lock (lockObj) { doNetVC = false; }
             }
 
             if (doNetVS)
             {
-                handBehaviour.NetVoxelSmoothing(NetVSPos, NetVSRng, NetVSMirror);
+                handBehaviour.NetVoxelSmoothing(NetVSPos, NetVSRng, NetVSContinue, NetVSMirror);
                 lock (lockObj) { doNetVS = false; }
             }
 
             if (doNetVP)
             {
-                handBehaviour.NetVoxelPainting(NetVPPos, NetVPMaterialSet, NetVPRng, NetVPMirror);
+                handBehaviour.NetVoxelPainting(NetVPPos, NetVPMaterialSet, NetVPRng, NetVPContinue, NetVPMirror);
                 lock (lockObj) { doNetVP = false; }
             }
         }
@@ -245,7 +250,7 @@ public class NetManager : MonoBehaviour {
     private void NetDataHandling(NetData netData)
     {
         int userID = netData.ClientID;
-        if (userID != myID)
+        //if (userID != myID)
         {
             // update user's transform
             NetMark userPos = (NetMark)netData.ClientNetMark;
@@ -286,6 +291,7 @@ public class NetManager : MonoBehaviour {
                         NetVCMaterialSet.weights[2] = (byte)netData.M2;
                         NetVCMaterialSet.weights[3] = (byte)netData.M3;
                         NetVCOpt = (OptShape)netData.Optshape;
+                        NetVCContinue = netData.CalcContinue;
                         NetVCMirror = netData.ActiveMirror;
                         doNetVC = true;
                     }
@@ -294,9 +300,10 @@ public class NetManager : MonoBehaviour {
                 case NetMark.smoothopt:
                     lock (lockObj)
                     {
-                        NetVCPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
-                        NetVCRng = new Vector3i((int)netData.SclX, (int)netData.SclY, (int)netData.SclZ);
-                        NetVCMirror = netData.ActiveMirror;
+                        NetVSPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
+                        NetVSRng = new Vector3i((int)netData.SclX, (int)netData.SclY, (int)netData.SclZ);
+                        NetVSContinue = netData.CalcContinue;
+                        NetVSMirror = netData.ActiveMirror;
                         doNetVS = true;
                     }
                     break;
@@ -310,6 +317,7 @@ public class NetManager : MonoBehaviour {
                         NetVPMaterialSet.weights[1] = (byte)netData.M1;
                         NetVPMaterialSet.weights[2] = (byte)netData.M2;
                         NetVPMaterialSet.weights[3] = (byte)netData.M3;
+                        NetVPContinue = netData.CalcContinue;
                         NetVPMirror = netData.ActiveMirror;
                         doNetVP = true;
                     }
@@ -364,7 +372,7 @@ public class NetManager : MonoBehaviour {
         SendMessage(tempMsg);
     }
 
-    public void SendOptMessage(Vector3 Pos, Vector3 RotateEuler, MaterialSet materialSet, Vector3i range, OptShape optshape, bool activeMirror)
+    public void SendOptMessage(Vector3 Pos, Vector3 RotateEuler, MaterialSet materialSet, Vector3i range, OptShape optshape, bool calcContinue, bool activeMirror)
     {
         NetMark optmark = NetMark.sculptoropt;
         NetData jsonMsg = new NetData
@@ -385,13 +393,14 @@ public class NetManager : MonoBehaviour {
             M2 = materialSet.weights[2],
             M3 = materialSet.weights[3],
             Optshape = (int)optshape,
+            CalcContinue = calcContinue,
             ActiveMirror = activeMirror,
         };
         string tempMsg = JsonConvert.SerializeObject(jsonMsg, Formatting.Indented);
         SendMessage(tempMsg);
     }
 
-    public void SendOptMessage(Vector3 Pos, Vector3i range, bool activeMirror)
+    public void SendOptMessage(Vector3 Pos, Vector3i range, bool calcContinue, bool activeMirror)
     {
         NetMark optmark = NetMark.smoothopt;
         NetData jsonMsg = new NetData
@@ -404,13 +413,14 @@ public class NetManager : MonoBehaviour {
             SclX = range.x,
             SclY = range.y,
             SclZ = range.z,
+            CalcContinue = calcContinue,
             ActiveMirror = activeMirror,
         };
         string tempMsg = JsonConvert.SerializeObject(jsonMsg, Formatting.Indented);
         SendMessage(tempMsg);
     }
 
-    public void SendOptMessage(Vector3 Pos, Vector3i range, MaterialSet materialSet, bool activeMirror)
+    public void SendOptMessage(Vector3 Pos, Vector3i range, MaterialSet materialSet, bool calcContinue, bool activeMirror)
     {
         NetMark optmark = NetMark.paintopt;
         NetData jsonMsg = new NetData
@@ -427,6 +437,7 @@ public class NetManager : MonoBehaviour {
             M1 = materialSet.weights[1],
             M2 = materialSet.weights[2],
             M3 = materialSet.weights[3],
+            CalcContinue = calcContinue,
             ActiveMirror = activeMirror,
         };
         string tempMsg = JsonConvert.SerializeObject(jsonMsg, Formatting.Indented);
