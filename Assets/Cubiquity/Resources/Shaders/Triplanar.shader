@@ -123,29 +123,31 @@
 			half4 materialStrengths = IN.color;
 			half materialStrengthsSum = 
 				materialStrengths.x + materialStrengths.y + materialStrengths.z + materialStrengths.w;
-			materialStrengths /= materialStrengthsSum;
+			materialStrengths /= materialStrengths.w;
 #endif
 			
 			// Texture coordinates are calculated from the model
 			// space position, scaled by a user-supplied factor.
-			float3 texCoords = IN.volumePos.xyz; // * invTexScale;
+			//float3 texCoords = IN.volumePos.xyz; // * invTexScale;
 			
 			// Texture coordinate derivatives are explicitly calculated
 			// so that we can sample textures inside conditional logic.
-			float3 dx = ddx(texCoords);
-			float3 dy = ddy(texCoords);
+			//float3 dx = ddx(texCoords);
+			//float3 dy = ddy(texCoords);
 			
 			// Squaring a normalized vector makes the components sum to one. It also seems
 			// to give nicer transitions than simply dividing each component by the sum.
-			float3 triplanarBlendWeights = IN.volumeNormal * IN.volumeNormal;	
+			//float3 triplanarBlendWeights = IN.volumeNormal * IN.volumeNormal;	
 			
 			// Sample each of the four textures using triplanar texturing, and
 			// additively blend the results using the factors in materialStrengths.
-			half4 diffuse = 0.0;
-			diffuse += texTriplanar(_Tex0, texCoords, _Tex0_ST, dx, dy, triplanarBlendWeights * materialStrengths.r);
-			diffuse += texTriplanar(_Tex1, texCoords, _Tex1_ST, dx, dy, triplanarBlendWeights * materialStrengths.g);
-			diffuse += texTriplanar(_Tex2, texCoords, _Tex2_ST, dx, dy, triplanarBlendWeights * materialStrengths.b);
-			diffuse += texTriplanar(_Tex3, texCoords, _Tex3_ST, dx, dy, triplanarBlendWeights * materialStrengths.a);
+			//half4 diffuse = 0.0;
+			//diffuse += texTriplanar(_Tex0, texCoords, _Tex0_ST, dx, dy, triplanarBlendWeights * materialStrengths.r);
+			//diffuse += texTriplanar(_Tex1, texCoords, _Tex1_ST, dx, dy, triplanarBlendWeights * materialStrengths.g);
+			//diffuse += texTriplanar(_Tex2, texCoords, _Tex2_ST, dx, dy, triplanarBlendWeights * materialStrengths.b);
+			//diffuse += texTriplanar(_Tex3, texCoords, _Tex3_ST, dx, dy, triplanarBlendWeights * materialStrengths.a);
+
+			half4 diffuse = materialStrengths;
 			
 #if EIGHT_MATERIALS
 			diffuse += texTriplanar(_Tex4, texCoords, _Tex4_ST, dx, dy, triplanarBlendWeights * otherFourMaterialStrengths.r);

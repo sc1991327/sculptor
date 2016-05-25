@@ -158,7 +158,6 @@ public class HandBehaviour : MonoBehaviour {
 
         // empty
         emptyMaterialSet = new MaterialSet();
-        emptyMaterialSet.weights[4] = 0;
         emptyMaterialSet.weights[3] = 0;
         emptyMaterialSet.weights[2] = 0;
         emptyMaterialSet.weights[1] = 0;
@@ -166,11 +165,10 @@ public class HandBehaviour : MonoBehaviour {
 
         // color control
         colorMaterialSet = new MaterialSet();
-        colorMaterialSet.weights[4] = 0;    // white
-        colorMaterialSet.weights[3] = 0;    // black
-        colorMaterialSet.weights[2] = 127;  // b
-        colorMaterialSet.weights[1] = 64;  // g
-        colorMaterialSet.weights[0] = 64;  // r
+        colorMaterialSet.weights[3] = 127;    // light
+        colorMaterialSet.weights[2] = 64;  // b
+        colorMaterialSet.weights[1] = 32;  // g
+        colorMaterialSet.weights[0] = 32;  // r
 
         activePanel = ControlPanel.empty;
         activePanelContinue = false;
@@ -290,23 +288,11 @@ public class HandBehaviour : MonoBehaviour {
             if (colorChose != tempcolor)
             {
                 float temptotal = tempcolor.r + tempcolor.g + tempcolor.b;
-                if (temptotal == 0)
-                {
-                    colorMaterialSet.weights[4] = 255;        // white
-                    colorMaterialSet.weights[3] = 0;      // black
-                    colorMaterialSet.weights[2] = 0;        // b
-                    colorMaterialSet.weights[1] = 0;        // g
-                    colorMaterialSet.weights[0] = 0;        // r
-                }
-                else
-                {
-                    colorMaterialSet.weights[4] = 0;        // white
-                    colorMaterialSet.weights[3] = 0;        // black
-                    colorMaterialSet.weights[2] = (byte)(int)(254 * (tempcolor.b / temptotal));  // b
-                    colorMaterialSet.weights[1] = (byte)(int)(254 * (tempcolor.g / temptotal));  // g
-                    colorMaterialSet.weights[0] = (byte)(int)(254 * (tempcolor.r / temptotal));  // r
-                }
-                //Debug.Log("ColorMaterial: " + colorMaterialSet.weights[0] + ", " + colorMaterialSet.weights[1] + ", " + colorMaterialSet.weights[2] + ", " + colorMaterialSet.weights[3]);
+                colorMaterialSet.weights[3] = (byte)(int)Mathf.Clamp(255 - temptotal * 128, 7, 247);  // light
+                float colortotal = 255 - colorMaterialSet.weights[3];
+                colorMaterialSet.weights[2] = (byte)(int)(colortotal * (tempcolor.b / temptotal));  // b
+                colorMaterialSet.weights[1] = (byte)(int)(colortotal * (tempcolor.g / temptotal));  // g
+                colorMaterialSet.weights[0] = (byte)(int)(colortotal - colorMaterialSet.weights[2] - colorMaterialSet.weights[1]);  // r
                 colorChose = tempcolor;
             }
         }
@@ -961,9 +947,6 @@ public class HandBehaviour : MonoBehaviour {
 
         dismax = Vector3.Distance(temp1, cPos);
 
-        int tempX = tempi.x;
-        int tempY = tempi.y;
-        int tempZ = tempi.z;
         MaterialSet tempOld = terrainVolume.data.GetVoxel(tempi.x, tempi.y, tempi.z);
         if (!CompareMaterialSet(materialSet, tempOld))
         {
