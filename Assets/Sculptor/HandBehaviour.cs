@@ -816,6 +816,27 @@ public class HandBehaviour : MonoBehaviour {
                 break;
         }
 
+        // network operator
+        if (activeOptModePanel == OptModePanel.network)
+        {
+            switch (activeState)
+            {
+                case OptState.create:
+                    networkManager.SendOptMessage(tempDrawPosScaled, tempDrawRotate, colorMaterialSet, (Vector3i)tempDrawScale, activeShape, preOptState, activeMirror);
+                    break;
+                case OptState.delete:
+                    MaterialSet emptyMaterialSet = new MaterialSet();
+                    networkManager.SendOptMessage(tempDrawPosScaled, tempDrawRotate, emptyMaterialSet, (Vector3i)tempDrawScale, activeShape, preOptState, activeMirror);
+                    break;
+                case OptState.smooth:
+                    networkManager.SendOptMessage(tempDrawPosScaled, (Vector3i)tempDrawScale, preOptState, activeMirror);
+                    break;
+                case OptState.paint:
+                    networkManager.SendOptMessage(tempDrawPosScaled, (Vector3i)tempDrawScale, colorMaterialSet, preOptState, activeMirror);
+                    break;
+            }
+        }
+
     }
 
     private void StateHandleOVRInput(DrawPos drawPos, bool activeMirror)
@@ -870,27 +891,6 @@ public class HandBehaviour : MonoBehaviour {
             {
                 SingleStateHandleOVRInput(tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror);
                 preOptPos = tempDrawPosScaled;
-            }
-
-            // network operator
-            if (activeOptModePanel == OptModePanel.network)
-            {
-                switch (activeState)
-                {
-                    case OptState.create:
-                        networkManager.SendOptMessage(tempDrawPosScaled, tempDrawRotate, colorMaterialSet, (Vector3i)tempDrawScale, activeShape, preOptState, activeMirror);
-                        break;
-                    case OptState.delete:
-                        MaterialSet emptyMaterialSet = new MaterialSet();
-                        networkManager.SendOptMessage(tempDrawPosScaled, tempDrawRotate, emptyMaterialSet, (Vector3i)tempDrawScale, activeShape, preOptState, activeMirror);
-                        break;
-                    case OptState.smooth:
-                        networkManager.SendOptMessage(tempDrawPosScaled, (Vector3i)tempDrawScale, preOptState, activeMirror);
-                        break;
-                    case OptState.paint:
-                        networkManager.SendOptMessage(tempDrawPosScaled, (Vector3i)tempDrawScale, colorMaterialSet, preOptState, activeMirror);
-                        break;
-                }
             }
 
             nowOptTime = preOptTime;
@@ -1308,7 +1308,7 @@ public class HandBehaviour : MonoBehaviour {
     private void CreateVoxels(Vector3 Pos, Vector3 RotateEular, MaterialSet materialSet, Vector3i range, OptShape optshape, bool activeMirror)
     {
         recordBehaviour.WriteJsonFile(Pos, RotateEular, materialSet, range, optshape, Time.time - appStartTime, activeMirror);
-        StartCoroutine(VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror));
+        //StartCoroutine(VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror));
     }
 
     private void SmoothVoxels(Vector3 Pos, Vector3i range, bool activeMirror)
@@ -1473,7 +1473,12 @@ public class HandBehaviour : MonoBehaviour {
         if (calcContinue)
         {
             List<Vector3> tempDraw = calcDiffPos(preNetOptPos, Pos, (Vector3)range);
-            if (tempDraw.Count > 0)
+            if (tempDraw.Count > 20)
+            {
+                StartCoroutine(VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror));
+                preNetOptPos = Pos;
+            }
+            else if (tempDraw.Count > 0)
             {
                 foreach (Vector3 temp in tempDraw)
                 {
@@ -1491,11 +1496,53 @@ public class HandBehaviour : MonoBehaviour {
     
     public void NetVoxelSmoothing(Vector3 Pos, Vector3i range, bool calcContinue, bool activeMirror)
     {
-        StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
+        if (calcContinue)
+        {
+            List<Vector3> tempDraw = calcDiffPos(preNetOptPos, Pos, (Vector3)range);
+            if (tempDraw.Count > 20)
+            {
+                StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
+                preNetOptPos = Pos;
+            }
+            else if (tempDraw.Count > 0)
+            {
+                foreach (Vector3 temp in tempDraw)
+                {
+                    StartCoroutine(VoxelSmoothing(temp, range, activeMirror));
+                }
+                preNetOptPos = Pos;
+            }
+        }
+        else
+        {
+            StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
+            preNetOptPos = Pos;
+        }
     }
 
     public void NetVoxelPainting(Vector3 Pos, MaterialSet materialSet, Vector3i range, bool calcContinue, bool activeMirror)
     {
-        VoxelPainting(Pos, range, materialSet, activeMirror);
+        if (calcContinue)
+        {
+            List<Vector3> tempDraw = calcDiffPos(preNetOptPos, Pos, (Vector3)range);
+            if (tempDraw.Count > 20)
+            {
+                VoxelPainting(Pos, range, materialSet, activeMirror);
+                preNetOptPos = Pos;
+            }
+            else if (tempDraw.Count > 0)
+            {
+                foreach (Vector3 temp in tempDraw)
+                {
+                    VoxelPainting(temp, range, materialSet, activeMirror);
+                }
+                preNetOptPos = Pos;
+            }
+        }
+        else
+        {
+            VoxelPainting(Pos, range, materialSet, activeMirror);
+            preNetOptPos = Pos;
+        }
     }
 }

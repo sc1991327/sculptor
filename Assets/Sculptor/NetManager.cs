@@ -82,6 +82,10 @@ public class NetManager : MonoBehaviour {
     private OptModePanel activeOptModePanel;
 
     private static object lockObj = new object();
+    private bool netDataStreamUse;
+    private List<NetData> netDataStream1;
+    private List<NetData> netDataStream2;
+
     private Vector3 HeadTransPos = new Vector3(0, 0, 0);
     private Vector3 HeadTransRot = new Vector3(0, 0, 0);
     private Vector3 LeftHandTransPos = new Vector3(0, 0, 0);
@@ -117,6 +121,9 @@ public class NetManager : MonoBehaviour {
         handBehaviour = handObject.GetComponent<HandBehaviour>();
         terrainVolume = BasicProceduralVolume.GetComponent<TerrainVolume>();
 
+        netDataStreamUse = true;
+        netDataStream1 = new List<NetData>();
+        netDataStream2 = new List<NetData>();
         ConnectToServer();
 
         optRangeOrg = handBehaviour.GetOptRange();
@@ -157,6 +164,7 @@ public class NetManager : MonoBehaviour {
 
     void Update()
     {
+
         // check network edit mode.
         OptModePanel tempOMP = handBehaviour.GetActiveOptModePanel();
         if (tempOMP != activeOptModePanel)
@@ -178,8 +186,10 @@ public class NetManager : MonoBehaviour {
             activeOptModePanel = tempOMP;
         }
 
+        // data handling
         if (activeOptModePanel == OptModePanel.network)
         {
+            // send
             if (Time.time - PreSendTime > 0.05f)
             {
                 SendPosMessage(NetMark.headpos, headAnchorSend.transform);
@@ -188,38 +198,57 @@ public class NetManager : MonoBehaviour {
                 PreSendTime = Time.time;
             }
 
-            lock (lockObj)
+            // receive
+            //lock (lockObj)
             {
-
-                headAnchorRecv.transform.position = HeadTransPos;
-                headAnchorRecv.transform.eulerAngles = HeadTransRot;
-                headAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRangeOrg;
-
-                leftHandAnchorRecv.transform.position = LeftHandTransPos;
-                leftHandAnchorRecv.transform.eulerAngles = LeftHandTransRot;
-                leftHandAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRangeOrg;
-
-                rightHandAnchorRecv.transform.position = RightHandTransPos;
-                rightHandAnchorRecv.transform.eulerAngles = RightHandTransRot;
-                rightHandAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRangeOrg;
+                if (netDataStreamUse)
+                {
+                    foreach (NetData tempData in netDataStream1)
+                    {
+                        NetDataHandling(tempData);
+                    }
+                    netDataStream1.Clear();
+                    netDataStreamUse = false;
+                }
+                else
+                {
+                    foreach (NetData tempData in netDataStream2)
+                    {
+                        NetDataHandling(tempData);
+                    }
+                    netDataStream2.Clear();
+                    netDataStreamUse = true;
+                }
             }
+
+            headAnchorRecv.transform.position = HeadTransPos;
+            headAnchorRecv.transform.eulerAngles = HeadTransRot;
+            headAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRangeOrg;
+
+            leftHandAnchorRecv.transform.position = LeftHandTransPos;
+            leftHandAnchorRecv.transform.eulerAngles = LeftHandTransRot;
+            leftHandAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRangeOrg;
+
+            rightHandAnchorRecv.transform.position = RightHandTransPos;
+            rightHandAnchorRecv.transform.eulerAngles = RightHandTransRot;
+            rightHandAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRangeOrg;
 
             if (doNetVC)
             {
                 handBehaviour.NetVoxelSetting(NetVCPos, NetVCRot, NetVCMaterialSet, NetVCRng, NetVCOpt, NetVCContinue, NetVCMirror);
-                lock (lockObj) { doNetVC = false; }
+                doNetVC = false;
             }
 
             if (doNetVS)
             {
                 handBehaviour.NetVoxelSmoothing(NetVSPos, NetVSRng, NetVSContinue, NetVSMirror);
-                lock (lockObj) { doNetVS = false; }
+                doNetVS = false; 
             }
 
             if (doNetVP)
             {
                 handBehaviour.NetVoxelPainting(NetVPPos, NetVPMaterialSet, NetVPRng, NetVPContinue, NetVPMirror);
-                lock (lockObj) { doNetVP = false; }
+                doNetVP = false;
             }
         }
     }
@@ -240,9 +269,17 @@ public class NetManager : MonoBehaviour {
             if (IsValidJson(singlemessage))
             {
                 NetData jsonMsg = JsonConvert.DeserializeObject<NetData>(singlemessage);
-                NetDataHandling(jsonMsg);
-                //Debug.Log("ID: " + jsonMsg.ClientID);
-                //Debug.Log("Mark: " + ((NetMark)jsonMsg.ClientNetMark));
+                //lock (lockObj)
+                {
+                    if (netDataStreamUse)
+                    {
+                        netDataStream2.Add(jsonMsg);
+                    }
+                    else
+                    {
+                        netDataStream1.Add(jsonMsg);
+                    }
+                }
             }
         }
     }
@@ -257,70 +294,52 @@ public class NetManager : MonoBehaviour {
             switch (userPos)
             {
                 case NetMark.headpos:
-                    lock (lockObj)
-                    {
-                        HeadTransPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
-                        HeadTransRot = new Vector3(netData.RotX, netData.RotY, netData.RotZ);
-                    }
+                    HeadTransPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
+                    HeadTransRot = new Vector3(netData.RotX, netData.RotY, netData.RotZ);
                     break;
 
                 case NetMark.lefthandpos:
-                    lock (lockObj)
-                    {
-                        LeftHandTransPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
-                        LeftHandTransRot = new Vector3(netData.RotX, netData.RotY, netData.RotZ);
-                    }
+                    LeftHandTransPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
+                    LeftHandTransRot = new Vector3(netData.RotX, netData.RotY, netData.RotZ);
                     break;
 
                 case NetMark.righthandpos:
-                    lock (lockObj)
-                    {
-                        RightHandTransPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
-                        RightHandTransRot = new Vector3(netData.RotX, netData.RotY, netData.RotZ);
-                    }
+                    RightHandTransPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
+                    RightHandTransRot = new Vector3(netData.RotX, netData.RotY, netData.RotZ);
                     break;
 
                 case NetMark.sculptoropt:
-                    lock (lockObj)
-                    {
-                        NetVCPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
-                        NetVCRot = new Vector3(netData.RotX, netData.RotY, netData.RotZ);
-                        NetVCRng = new Vector3i((int)netData.SclX, (int)netData.SclY, (int)netData.SclZ);
-                        NetVCMaterialSet.weights[0] = (byte)netData.M0;
-                        NetVCMaterialSet.weights[1] = (byte)netData.M1;
-                        NetVCMaterialSet.weights[2] = (byte)netData.M2;
-                        NetVCMaterialSet.weights[3] = (byte)netData.M3;
-                        NetVCOpt = (OptShape)netData.Optshape;
-                        NetVCContinue = netData.CalcContinue;
-                        NetVCMirror = netData.ActiveMirror;
-                        doNetVC = true;
-                    }
+                    NetVCPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
+                    NetVCRot = new Vector3(netData.RotX, netData.RotY, netData.RotZ);
+                    NetVCRng = new Vector3i((int)netData.SclX, (int)netData.SclY, (int)netData.SclZ);
+                    NetVCMaterialSet.weights[0] = (byte)netData.M0;
+                    NetVCMaterialSet.weights[1] = (byte)netData.M1;
+                    NetVCMaterialSet.weights[2] = (byte)netData.M2;
+                    NetVCMaterialSet.weights[3] = (byte)netData.M3;
+                    NetVCOpt = (OptShape)netData.Optshape;
+                    NetVCContinue = netData.CalcContinue;
+                    NetVCMirror = netData.ActiveMirror;
+                    doNetVC = true;
                     break;
 
                 case NetMark.smoothopt:
-                    lock (lockObj)
-                    {
-                        NetVSPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
-                        NetVSRng = new Vector3i((int)netData.SclX, (int)netData.SclY, (int)netData.SclZ);
-                        NetVSContinue = netData.CalcContinue;
-                        NetVSMirror = netData.ActiveMirror;
-                        doNetVS = true;
-                    }
+                    NetVSPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
+                    NetVSRng = new Vector3i((int)netData.SclX, (int)netData.SclY, (int)netData.SclZ);
+                    NetVSContinue = netData.CalcContinue;
+                    NetVSMirror = netData.ActiveMirror;
+                    doNetVS = true;
                     break;
 
                 case NetMark.paintopt:
-                    lock (lockObj)
-                    {
-                        NetVPPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
-                        NetVPRng = new Vector3i((int)netData.SclX, (int)netData.SclY, (int)netData.SclZ);
-                        NetVPMaterialSet.weights[0] = (byte)netData.M0;
-                        NetVPMaterialSet.weights[1] = (byte)netData.M1;
-                        NetVPMaterialSet.weights[2] = (byte)netData.M2;
-                        NetVPMaterialSet.weights[3] = (byte)netData.M3;
-                        NetVPContinue = netData.CalcContinue;
-                        NetVPMirror = netData.ActiveMirror;
-                        doNetVP = true;
-                    }
+                    NetVPPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
+                    NetVPRng = new Vector3i((int)netData.SclX, (int)netData.SclY, (int)netData.SclZ);
+                    NetVPMaterialSet.weights[0] = (byte)netData.M0;
+                    NetVPMaterialSet.weights[1] = (byte)netData.M1;
+                    NetVPMaterialSet.weights[2] = (byte)netData.M2;
+                    NetVPMaterialSet.weights[3] = (byte)netData.M3;
+                    NetVPContinue = netData.CalcContinue;
+                    NetVPMirror = netData.ActiveMirror;
+                    doNetVP = true;
                     break;
             }
         }
