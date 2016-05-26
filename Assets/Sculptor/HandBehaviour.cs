@@ -289,7 +289,7 @@ public class HandBehaviour : MonoBehaviour {
             if (colorChose != tempcolor)
             {
                 float temptotal = tempcolor.r + tempcolor.g + tempcolor.b;
-                colorMaterialSet.weights[3] = (byte)(int)Mathf.Clamp(255 - temptotal * 128, 7, 247);  // light
+                colorMaterialSet.weights[3] = (byte)(int)Mathf.Clamp(255 - Mathf.Max(tempcolor.r, tempcolor.g, tempcolor.b) * 196, 7, 247);  // light
                 float colortotal = 255 - colorMaterialSet.weights[3];
                 colorMaterialSet.weights[2] = (byte)(int)(colortotal * (tempcolor.b / temptotal));  // b
                 colorMaterialSet.weights[1] = (byte)(int)(colortotal * (tempcolor.g / temptotal));  // g

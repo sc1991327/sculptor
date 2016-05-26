@@ -41,7 +41,7 @@ public class HandMenuObjectControl : MonoBehaviour
     private float MenuEndLocalScale = 0.08f;
     private float MenuLocalScaleMax = 0.12f;
     private float menuAlpha = 0.3f;
-    private float MenuColorStartLocalScale = 0.005f;
+    private float MenuColorStartLocalScale = 0.007f;
     private float MenuColorEndLocalScale = 0.05f;
     private float MenuColorObjRange = 0.03f;
 
@@ -193,7 +193,7 @@ public class HandMenuObjectControl : MonoBehaviour
         {
             int minPos = 0;
             float minPosDist = Vector3.Distance(nowPosList[0], handPos);
-            for (int ti = 1; ti < nowPosList.Count; ti++)
+            for (int ti = 0; ti < nowPosList.Count; ti++)
             {
                 MenuChildObject[ti].transform.localScale = new Vector3(MenuColorStartLocalScale, MenuColorStartLocalScale, MenuColorStartLocalScale);
 
@@ -202,6 +202,25 @@ public class HandMenuObjectControl : MonoBehaviour
                 {
                     minPosDist = tempdis;
                     minPos = ti;
+                }
+            }
+
+            for (int ti = 0; ti < nowPosList.Count; ti++)
+            {
+                int temp = (minPos % 10);
+                if ((ti % 10) != temp )
+                {
+                    //MenuChildObject[ti].transform.localScale = new Vector3(0, 0, 0);
+                    Color tempp = MenuChildObject[ti].transform.GetComponent<Renderer>().material.color;
+                    tempp.a = 0.06f;
+                    MenuChildObject[ti].transform.GetComponent<Renderer>().material.color = tempp;
+                }
+                else
+                {
+                    //MenuChildObject[ti].transform.localScale = new Vector3(MenuColorStartLocalScale, MenuColorStartLocalScale, MenuColorStartLocalScale);
+                    Color tempp = MenuChildObject[ti].transform.GetComponent<Renderer>().material.color;
+                    tempp.a = 1.0f;
+                    MenuChildObject[ti].transform.GetComponent<Renderer>().material.color = tempp;
                 }
             }
 
@@ -303,7 +322,7 @@ public class HandMenuObjectControl : MonoBehaviour
             tempObj.transform.GetComponent<Renderer>().material.color = colorColorList[oi];
 
             Color tempC = tempObj.transform.GetComponent<Renderer>().material.color;
-            tempC.a = menuAlpha;
+            tempC.a = 1.0f;
             tempObj.transform.GetComponent<Renderer>().material.color = tempC;
             tempObj.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
