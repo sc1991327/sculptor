@@ -69,7 +69,7 @@ public class HandBehaviour : MonoBehaviour {
     private float ButtonTimeControlSingle = 0.3f;
 
     private int optRange = 6;
-    private int optRangeSingleHandMax = 12;
+    private int optRangeSingleHandMax = 10;
     private int optRangeSingleHandMin = 4;
 
     private Vector3 rightRotateEuler;
@@ -966,40 +966,42 @@ public class HandBehaviour : MonoBehaviour {
         return dismax;
     }
 
-    private void SingleVoxelSmoothHanding(MaterialSet[,,] voxelHandleRegion, Vector3i regionLowerPos, int tempX, int tempY, int tempZ, bool activeMirror)
+    private void SingleVoxelSmoothHanding(MaterialSet[,,] voxelHandleRegion, Vector3i regionLowerPos, int tempX, int tempY, int tempZ)
     {
         int x = regionLowerPos.x + tempX;
         int y = regionLowerPos.y + tempY;
         int z = regionLowerPos.z + tempZ;
 
         MaterialSet tempMaterialSet = voxelHandleRegion[tempX, tempY, tempZ];
+        MaterialSet tempMaterialSet1 = voxelHandleRegion[tempX + 1, tempY, tempZ];
+        MaterialSet tempMaterialSet2 = voxelHandleRegion[tempX - 1, tempY, tempZ];
+        MaterialSet tempMaterialSet3 = voxelHandleRegion[tempX, tempY + 1, tempZ];
+        MaterialSet tempMaterialSet4 = voxelHandleRegion[tempX, tempY - 1, tempZ];
+        MaterialSet tempMaterialSet5 = voxelHandleRegion[tempX, tempY, tempZ + 1];
+        MaterialSet tempMaterialSet6 = voxelHandleRegion[tempX, tempY, tempZ - 1];
+        MaterialSet tempMaterialSetEnd = new MaterialSet();
+
         for (uint tempM = 0; tempM < 4; tempM++)
         {
-            int originalMaterialWeight = tempMaterialSet.weights[tempM];
-
             int sum = 0;
-            sum += voxelHandleRegion[tempX, tempY, tempZ].weights[tempM];
-            sum += voxelHandleRegion[tempX + 1, tempY, tempZ].weights[tempM];
-            sum += voxelHandleRegion[tempX - 1, tempY, tempZ].weights[tempM];
-            sum += voxelHandleRegion[tempX, tempY + 1, tempZ].weights[tempM];
-            sum += voxelHandleRegion[tempX, tempY - 1, tempZ].weights[tempM];
-            sum += voxelHandleRegion[tempX, tempY, tempZ + 1].weights[tempM];
-            sum += voxelHandleRegion[tempX, tempY, tempZ - 1].weights[tempM];
+            sum += tempMaterialSet.weights[tempM];
+            sum += tempMaterialSet1.weights[tempM];
+            sum += tempMaterialSet2.weights[tempM];
+            sum += tempMaterialSet3.weights[tempM];
+            sum += tempMaterialSet4.weights[tempM];
+            sum += tempMaterialSet5.weights[tempM];
+            sum += tempMaterialSet6.weights[tempM];
 
             int avg = (int)((float)(sum) / 7.0f + 0.5f);
             avg = Mathf.Clamp(avg, 0, 255);
-            tempMaterialSet.weights[tempM] = (byte)avg;
+            tempMaterialSetEnd.weights[tempM] = (byte)avg;
         }
 
-        MaterialSet tempOld = terrainVolume.data.GetVoxel(x, y, x);
-        if (!CompareMaterialSet(tempMaterialSet, tempOld))
-        {
-            recordBehaviour.PushOperator(new VoxelOpt(new Vector3i(x, y, z), tempMaterialSet, tempOld));
-            terrainVolume.data.SetVoxel(x, y, z, tempMaterialSet);
-        }
+        recordBehaviour.PushOperator(new VoxelOpt(new Vector3i(x, y, z), tempMaterialSetEnd, tempMaterialSet));
+        terrainVolume.data.SetVoxel(x, y, z, tempMaterialSetEnd);
     }
 
-    private void SingleVoxelPaintHanding(int tempX, int tempY, int tempZ, MaterialSet materialset, float distSquared, bool activeMirror)
+    private void SingleVoxelPaintHanding(int tempX, int tempY, int tempZ, MaterialSet materialset, float distSquared)
     {
         MaterialSet tempOld = terrainVolume.data.GetVoxel(tempX, tempY, tempZ);
         if (!CompareMaterialSet(materialset, tempOld))
@@ -1056,7 +1058,7 @@ public class HandBehaviour : MonoBehaviour {
             {
                 for (int tempZ = 0; tempZ < rsizez - 2; ++tempZ)
                 {
-                    SingleVoxelSmoothHanding(voxelHandleRegion, regionLowerPos, tempX + 1, tempY + 1, tempZ + 1, activeMirror);
+                    SingleVoxelSmoothHanding(voxelHandleRegion, regionLowerPos, tempX + 1, tempY + 1, tempZ + 1);
                     itimes++;
                     if (itimes % CoroutineRange == 0)
                         yield return null;
@@ -1137,10 +1139,10 @@ public class HandBehaviour : MonoBehaviour {
                     }
                 }
 
-                int itimes = (range.x + range.y + range.z) / 3 > optRangeSingleHandMax ? 5 : 1;
+                int itimes = (range.x + range.y + range.z) / 3 > optRangeSingleHandMax ? 3 : 1;
                 for (int i = 0; i < itimes; i++)
                 {
-                    int rmax = Mathf.Max(range.x, range.y, range.z);
+                    int rmax = Mathf.Max(range.x + 1, range.y + 1, range.z + 1);
                     StartCoroutine(VoxelSmoothing(Pos, new Vector3i(rmax, rmax, rmax), activeMirror));
                     yield return null;
                 }
@@ -1287,7 +1289,7 @@ public class HandBehaviour : MonoBehaviour {
                     float distSquared = xDistance * xDistance / rangeX2 + yDistance * yDistance / rangeY2 + zDistance * zDistance / rangeZ2;
                     if (distSquared < 1)
                     {
-                        SingleVoxelPaintHanding(x, y, z, materialset, distSquared, activeMirror);
+                        SingleVoxelPaintHanding(x, y, z, materialset, distSquared);
                     }
                 }
             }

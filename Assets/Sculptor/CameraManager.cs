@@ -239,7 +239,6 @@ public class CameraManager : MonoBehaviour {
         foreach (var index in controllerIndices)
         {
             var deviceHand = SteamVR_Controller.Input(index);
-            leftIndex = SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Leftmost);
 
             if (index == leftIndex)
             {

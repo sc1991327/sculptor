@@ -1,26 +1,161 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SceneManager : MonoBehaviour {
 
+    public GameObject HandObject = null;
     public GameObject cameraManagerObj;
 
     private CameraManager cameraManager;
 
-	// Use this for initialization
-	void Start () {
+    public GameObject steamStep0;
+    public GameObject steamStep1;
+    public GameObject steamStep2;
+    public GameObject steamStep3;
+    public GameObject steamStep4;
+    public GameObject steamStep5;
+    public GameObject steamStep6;
+    private List<GameObject> steamSteps;
 
+    public GameObject oculusStep0;
+    public GameObject oculusStep1;
+    public GameObject oculusStep2;
+    public GameObject oculusStep3;
+    public GameObject oculusStep4;
+    public GameObject oculusStep5;
+    public GameObject oculusStep6;
+    private List<GameObject> oculusSteps;
+
+    private HandBehaviour handBehaviour;
+
+    private OptModePanel activeMode;
+    private VRMode vrMode;
+
+    private int activeInfoPanelTimes;
+    private int menusize;
+
+    // Use this for initialization
+    void Start () {
+
+        handBehaviour = HandObject.GetComponent<HandBehaviour>();
         cameraManager = cameraManagerObj.GetComponent<CameraManager>();
 
-        if (cameraManager.GetVRMode() == VRMode.SteamVR)
+        vrMode = cameraManager.GetVRMode();
+
+        if (vrMode == VRMode.SteamVR)
         {
             transform.position = new Vector3(0, 1.28f, 0);
         }
 
-	}
+        GameObject tempGObject = new GameObject();
+
+        steamSteps = new List<GameObject>();
+        steamSteps.Add(tempGObject);
+        steamSteps.Add(steamStep0);
+        steamSteps.Add(steamStep1);
+        steamSteps.Add(steamStep2);
+        steamSteps.Add(steamStep3);
+        steamSteps.Add(steamStep4);
+        steamSteps.Add(steamStep5);
+        steamSteps.Add(steamStep6);
+
+        oculusSteps = new List<GameObject>();
+        oculusSteps.Add(tempGObject);
+        oculusSteps.Add(oculusStep0);
+        oculusSteps.Add(oculusStep1);
+        oculusSteps.Add(oculusStep2);
+        oculusSteps.Add(oculusStep3);
+        oculusSteps.Add(oculusStep4);
+        oculusSteps.Add(oculusStep5);
+        oculusSteps.Add(oculusStep6);
+
+        for (int tempi = 0; tempi < steamSteps.Count; tempi++)
+        {
+            steamSteps[tempi].SetActive(false);
+        }
+        for (int tempi = 0; tempi < oculusSteps.Count; tempi++)
+        {
+            oculusSteps[tempi].SetActive(false);
+        }
+
+        if (vrMode == VRMode.SteamVR)
+        {
+            menusize = steamSteps.Count;
+        }
+        else if (vrMode == VRMode.OculusVR)
+        {
+            menusize = oculusSteps.Count;
+        }
+        else
+        {
+            menusize = 0;
+        }
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
-	
-	}
+
+
+        int temptimes = handBehaviour.GetActiveInfoPanelTimes() % menusize;
+        if (temptimes != activeInfoPanelTimes)
+        {
+            startPanelHandle(temptimes);
+
+            activeInfoPanelTimes = temptimes;
+        }
+
+    }
+
+    void infoPanelHandle()
+    {
+        activeMode = handBehaviour.GetActiveOptModePanel();
+
+        // show info
+        switch (activeMode)
+        {
+            case OptModePanel.sculptor:
+                break;
+
+            case OptModePanel.mirror:
+                break;
+
+            case OptModePanel.network:
+                break;
+
+            case OptModePanel.replay:
+                break;
+        }
+    }
+
+    void startPanelHandle(int activeTimes)
+    {
+        switch (vrMode)
+        {
+            case VRMode.None:
+                break;
+
+            case VRMode.OculusVR:
+                for (int tempi = 0; tempi < menusize; tempi++)
+                {
+                    if (tempi == activeTimes)
+                        oculusSteps[tempi].SetActive(true);
+                    else
+                        oculusSteps[tempi].SetActive(false);
+                }
+                break;
+
+            case VRMode.SteamVR:
+                for (int tempi = 0; tempi < menusize; tempi++)
+                {
+                    if (tempi == activeTimes)
+                        steamSteps[tempi].SetActive(true);
+                    else
+                        steamSteps[tempi].SetActive(false);
+                }
+                break;
+        }
+
+    }
 }

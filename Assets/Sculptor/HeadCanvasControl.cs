@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 public class HeadCanvasControl : MonoBehaviour {
 
+    public bool isUse = false;
+
     public float HMDDistanceToEye = 0.8f;
 
     public GameObject HandObject = null;
@@ -57,7 +59,7 @@ public class HeadCanvasControl : MonoBehaviour {
         steamSteps.Add(steamStep6);
 
         oculusSteps = new List<GameObject>();
-        steamSteps.Add(tempGObject);
+        oculusSteps.Add(tempGObject);
         oculusSteps.Add(oculusStep0);
         oculusSteps.Add(oculusStep1);
         oculusSteps.Add(oculusStep2);
@@ -95,14 +97,16 @@ public class HeadCanvasControl : MonoBehaviour {
         transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, HMDDistanceToEye));
         transform.rotation = Camera.main.transform.rotation;
 
-        int temptimes = handBehaviour.GetActiveInfoPanelTimes() % menusize;
-        if (temptimes != activeInfoPanelTimes)
+        if (isUse)
         {
-            startPanelHandle(temptimes);
+            int temptimes = handBehaviour.GetActiveInfoPanelTimes() % menusize;
+            if (temptimes != activeInfoPanelTimes)
+            {
+                startPanelHandle(temptimes);
 
-            activeInfoPanelTimes = temptimes;
+                activeInfoPanelTimes = temptimes;
+            }
         }
-
     }
 
     void infoPanelHandle()
