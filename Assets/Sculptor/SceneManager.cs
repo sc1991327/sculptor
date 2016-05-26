@@ -16,7 +16,6 @@ public class SceneManager : MonoBehaviour {
     public GameObject steamStep4;
     public GameObject steamStep5;
     public GameObject steamStep6;
-    private List<GameObject> steamSteps;
 
     public GameObject oculusStep0;
     public GameObject oculusStep1;
@@ -25,7 +24,19 @@ public class SceneManager : MonoBehaviour {
     public GameObject oculusStep4;
     public GameObject oculusStep5;
     public GameObject oculusStep6;
-    private List<GameObject> oculusSteps;
+
+    public GameObject steamSculptorHelp;
+    public GameObject steamMirrorHelp;
+    public GameObject steamRotateHelp;
+    public GameObject steamNetworkHelp;
+
+    public GameObject oculusSculptorHelp;
+    public GameObject oculusMirrorHelp;
+    public GameObject oculusRotateHelp;
+    public GameObject oculusNetworkHelp;
+
+    private List<GameObject> startSteps;
+    private List<GameObject> helpSteps;
 
     private HandBehaviour handBehaviour;
 
@@ -33,10 +44,35 @@ public class SceneManager : MonoBehaviour {
     private VRMode vrMode;
 
     private int activeInfoPanelTimes;
-    private int menusize;
 
     // Use this for initialization
     void Start () {
+
+        steamStep0.SetActive(false);
+        steamStep1.SetActive(false);
+        steamStep2.SetActive(false);
+        steamStep3.SetActive(false);
+        steamStep4.SetActive(false);
+        steamStep5.SetActive(false);
+        steamStep6.SetActive(false);
+
+        oculusStep0.SetActive(false);
+        oculusStep1.SetActive(false);
+        oculusStep2.SetActive(false);
+        oculusStep3.SetActive(false);
+        oculusStep4.SetActive(false);
+        oculusStep5.SetActive(false);
+        oculusStep6.SetActive(false);
+
+        steamSculptorHelp.SetActive(false);
+        steamMirrorHelp.SetActive(false);
+        steamRotateHelp.SetActive(false);
+        steamNetworkHelp.SetActive(false);
+
+        oculusSculptorHelp.SetActive(false);
+        oculusMirrorHelp.SetActive(false);
+        oculusRotateHelp.SetActive(false);
+        oculusNetworkHelp.SetActive(false);
 
         handBehaviour = HandObject.GetComponent<HandBehaviour>();
         cameraManager = cameraManagerObj.GetComponent<CameraManager>();
@@ -50,46 +86,38 @@ public class SceneManager : MonoBehaviour {
 
         GameObject tempGObject = new GameObject();
 
-        steamSteps = new List<GameObject>();
-        steamSteps.Add(tempGObject);
-        steamSteps.Add(steamStep0);
-        steamSteps.Add(steamStep1);
-        steamSteps.Add(steamStep2);
-        steamSteps.Add(steamStep3);
-        steamSteps.Add(steamStep4);
-        steamSteps.Add(steamStep5);
-        steamSteps.Add(steamStep6);
-
-        oculusSteps = new List<GameObject>();
-        oculusSteps.Add(tempGObject);
-        oculusSteps.Add(oculusStep0);
-        oculusSteps.Add(oculusStep1);
-        oculusSteps.Add(oculusStep2);
-        oculusSteps.Add(oculusStep3);
-        oculusSteps.Add(oculusStep4);
-        oculusSteps.Add(oculusStep5);
-        oculusSteps.Add(oculusStep6);
-
-        for (int tempi = 0; tempi < steamSteps.Count; tempi++)
-        {
-            steamSteps[tempi].SetActive(false);
-        }
-        for (int tempi = 0; tempi < oculusSteps.Count; tempi++)
-        {
-            oculusSteps[tempi].SetActive(false);
-        }
+        startSteps = new List<GameObject>();
+        helpSteps = new List<GameObject>();
 
         if (vrMode == VRMode.SteamVR)
         {
-            menusize = steamSteps.Count;
+            startSteps.Add(tempGObject);
+            startSteps.Add(steamStep0);
+            startSteps.Add(steamStep1);
+            startSteps.Add(steamStep2);
+            startSteps.Add(steamStep3);
+            startSteps.Add(steamStep4);
+            startSteps.Add(steamStep5);
+            startSteps.Add(steamStep6);
+            helpSteps.Add(steamSculptorHelp);
+            helpSteps.Add(steamMirrorHelp);
+            helpSteps.Add(steamRotateHelp);
+            helpSteps.Add(steamNetworkHelp);
         }
         else if (vrMode == VRMode.OculusVR)
         {
-            menusize = oculusSteps.Count;
-        }
-        else
-        {
-            menusize = 0;
+            startSteps.Add(tempGObject);
+            startSteps.Add(oculusStep0);
+            startSteps.Add(oculusStep1);
+            startSteps.Add(oculusStep2);
+            startSteps.Add(oculusStep3);
+            startSteps.Add(oculusStep4);
+            startSteps.Add(oculusStep5);
+            startSteps.Add(oculusStep6);
+            helpSteps.Add(oculusSculptorHelp);
+            helpSteps.Add(oculusMirrorHelp);
+            helpSteps.Add(oculusRotateHelp);
+            helpSteps.Add(oculusNetworkHelp);
         }
 
     }
@@ -98,64 +126,79 @@ public class SceneManager : MonoBehaviour {
 	void Update () {
 
 
-        int temptimes = handBehaviour.GetActiveInfoPanelTimes() % menusize;
+        int temptimes = handBehaviour.GetActiveInfoPanelTimes();
         if (temptimes != activeInfoPanelTimes)
         {
-            startPanelHandle(temptimes);
+            if (temptimes < startSteps.Count)
+            {
+                startPanelHandle(temptimes);
+            }
+            else if((temptimes - startSteps.Count) % 2 == 1)
+            {
+                activeMode = handBehaviour.GetActiveOptModePanel();
+
+                // show info
+                switch (activeMode)
+                {
+                    case OptModePanel.sculptor:
+                        helpPanelHandle(0);
+                        break;
+
+                    case OptModePanel.mirror:
+                        helpPanelHandle(1);
+                        break;
+
+                    case OptModePanel.rotate:
+                        helpPanelHandle(2);
+                        break;
+
+                    case OptModePanel.network:
+                        helpPanelHandle(3);
+                        break;
+
+                }
+
+            }
+            else
+            {
+                helpPanelHandle(-1);
+                startPanelHandle(-1);
+            }
 
             activeInfoPanelTimes = temptimes;
         }
 
     }
 
-    void infoPanelHandle()
+    void helpPanelHandle(int activeTimes)
     {
-        activeMode = handBehaviour.GetActiveOptModePanel();
-
-        // show info
-        switch (activeMode)
+        if (helpSteps.Count == 0)
         {
-            case OptModePanel.sculptor:
-                break;
-
-            case OptModePanel.mirror:
-                break;
-
-            case OptModePanel.network:
-                break;
-
-            case OptModePanel.replay:
-                break;
+            return;
+        }
+        
+        for (int tempi = 0; tempi < helpSteps.Count; tempi++)
+        {
+            if (tempi == activeTimes)
+                helpSteps[tempi].SetActive(true);
+            else
+                helpSteps[tempi].SetActive(false);
         }
     }
 
     void startPanelHandle(int activeTimes)
     {
-        switch (vrMode)
+        if (startSteps.Count == 0)
         {
-            case VRMode.None:
-                break;
-
-            case VRMode.OculusVR:
-                for (int tempi = 0; tempi < menusize; tempi++)
-                {
-                    if (tempi == activeTimes)
-                        oculusSteps[tempi].SetActive(true);
-                    else
-                        oculusSteps[tempi].SetActive(false);
-                }
-                break;
-
-            case VRMode.SteamVR:
-                for (int tempi = 0; tempi < menusize; tempi++)
-                {
-                    if (tempi == activeTimes)
-                        steamSteps[tempi].SetActive(true);
-                    else
-                        steamSteps[tempi].SetActive(false);
-                }
-                break;
+            return;
         }
 
+        for (int tempi = 0; tempi < startSteps.Count; tempi++)
+        {
+            if (tempi == activeTimes)
+                startSteps[tempi].SetActive(true);
+            else
+                startSteps[tempi].SetActive(false);
+        }
     }
 }
