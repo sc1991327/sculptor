@@ -39,6 +39,7 @@ public class TrackAnchor : MonoBehaviour {
 
     private float optRange;
     private float optRangeOrg;
+    private Vector3 optTerrainVolumeScaleOrg;
     private OptShape activeShape, nowShape;
 
     private Vector3 rotateEuler = new Vector3(0, 0, 0);
@@ -163,6 +164,7 @@ public class TrackAnchor : MonoBehaviour {
         boundIndicator.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
         optRangeOrg = handBehaviour.GetOptRange();
+        optTerrainVolumeScaleOrg = terrainVolume.transform.localScale;
 
         leftHandChild.SetActive(true);
         rightHandChild.SetActive(true);
@@ -285,16 +287,17 @@ public class TrackAnchor : MonoBehaviour {
         leftHandChild.transform.localPosition = leftChildPosition;
         rightHandChild.transform.localPosition = rightChildPosition;
 
-        leftHandChild.transform.localScale = new Vector3(optRange, optRange, optRange);
-        rightHandChild.transform.localScale = new Vector3(optRange, optRange, optRange);
+        float tempScale = terrainVolume.transform.localScale.x * optRange / optTerrainVolumeScaleOrg.x;
+        leftHandChild.transform.localScale =  new Vector3(tempScale, tempScale, tempScale);
+        rightHandChild.transform.localScale = new Vector3(tempScale, tempScale, tempScale);
 
         leftHand.transform.position = leftHandAnchor.transform.position;
         leftHand.transform.rotation = leftHandAnchor.transform.rotation;
-        leftHand.transform.localScale = terrainVolume.transform.localScale * optRangeOrg;
+        leftHand.transform.localScale = optTerrainVolumeScaleOrg * optRangeOrg;
 
         rightHand.transform.position = rightHandAnchor.transform.position;
         rightHand.transform.rotation = rightHandAnchor.transform.rotation;
-        rightHand.transform.localScale = terrainVolume.transform.localScale * optRangeOrg;
+        rightHand.transform.localScale = optTerrainVolumeScaleOrg * optRangeOrg;
 
         Vector3 temp = rightHandChild.transform.position - leftHandChild.transform.position;
         float tempvx = Mathf.Abs(Mathf.Min(temp.x, twoHandObjSizeMax * terrainVolume.transform.localScale.x));
