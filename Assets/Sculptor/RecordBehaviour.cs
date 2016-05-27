@@ -90,10 +90,10 @@ public class RecordBehaviour : MonoBehaviour {
         }
 
         // obtain all files name
-        string fonderpath = "Record";
+        string fonderpath = "Record/Show";
         ProcessDirectory(fonderpath, recordFileNames, "*.txt", false);
 
-        string loadfonderpath = Paths.voxelDatabases;
+        string loadfonderpath = Paths.voxelDatabases + "/Show";
         ProcessDirectory(loadfonderpath, loadFileNames, "*.vdb", false);
 
         ReplayVoxelStore = new List<VoxelStoreObj>();

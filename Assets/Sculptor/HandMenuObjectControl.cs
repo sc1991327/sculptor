@@ -363,11 +363,11 @@ public class HandMenuObjectControl : MonoBehaviour
             tempObj.AddComponent<TextMesh>();
             tempObj.transform.parent = MenuCenterObject.transform;
             tempObj.transform.localScale = new Vector3(MenuStartLocalScale, MenuStartLocalScale, MenuStartLocalScale);
+            tempObj.transform.localEulerAngles = new Vector3(0, 180, 0);
             tempObj.transform.localPosition = MenuChildLocalPos[oi];
             tempObj.transform.GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value);
             tempObj.GetComponent<TextMesh>().text = textlist[oi].Substring(textlist[oi].LastIndexOf('\\') + 1);
-            //            tempObj.GetComponent<TextMesh>().text = textlist[oi];
-            tempObj.GetComponent<TextMesh>().characterSize = 0.1f;
+            tempObj.GetComponent<TextMesh>().characterSize = 0.2f;
             tempObj.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
             MenuChildObject.Add(tempObj);
             MenuChildPos.Add(tempObj.transform.position);
