@@ -6,8 +6,10 @@ public class SceneManager : MonoBehaviour {
 
     public GameObject HandObject = null;
     public GameObject cameraManagerObj;
+    public GameObject proceduralTerrainVolumeObj;
 
     private CameraManager cameraManager;
+    private ProceduralTerrainVolume proceduralTerrainVolume;
 
     public GameObject steamStep0;
     public GameObject steamStep1;
@@ -76,12 +78,14 @@ public class SceneManager : MonoBehaviour {
 
         handBehaviour = HandObject.GetComponent<HandBehaviour>();
         cameraManager = cameraManagerObj.GetComponent<CameraManager>();
+        proceduralTerrainVolume = proceduralTerrainVolumeObj.GetComponent<ProceduralTerrainVolume>();
 
         vrMode = cameraManager.GetVRMode();
 
         if (vrMode == VRMode.SteamVR)
         {
-            transform.position = new Vector3(0, 1.28f, 0);
+            float temp = proceduralTerrainVolume.GetVoxelRadiusDistance();
+            transform.position = new Vector3(0, temp, 0);
         }
 
         GameObject tempGObject = new GameObject();

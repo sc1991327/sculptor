@@ -74,7 +74,7 @@ public class NetManager : MonoBehaviour {
     private byte[] receiveData = new byte[1024];
     private string receiveMessage = "";
 
-    private float PreSendTime = Time.time;
+    private float PreSendTime;
 
     private TerrainVolume terrainVolume;
     private HandBehaviour handBehaviour;
@@ -132,6 +132,7 @@ public class NetManager : MonoBehaviour {
         leftHandAnchorRecv.SetActive(false);
         rightHandAnchorRecv.SetActive(false);
 
+        PreSendTime = Time.time;
     }
 
     void ConnectToServer()

@@ -14,18 +14,44 @@ using Cubiquity;
 [ExecuteInEditMode]
 public class ProceduralTerrainVolume : MonoBehaviour
 {
-    public int materialWeight2 = 255;
-    public int materialWeight1 = 0;
-    public int materialWeight0 = 0;
-    public int planetRadius = 128;
+    public int voxelRadius = 90;
+    public float voxelScale = 0.01f;
+
+    private float voxelRadiusDistance;
+
+    public GameObject HandObject = null;
+
+    private HandBehaviour handBehaviour;
+    private OptModePanel activeOptModePanel;
 
     // Use this for initialization
     void Start()
 	{
+        voxelRadiusDistance = (float)(voxelRadius) * voxelScale;
+        transform.position = new Vector3(0, voxelRadiusDistance, 0);
+        transform.localScale = new Vector3(voxelScale, voxelScale, voxelScale);
+
+        handBehaviour = HandObject.GetComponent<HandBehaviour>();
+
         //ProceduralTerrain();
         //ProceduralSphere();
         ProceduralVoxelVR();
         //LoadVDBFile();
+    }
+
+    void Update()
+    {
+        OptModePanel temp = handBehaviour.GetActiveOptModePanel();
+        if (temp != activeOptModePanel)
+        {
+            voxelRadiusDistance = (float)(voxelRadius) * voxelScale;
+            transform.position = new Vector3(0, voxelRadiusDistance, 0);
+            transform.localEulerAngles = new Vector3(0, 0, 0);
+            transform.localScale = new Vector3(voxelScale, voxelScale, voxelScale);
+            activeOptModePanel = temp;
+        }
+
+        
     }
 
     public void LoadVDBFile(string loadLocation)
@@ -37,11 +63,6 @@ public class ProceduralTerrainVolume : MonoBehaviour
         TerrainVolumeRenderer volumeRenderer = GetComponent<TerrainVolumeRenderer>();
 
         volume.data = data;
-
-        MaterialSet materialSet = new MaterialSet();
-        materialSet.weights[2] = (byte)materialWeight2;
-        materialSet.weights[1] = (byte)materialWeight1;
-        materialSet.weights[0] = (byte)materialWeight0;
 
         Debug.Log("Load Initial Voxels Finished.");
     }
@@ -56,48 +77,13 @@ public class ProceduralTerrainVolume : MonoBehaviour
 
         // create the world Voxel dataset
 
-        Region volumeBounds = new Region(-planetRadius, -planetRadius, -planetRadius, planetRadius, planetRadius, planetRadius);
+        Region volumeBounds = new Region(-voxelRadius, -voxelRadius, -voxelRadius, voxelRadius, voxelRadius, voxelRadius);
         TerrainVolumeData data = VolumeData.CreateEmptyVolumeData<TerrainVolumeData>(volumeBounds, saveLocation);
 
         TerrainVolume volume = GetComponent<TerrainVolume>();
         TerrainVolumeRenderer volumeRenderer = GetComponent<TerrainVolumeRenderer>();
 
         volume.data = data;
-
-        //int textureSize = 64;
-        //Texture2D RedTexture = new Texture2D(textureSize, textureSize);
-        //Texture2D GreenTexture = new Texture2D(textureSize, textureSize);
-        //Texture2D BlueTexture = new Texture2D(textureSize, textureSize);
-        //for (int _ci = 0; _ci < textureSize; _ci++)
-        //{
-        //    for (int _cj = 0; _cj < textureSize; _cj++)
-        //    {
-        //        RedTexture.SetPixel(0, 0, Color.red);
-        //        GreenTexture.SetPixel(0, 0, Color.green);
-        //        BlueTexture.SetPixel(0, 0, Color.blue);
-        //    }
-        //}
-        //volumeRenderer.material.SetTexture("_Tex0", RedTexture);
-        //volumeRenderer.material.SetTexture("_Tex1", GreenTexture);
-        //volumeRenderer.material.SetTexture("_Tex2", BlueTexture);
-
-        // create the original voxel.
-
-        MaterialSet materialSet = new MaterialSet();
-        materialSet.weights[2] = (byte)materialWeight2;
-        materialSet.weights[1] = (byte)materialWeight1;
-        materialSet.weights[0] = (byte)materialWeight0;
-
-        //for (int z = 1; z < 5; z++)
-        //{
-        //    for (int y = 1; y < 5; y++)
-        //    {
-        //        for (int x = 1; x < 5; x++)
-        //        {
-        //            data.SetVoxel(x, y, z, materialSet);
-        //        }
-        //    }
-        //}
 
         Debug.Log("Create Initial Voxels Finished.");
 
@@ -235,5 +221,15 @@ public class ProceduralTerrainVolume : MonoBehaviour
 
         Debug.Log("Voxel terrain has been generated.");
 
+    }
+
+    public int GetVoxelRadius()
+    {
+        return voxelRadius;
+    }
+
+    public float GetVoxelRadiusDistance()
+    {
+        return voxelRadiusDistance;
     }
 }

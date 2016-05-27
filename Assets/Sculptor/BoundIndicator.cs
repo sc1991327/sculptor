@@ -14,7 +14,7 @@ public class BoundIndicator : MonoBehaviour {
         ProceduralTerrainVolume volume = this.gameObject.GetComponent<ProceduralTerrainVolume>();
         if (volume)
         {
-            extent = volume.planetRadius;
+            extent = volume.GetVoxelRadius();
         }
 
         indicatorMesh = CreatePlaneMesh();

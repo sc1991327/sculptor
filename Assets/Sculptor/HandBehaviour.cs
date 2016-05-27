@@ -92,9 +92,9 @@ public class HandBehaviour : MonoBehaviour {
     private float replayStartTime = 0.0f;
 
     private float rotateSpeed = 60;
-    private float preRotateTime = Time.time;
+    private float preRotateTime;
 
-    private float preOptTime = Time.time;
+    private float preOptTime;
     private float preOptRate = 0.05f;
     private bool preOptState = false;
     private Vector3 preOptPos;
@@ -135,6 +135,8 @@ public class HandBehaviour : MonoBehaviour {
     void Start () {
 
         appStartTime = Time.time;
+        preRotateTime = Time.time;
+        preOptTime = Time.time;
 
         networkManager = networkManagerObj.GetComponent<NetManager>();
         cameraManager = cameraManagerObj.GetComponent<CameraManager>();
