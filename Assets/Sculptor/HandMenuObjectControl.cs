@@ -5,7 +5,7 @@ using DG.Tweening;
 
 public class HandMenuObjectControl : MonoBehaviour
 {
-
+    public GameObject cameraManagerObj;
     public GameObject headAnchor;
 
     public GameObject mainColorChoose;
@@ -57,6 +57,9 @@ public class HandMenuObjectControl : MonoBehaviour
     private bool isreuseobj = false;
     private bool iscolorobj = false;
 
+    private CameraManager cameraManager;
+    private VRMode vrMode;
+
     // Use this for initialization
     void Start()
     {
@@ -106,6 +109,9 @@ public class HandMenuObjectControl : MonoBehaviour
                 }
             }
         }
+
+        cameraManager = cameraManagerObj.GetComponent<CameraManager>();
+        vrMode = cameraManager.GetVRMode();
 
         handBehaviour = GetComponent<HandBehaviour>();
         recordBehaviour = GetComponent<RecordBehaviour>();
@@ -344,6 +350,10 @@ public class HandMenuObjectControl : MonoBehaviour
             tempObj.SetActive(true);
             tempObj.transform.parent = MenuCenterObject.transform;
             tempObj.transform.localPosition = MenuChildLocalPos[oi];
+            if (vrMode == VRMode.SteamVR)
+            {
+                tempObj.transform.localEulerAngles = new Vector3(0, 180, 0);
+            }
             tempObj.transform.localScale = new Vector3(MenuStartLocalScale, MenuStartLocalScale, MenuStartLocalScale);
 
             MenuChildObject.Add(tempObj);
@@ -363,7 +373,10 @@ public class HandMenuObjectControl : MonoBehaviour
             tempObj.AddComponent<TextMesh>();
             tempObj.transform.parent = MenuCenterObject.transform;
             tempObj.transform.localScale = new Vector3(MenuStartLocalScale, MenuStartLocalScale, MenuStartLocalScale);
-            tempObj.transform.localEulerAngles = new Vector3(0, 180, 0);
+            if (vrMode == VRMode.SteamVR)
+            {
+                tempObj.transform.localEulerAngles = new Vector3(0, 180, 0);
+            }
             tempObj.transform.localPosition = MenuChildLocalPos[oi];
             tempObj.transform.GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value);
             tempObj.GetComponent<TextMesh>().text = textlist[oi].Substring(textlist[oi].LastIndexOf('\\') + 1);
