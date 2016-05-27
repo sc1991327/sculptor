@@ -28,7 +28,6 @@ public class ProceduralTerrainVolume : MonoBehaviour
     void Start()
 	{
         voxelRadiusDistance = (float)(voxelRadius) * voxelScale;
-        transform.position = new Vector3(0, voxelRadiusDistance, 0);
         transform.localScale = new Vector3(voxelScale, voxelScale, voxelScale);
 
         handBehaviour = HandObject.GetComponent<HandBehaviour>();
@@ -45,7 +44,6 @@ public class ProceduralTerrainVolume : MonoBehaviour
         if (temp != activeOptModePanel)
         {
             voxelRadiusDistance = (float)(voxelRadius) * voxelScale;
-            transform.position = new Vector3(0, voxelRadiusDistance, 0);
             transform.localEulerAngles = new Vector3(0, 0, 0);
             transform.localScale = new Vector3(voxelScale, voxelScale, voxelScale);
             activeOptModePanel = temp;
