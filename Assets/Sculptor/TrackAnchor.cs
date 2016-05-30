@@ -32,7 +32,7 @@ public class TrackAnchor : MonoBehaviour {
     //private GameObject colorCube = null;
     //private Vector3 colorCubeSize = new Vector3(0.2f, 0.2f, 0.2f);
     private float colorAlpha = 0.05f;
-    private float colorChildAlpha = 0.3f;
+    private float colorChildAlpha = 0.6f;
 
     private HandBehaviour handBehaviour;
     private TerrainVolume terrainVolume;
@@ -64,6 +64,8 @@ public class TrackAnchor : MonoBehaviour {
 
     private float twoHandObjSizeMax = 60;
 
+    private Color colorChose;
+
     //private ControlPanel showColorCube = ControlPanel.empty;
     //private Vector3 ColorBlackPoint = new Vector3(0, 0, 0);
     //private Color ColorChose = Color.white;
@@ -86,23 +88,20 @@ public class TrackAnchor : MonoBehaviour {
         rightHandChild = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         rightHandChild.transform.position = rightChildPosition;
         rightHandChild.transform.parent = rightHand.transform;
-        materialChildColor = rightHandChild.transform.GetComponent<Renderer>().material.color;
-        materialChildColor.a = colorChildAlpha;
-        rightHandChild.transform.GetComponent<Renderer>().material.color = materialChildColor;
+        colorChose.a = colorChildAlpha;
+        rightHandChild.transform.GetComponent<Renderer>().material.color = colorChose;
         rightHandChild.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
         leftHandChild = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         leftHandChild.transform.position = leftChildPosition;
         leftHandChild.transform.parent = leftHand.transform;
-        materialChildColor = leftHandChild.transform.GetComponent<Renderer>().material.color;
-        materialChildColor.a = colorChildAlpha;
-        leftHandChild.transform.GetComponent<Renderer>().material.color = materialChildColor;
+        colorChose.a = colorChildAlpha;
+        leftHandChild.transform.GetComponent<Renderer>().material.color = colorChose;
         leftHandChild.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
         twiceHand = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        materialColor = twiceHand.transform.GetComponent<Renderer>().material.color;
-        materialColor.a = colorChildAlpha;
-        twiceHand.transform.GetComponent<Renderer>().material.color = materialColor;
+        colorChose.a = colorChildAlpha;
+        twiceHand.transform.GetComponent<Renderer>().material.color = colorChose;
         twiceHand.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
         //colorCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -210,17 +209,17 @@ public class TrackAnchor : MonoBehaviour {
 
             rightHandChild.transform.position = rightChildPosition;
             rightHandChild.transform.parent = rightHand.transform;
-            materialChildColor = rightHandChild.transform.GetComponent<Renderer>().material.color;
-            materialChildColor.a = 0.3f;
-            rightHandChild.transform.GetComponent<Renderer>().material.color = materialChildColor;
+            colorChose.a = 0.1f;
+            rightHandChild.transform.GetComponent<Renderer>().material.color = colorChose;
             rightHandChild.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
             leftHandChild.transform.position = leftChildPosition;
             leftHandChild.transform.parent = leftHand.transform;
-            materialChildColor = leftHandChild.transform.GetComponent<Renderer>().material.color;
-            materialChildColor.a = 0.3f;
-            leftHandChild.transform.GetComponent<Renderer>().material.color = materialChildColor;
+            colorChose.a = 0.1f;
+            leftHandChild.transform.GetComponent<Renderer>().material.color = colorChose;
             leftHandChild.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
+
+            twiceHand.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
             activeShape = nowShape;
 
@@ -233,6 +232,27 @@ public class TrackAnchor : MonoBehaviour {
                 twiceHand.SetActive(false);
             }
 
+        }
+
+        // color
+        Color tempcolor = handBehaviour.GetColorChose();
+        if (tempcolor != colorChose)
+        {
+            colorChose = tempcolor;
+            if (activeHandOpt == HandOpt.pairOpt)
+            {
+                colorChose.a = 0.1f;
+                leftHandChild.transform.GetComponent<Renderer>().material.color = colorChose;
+                rightHandChild.transform.GetComponent<Renderer>().material.color = colorChose;
+                colorChose.a = colorChildAlpha;
+                twiceHand.transform.GetComponent<Renderer>().material.color = colorChose;
+            }
+            else
+            {
+                colorChose.a = colorChildAlpha;
+                leftHandChild.transform.GetComponent<Renderer>().material.color = colorChose;
+                rightHandChild.transform.GetComponent<Renderer>().material.color = colorChose;
+            }
         }
 
         // mirror

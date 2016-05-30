@@ -50,8 +50,6 @@ public class HandMenuObjectControl : MonoBehaviour
     private List<GameObject> MenuChildObject;
     private List<Vector3> MenuChildPos; // the menu position use to judge touch or not
 
-    private Color colorChose = Color.gray;
-
     private bool hasPlayed = false;
 
     private bool isreuseobj = false;

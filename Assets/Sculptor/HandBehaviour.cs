@@ -78,7 +78,7 @@ public class HandBehaviour : MonoBehaviour {
     private Vector3 leftChildPos = new Vector3(0, 0, 2);
     private Vector3 rightChildPos = new Vector3(0, 0, 2);
 
-    private Color colorChose = Color.white;
+    private Color colorChose = new Color(0.25f, 0.25f, 0.5f);
 
     private float appStartTime;
 
@@ -315,6 +315,7 @@ public class HandBehaviour : MonoBehaviour {
             replayStartTime = Time.time;
 
             activePanel = ControlPanel.empty;
+            activePanelContinue = true;
         }
     }
 
@@ -326,6 +327,7 @@ public class HandBehaviour : MonoBehaviour {
             proceduralTerrainVolume.LoadVDBFile(recordBehaviour.loadFileNames[tempTouchID]);
 
             activePanel = ControlPanel.empty;
+            activePanelContinue = true;
         }
     }
 
@@ -1553,5 +1555,10 @@ public class HandBehaviour : MonoBehaviour {
             VoxelPainting(Pos, range, materialSet, activeMirror);
             preNetOptPos = Pos;
         }
+    }
+
+    public Color GetColorChose()
+    {
+        return colorChose;
     }
 }
