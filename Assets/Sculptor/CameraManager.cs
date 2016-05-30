@@ -71,6 +71,9 @@ public class CameraManager : MonoBehaviour {
     public GameObject OculusCamera;
     public GameObject SteamCamera;
 
+    public GameObject SteamLeftHandController;
+    private SteamVR_TrackedObject trackedobj;
+
     private VRMode vrMode = VRMode.None;
 
     private VirtualOpt vOpt;
@@ -78,8 +81,6 @@ public class CameraManager : MonoBehaviour {
     List<int> controllerIndices = new List<int>();
 
     // cached roles - may or may not be connected
-    private int leftIndex;
-    private int rightIndex;
 
     EVRButtonId[] buttonIds = new EVRButtonId[] {
         EVRButtonId.k_EButton_ApplicationMenu,
@@ -119,6 +120,7 @@ public class CameraManager : MonoBehaviour {
                 vrMode = VRMode.SteamVR;
                 UnityEngine.VR.VRSettings.enabled = false;
             }
+            trackedobj = SteamLeftHandController.GetComponent<SteamVR_TrackedObject>();
         }
 	}
 
@@ -127,8 +129,6 @@ public class CameraManager : MonoBehaviour {
         switch (vrMode)
         {
             case VRMode.SteamVR:
-                leftIndex = SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Leftmost);
-                rightIndex = SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Rightmost);
                 SteamDeviceConnected(args);
                 break;
 
@@ -240,7 +240,7 @@ public class CameraManager : MonoBehaviour {
         {
             var deviceHand = SteamVR_Controller.Input(index);
 
-            if (index == leftIndex)
+            if (index == (int)trackedobj.GetDeviceIndex())
             {
                 // leftHand
 
@@ -326,7 +326,6 @@ public class CameraManager : MonoBehaviour {
         Debug.Log("rot: " + device.transform.rot.eulerAngles);
         Debug.Log("velocity: " + device.velocity);
         Debug.Log("angularVelocity: " + device.angularVelocity);
-        Debug.Log((leftIndex == rightIndex) ? "first" : (leftIndex == index) ? "left" : "right");
     }
 
     public VRMode GetVRMode()

@@ -1074,7 +1074,7 @@ public class HandBehaviour : MonoBehaviour {
             Vector3 mirrorAnchorPoint1 = trackAnchor.GetMirrorAnchorPoint1();
             Vector3 mirrorAnchorPoint2 = trackAnchor.GetMirrorAnchorPoint2();
             Vector3 tempmpos = (CalcMirrorPos(mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, pos));
-            StartCoroutine(VoxelSmoothing(pos, range, false));
+            StartCoroutine(VoxelSmoothing(tempmpos, range, false));
         }
 
     }
