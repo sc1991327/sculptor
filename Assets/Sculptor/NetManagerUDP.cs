@@ -10,52 +10,16 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 
-public enum NetMark { headpos, lefthandpos, righthandpos, sculptoropt, smoothopt, paintopt};
-
-public class NetData
+public class NetManagerUDP : MonoBehaviour
 {
-    [JsonProperty(PropertyName = "ClientID")]
-    public int ClientID { get; set; }
-    [JsonProperty(PropertyName = "ClientNetMark")]
-    public int ClientNetMark { get; set; }
-    [JsonProperty(PropertyName = "PosX")]
-    public float PosX { get; set; }
-    [JsonProperty(PropertyName = "PosY")]
-    public float PosY { get; set; }
-    [JsonProperty(PropertyName = "PosZ")]
-    public float PosZ { get; set; }
-    [JsonProperty(PropertyName = "RotX")]
-    public float RotX { get; set; }
-    [JsonProperty(PropertyName = "RotY")]
-    public float RotY { get; set; }
-    [JsonProperty(PropertyName = "RotZ")]
-    public float RotZ { get; set; }
-    [JsonProperty(PropertyName = "SclX")]
-    public float SclX { get; set; }
-    [JsonProperty(PropertyName = "SclY")]
-    public float SclY { get; set; }
-    [JsonProperty(PropertyName = "SclZ")]
-    public float SclZ { get; set; }
-    [JsonProperty(PropertyName = "M0")]
-    public int M0 { get; set; }
-    [JsonProperty(PropertyName = "M1")]
-    public int M1 { get; set; }
-    [JsonProperty(PropertyName = "M2")]
-    public int M2 { get; set; }
-    [JsonProperty(PropertyName = "M3")]
-    public int M3 { get; set; }
-    [JsonProperty(PropertyName = "Optshape")]
-    public int Optshape { get; set; }
-    [JsonProperty(PropertyName = "CalcContinue")]
-    public bool CalcContinue { get; set; }
-    [JsonProperty(PropertyName = "ActiveMirror")]
-    public bool ActiveMirror { get; set; }
-}
+    public static string myIP = "127.0.0.1";
+    public static string serverIP = "10.32.93.177";
+    public static int sendPort = 8885;
+    public static int recvPort = 8886;
 
-public class NetManager : MonoBehaviour {
+    private static Socket clientUDP;
+    private Thread recvThread;
 
-    public string myIP = "10.32.93.177";
-    public int myProt = 8885;
     public int myID = 0;
 
     public GameObject BasicProceduralVolume = null;
@@ -69,9 +33,10 @@ public class NetManager : MonoBehaviour {
     public GameObject leftHandAnchorRecv = null;
     public GameObject rightHandAnchorRecv = null;
 
-    private Socket clientSocket;
-    private Thread thread;
-    private byte[] receiveData = new byte[1024];
+    private UdpClient udpClientSend;
+    private UdpClient udpClientRecv;
+    private IPEndPoint remoteEndPoint;
+    private Thread receiveThread;
     private string receiveMessage = "";
 
     private float PreSendTime;
@@ -116,7 +81,8 @@ public class NetManager : MonoBehaviour {
     private bool NetVPMirror = false;
 
     // Use this for initialization
-    void Start() {
+    void Start()
+    {
 
         handBehaviour = handObject.GetComponent<HandBehaviour>();
         terrainVolume = BasicProceduralVolume.GetComponent<TerrainVolume>();
@@ -124,7 +90,7 @@ public class NetManager : MonoBehaviour {
         netDataStreamUse = true;
         netDataStream1 = new List<NetData>();
         netDataStream2 = new List<NetData>();
-        ConnectToTCPServer();
+        ConnectToUDPServer();
 
         optRangeOrg = handBehaviour.GetOptRange();
 
@@ -135,31 +101,37 @@ public class NetManager : MonoBehaviour {
         PreSendTime = Time.time;
     }
 
-    void ConnectToTCPServer()
+    void ConnectToUDPServer()
     {
-        clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        clientSocket.Connect(new IPEndPoint(IPAddress.Parse(myIP), myProt));
-        thread = new Thread(ReceiveMessage);
-        thread.Start();
-    }
+        myIP = GetLocalIPAddress();
 
-    void OnDestroy()
-    {
-        clientSocket.Shutdown(SocketShutdown.Both);
-        clientSocket.Close();
+        clientUDP = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        clientUDP.Bind(new IPEndPoint(IPAddress.Parse(myIP), recvPort));
+        recvThread = new Thread(ReceiveMessage);
+        recvThread.Start();
+
+        Debug.Log("Client Start...");
     }
 
     void ReceiveMessage()
     {
         while (true)
         {
-            if (clientSocket.Connected == false)
+            try
             {
-                break;
+                EndPoint point = new IPEndPoint(IPAddress.Any, 0);
+                byte[] buffer = new byte[1024];
+                int length = clientUDP.ReceiveFrom(buffer, ref point);
+                receiveMessage = Encoding.UTF8.GetString(buffer, 0, length);
+
+                //Debug.Log("Recv: " + point.ToString() + " " + receiveMessage);
+
+                MessageHandling(receiveMessage);
             }
-            int length = clientSocket.Receive(receiveData);
-            receiveMessage = Encoding.UTF8.GetString(receiveData, 0, length);
-            MessageHandling(receiveMessage);
+            catch (Exception err)
+            {
+                print(err.ToString());
+            }
         }
     }
 
@@ -243,7 +215,7 @@ public class NetManager : MonoBehaviour {
             if (doNetVS)
             {
                 handBehaviour.NetVoxelSmoothing(NetVSPos, NetVSRng, NetVSContinue, NetVSMirror);
-                doNetVS = false; 
+                doNetVS = false;
             }
 
             if (doNetVP)
@@ -254,13 +226,29 @@ public class NetManager : MonoBehaviour {
         }
     }
 
+    void OnApplicationQuit() {
+
+        recvThread.Abort();
+        if (clientUDP != null)
+        {
+            clientUDP.Close();
+        }
+
+    }
+
     void SendMessage(string message)
     {
-        //Debug.Log(message);
+        try
+        {
+            EndPoint point = new IPEndPoint(IPAddress.Parse(serverIP), sendPort);
+            clientUDP.SendTo(Encoding.UTF8.GetBytes(message), point);
 
-        message = "|" + message + "|";
-        byte[] senddata = Encoding.UTF8.GetBytes(message);
-        clientSocket.Send(senddata);
+            //Debug.Log("Send: " + point.ToString() + " " + message);
+        }
+        catch (Exception err)
+        {
+            print(err.ToString());
+        }
     }
 
     private void MessageHandling(string message)
@@ -468,4 +456,16 @@ public class NetManager : MonoBehaviour {
         SendMessage(tempMsg);
     }
 
+    public static string GetLocalIPAddress()
+    {
+        var host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (var ip in host.AddressList)
+        {
+            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            {
+                return ip.ToString();
+            }
+        }
+        throw new Exception("Local IP Address Not Found!");
+    }
 }

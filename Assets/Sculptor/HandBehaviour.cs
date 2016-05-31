@@ -24,7 +24,7 @@ public class HandBehaviour : MonoBehaviour {
     private RecordBehaviour recordBehaviour;
     private HandMenuObjectControl handMenuObjectControl;
 
-    private NetManager networkManager;
+    private NetManagerUDP networkManager;
     private CameraManager cameraManager;
 
     private TerrainVolume terrainVolume;
@@ -138,7 +138,7 @@ public class HandBehaviour : MonoBehaviour {
         preRotateTime = Time.time;
         preOptTime = Time.time;
 
-        networkManager = networkManagerObj.GetComponent<NetManager>();
+        networkManager = networkManagerObj.GetComponent<NetManagerUDP>();
         cameraManager = cameraManagerObj.GetComponent<CameraManager>();
 
         terrainVolume = BasicProceduralVolume.GetComponent<TerrainVolume>();
@@ -234,7 +234,7 @@ public class HandBehaviour : MonoBehaviour {
     private void mainPanelHandleOVRInput()
     {
         int tempTouchID = handMenuObjectControl.GetTouchID();
-        Debug.Log("TouchID:" + tempTouchID);
+        //Debug.Log("TouchID:" + tempTouchID);
         switch (tempTouchID)
         {
             case 0:
@@ -334,7 +334,7 @@ public class HandBehaviour : MonoBehaviour {
     private void highPanelHandleOVRInput()
     {
         int tempTouchID = handMenuObjectControl.GetTouchID();
-        Debug.Log("TouchID:" + tempTouchID);
+        //Debug.Log("TouchID:" + tempTouchID);
         switch (tempTouchID)
         {
             case 0:

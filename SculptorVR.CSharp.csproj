@@ -183,10 +183,13 @@
     <Compile Include="Assets\Sculptor\HandMenuObjectControl.cs" />
     <Compile Include="Assets\Sculptor\HeadCanvasControl.cs" />
     <Compile Include="Assets\Sculptor\NetManager.cs" />
+    <Compile Include="Assets\Sculptor\NetManagerUDP.cs" />
     <Compile Include="Assets\Sculptor\RecordBehaviour.cs" />
     <Compile Include="Assets\Sculptor\RotateObj.cs" />
     <Compile Include="Assets\Sculptor\SceneManager.cs" />
     <Compile Include="Assets\Sculptor\TrackAnchor.cs" />
+    <Compile Include="Assets\Sculptor\UDPReceive.cs" />
+    <Compile Include="Assets\Sculptor\UDPSend.cs" />
     <Compile Include="Assets\Sculptor\handAnchor.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />
     <Compile Include="Assets\SteamVR\Extras\SteamVR_LaserPointer.cs" />

@@ -302,13 +302,13 @@ public class CameraManager : MonoBehaviour {
         if (connected)
         {
             Debug.Log(string.Format("Controller {0} connected.", index));
-            PrintControllerStatus(index);
+            //PrintControllerStatus(index);
             controllerIndices.Add(index);
         }
         else
         {
             Debug.Log(string.Format("Controller {0} disconnected.", index));
-            PrintControllerStatus(index);
+            //PrintControllerStatus(index);
             controllerIndices.Remove(index);
         }
     }

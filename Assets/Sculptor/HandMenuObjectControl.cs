@@ -176,10 +176,10 @@ public class HandMenuObjectControl : MonoBehaviour
         if (activePanel != ControlPanel.empty)
         {
             TouchID = CheckMenuTouch(nowPos, MenuChildPos);
-            if (TouchID >= 0)
-            {
-                Debug.Log("TouchID:" + TouchID);
-            }
+            //if (TouchID >= 0)
+            //{
+            //    Debug.Log("TouchID:" + TouchID);
+            //}
         }
 
     }
