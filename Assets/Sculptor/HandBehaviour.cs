@@ -1484,12 +1484,7 @@ public class HandBehaviour : MonoBehaviour {
         if (calcContinue)
         {
             List<Vector3> tempDraw = calcDiffPos(preNetOptPos, Pos, (Vector3)range);
-            if (tempDraw.Count > 20)
-            {
-                StartCoroutine(VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror));
-                preNetOptPos = Pos;
-            }
-            else if (tempDraw.Count > 0)
+            if (tempDraw.Count > 0)
             {
                 foreach (Vector3 temp in tempDraw)
                 {
@@ -1510,12 +1505,7 @@ public class HandBehaviour : MonoBehaviour {
         if (calcContinue)
         {
             List<Vector3> tempDraw = calcDiffPos(preNetOptPos, Pos, (Vector3)range);
-            if (tempDraw.Count > 20)
-            {
-                StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
-                preNetOptPos = Pos;
-            }
-            else if (tempDraw.Count > 0)
+            if (tempDraw.Count > 0)
             {
                 foreach (Vector3 temp in tempDraw)
                 {
@@ -1536,12 +1526,7 @@ public class HandBehaviour : MonoBehaviour {
         if (calcContinue)
         {
             List<Vector3> tempDraw = calcDiffPos(preNetOptPos, Pos, (Vector3)range);
-            if (tempDraw.Count > 20)
-            {
-                VoxelPainting(Pos, range, materialSet, activeMirror);
-                preNetOptPos = Pos;
-            }
-            else if (tempDraw.Count > 0)
+            if (tempDraw.Count > 0)
             {
                 foreach (Vector3 temp in tempDraw)
                 {

@@ -12,10 +12,10 @@ using System.Collections.Generic;
 
 public class NetManagerUDP : MonoBehaviour
 {
-    public static string myIP = "127.0.0.1";
-    public static string serverIP = "10.32.93.177";
-    public static int sendPort = 8885;
-    public static int recvPort = 8886;
+    private string myIP = "127.0.0.1";
+    public string serverIP = "10.32.93.177";
+    public int sendPort = 8885;
+    public int recvPort = 8886;
 
     private static Socket clientUDP;
     private Thread recvThread;
