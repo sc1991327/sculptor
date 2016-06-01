@@ -58,6 +58,8 @@ public class HandMenuObjectControl : MonoBehaviour
     private CameraManager cameraManager;
     private VRMode vrMode;
 
+    Tweener menuTweener;
+
     // Use this for initialization
     void Start()
     {
@@ -117,6 +119,31 @@ public class HandMenuObjectControl : MonoBehaviour
 
         audioSource.loop = false;
         audioSource.Stop();
+
+        SetupTween();
+    }
+
+    void SetupTween()
+    {
+        if(menuTweener == null)
+        {
+            menuTweener = MenuCenterObject.transform.DOScale(MenuCenterObject.transform.localScale, 0.5f).SetAutoKill(false).Pause();
+            MenuCenterObject.transform.localScale *= 0.3f;
+            menuTweener.SetEase(Ease.OutElastic);
+        }
+
+    }
+
+    void PlayHideMenuAnim()
+    {
+        menuTweener.PlayBackwards();
+    }
+
+    void PlayShowMenuAnim()
+    {
+        SetupTween();
+        menuTweener.Rewind();
+        menuTweener.PlayForward();
     }
 
     // Update is called once per frame
@@ -170,6 +197,14 @@ public class HandMenuObjectControl : MonoBehaviour
                     break;
             }
             activePanel = nowPanel;
+            if(activePanel == ControlPanel.empty)
+            {
+                PlayHideMenuAnim();
+            }
+            else
+            {     
+                PlayShowMenuAnim();
+            }
         }
 
         TouchID = -1;
@@ -241,11 +276,11 @@ public class HandMenuObjectControl : MonoBehaviour
         {
             for (int ti = 0; ti < nowPosList.Count; ti++)
             {
-                float dis = Vector3.Distance(nowPosList[ti], handPos);
+                float dis = Vector3.Distance(MenuChildObject[ti].transform.position, handPos);
 
                 if (dis < MenuEndLocalScale / 2)
                 {
-                    audioSource.transform.position = nowPosList[ti];
+                    audioSource.transform.position = MenuChildObject[ti].transform.position;
                     if (hasPlayed == false)
                     {
                         hasPlayed = true;
@@ -259,11 +294,11 @@ public class HandMenuObjectControl : MonoBehaviour
                 }
 
                 // menu state animation
-                if (MenuChildObject[ti].transform.localScale.x < MenuEndLocalScale)
-                {
-                    MenuChildObject[ti].transform.localScale += new Vector3(0.003f, 0.003f, 0.003f);
-                }
-                else
+                //if (MenuChildObject[ti].transform.localScale.x < MenuEndLocalScale)
+                //{
+                //    MenuChildObject[ti].transform.localScale += new Vector3(0.003f, 0.003f, 0.003f);
+                //}
+                //else
                 {
                     float tempV = 1 - (Mathf.Clamp(dis, MenuEndLocalScale, MenuChildRadio) - MenuEndLocalScale) / (MenuChildRadio - MenuEndLocalScale);
                     MenuChildObject[ti].transform.localScale = new Vector3(MenuEndLocalScale + tempV * (MenuLocalScaleMax - MenuEndLocalScale), MenuEndLocalScale + tempV * (MenuLocalScaleMax - MenuEndLocalScale), MenuEndLocalScale + tempV * (MenuLocalScaleMax - MenuEndLocalScale));
