@@ -48,7 +48,6 @@ public class HandMenuObjectControl : MonoBehaviour
     private GameObject MenuCenterObject;
     private List<Vector3> MenuChildLocalPos;
     private List<GameObject> MenuChildObject;
-    private List<Vector3> MenuChildPos; // the menu position use to judge touch or not
 
     private bool hasPlayed = false;
 
@@ -69,7 +68,6 @@ public class HandMenuObjectControl : MonoBehaviour
         MenuCenterObject = new GameObject();
         MenuChildLocalPos = new List<Vector3>();
         MenuChildObject = new List<GameObject>();
-        MenuChildPos = new List<Vector3>();
 
         mainMenuObjectList = new List<GameObject>();
         mainMenuObjectList.Add(mainColorChoose);
@@ -210,7 +208,7 @@ public class HandMenuObjectControl : MonoBehaviour
         TouchID = -1;
         if (activePanel != ControlPanel.empty)
         {
-            TouchID = CheckMenuTouch(nowPos, MenuChildPos);
+            TouchID = CheckMenuTouch(nowPos);
             //if (TouchID >= 0)
             //{
             //    Debug.Log("TouchID:" + TouchID);
@@ -219,7 +217,7 @@ public class HandMenuObjectControl : MonoBehaviour
 
     }
 
-    private int CheckMenuTouch(DrawPos nowPos, List<Vector3> nowPosList)
+    private int CheckMenuTouch(DrawPos nowPos)
     {
         // check touch or not
         Vector3 handPos = trackAnchor.GetLeftChildPosition();
@@ -231,12 +229,12 @@ public class HandMenuObjectControl : MonoBehaviour
         if (iscolorobj)
         {
             int minPos = 0;
-            float minPosDist = Vector3.Distance(nowPosList[0], handPos);
-            for (int ti = 0; ti < nowPosList.Count; ti++)
+            float minPosDist = Vector3.Distance(MenuChildObject[0].transform.position, handPos);
+            for (int ti = 0; ti < MenuChildObject.Count; ti++)
             {
                 MenuChildObject[ti].transform.localScale = new Vector3(MenuColorStartLocalScale, MenuColorStartLocalScale, MenuColorStartLocalScale);
 
-                float tempdis = Vector3.Distance(nowPosList[ti], handPos);
+                float tempdis = Vector3.Distance(MenuChildObject[ti].transform.position, handPos);
                 if (tempdis < minPosDist)
                 {
                     minPosDist = tempdis;
@@ -244,7 +242,7 @@ public class HandMenuObjectControl : MonoBehaviour
                 }
             }
 
-            for (int ti = 0; ti < nowPosList.Count; ti++)
+            for (int ti = 0; ti < MenuChildObject.Count; ti++)
             {
                 int temp = (minPos % 10);
                 if ((ti % 10) != temp )
@@ -274,7 +272,7 @@ public class HandMenuObjectControl : MonoBehaviour
         }
         else
         {
-            for (int ti = 0; ti < nowPosList.Count; ti++)
+            for (int ti = 0; ti < MenuChildObject.Count; ti++)
             {
                 float dis = Vector3.Distance(MenuChildObject[ti].transform.position, handPos);
 
@@ -331,7 +329,6 @@ public class HandMenuObjectControl : MonoBehaviour
             {
                 tObj.SetActive(false);
             }
-            MenuChildPos.Clear();
             MenuChildObject.Clear();
         }
         else
@@ -340,7 +337,6 @@ public class HandMenuObjectControl : MonoBehaviour
             {
                 UnityEngine.Object.Destroy(tObj.gameObject);
             }
-            MenuChildPos.Clear();
             MenuChildObject.Clear();
         }
     }
@@ -366,7 +362,6 @@ public class HandMenuObjectControl : MonoBehaviour
             tempObj.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
             MenuChildObject.Add(tempObj);
-            MenuChildPos.Add(tempObj.transform.position);
         }
 
     }
@@ -390,7 +385,6 @@ public class HandMenuObjectControl : MonoBehaviour
             tempObj.transform.localScale = new Vector3(MenuStartLocalScale, MenuStartLocalScale, MenuStartLocalScale);
 
             MenuChildObject.Add(tempObj);
-            MenuChildPos.Add(tempObj.transform.position);
         }
     }
 
@@ -416,7 +410,6 @@ public class HandMenuObjectControl : MonoBehaviour
             tempObj.GetComponent<TextMesh>().characterSize = 0.2f;
             tempObj.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
             MenuChildObject.Add(tempObj);
-            MenuChildPos.Add(tempObj.transform.position);
         }
     }
 
@@ -441,7 +434,6 @@ public class HandMenuObjectControl : MonoBehaviour
             tempObj.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
             MenuChildObject.Add(tempObj);
-            MenuChildPos.Add(tempObj.transform.position);
         }
     }
 
@@ -466,7 +458,6 @@ public class HandMenuObjectControl : MonoBehaviour
             tempObj.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
             MenuChildObject.Add(tempObj);
-            MenuChildPos.Add(tempObj.transform.position);
         }
     }
 
@@ -491,7 +482,6 @@ public class HandMenuObjectControl : MonoBehaviour
             tempObj.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
             MenuChildObject.Add(tempObj);
-            MenuChildPos.Add(tempObj.transform.position);
         }
     }
 
