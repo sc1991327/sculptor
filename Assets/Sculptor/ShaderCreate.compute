@@ -1,0 +1,29 @@
+﻿#pragma kernel CSMain
+
+float3 centerPos;
+float rangePow2;
+int range;
+StructuredBuffer<int> bufferIn;
+RWStructuredBuffer<int> bufferOut;
+
+[numthreads(64, 1, 1)]
+void CSMain(uint id : SV_DispatchThreadID)
+{
+	//bufferOut[id] = bufferIn[id];
+
+	int tempx = id / (range * range);
+	int tempy = (id - tempx * (range * range)) / range;
+	int tempz = (id - tempx * (range * range) - tempy * range);
+
+	float xDistance = centerPos.x - tempx;
+	float yDistance = centerPos.y - tempy;
+	float zDistance = centerPos.z - tempz;
+	float distSquared = xDistance * xDistance / rangePow2 + yDistance * yDistance / rangePow2 + zDistance * zDistance / rangePow2;
+	if (distSquared < 1) {
+		bufferOut[id] = 255;
+	}
+	else {
+		bufferOut[id] = bufferIn[id];
+	}
+
+}

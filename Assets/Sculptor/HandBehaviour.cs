@@ -100,6 +100,14 @@ public class HandBehaviour : MonoBehaviour {
     private Vector3 preOptPos;
     private Vector3 preNetOptPos;
 
+    // Compute shader
+
+    private int CBMaxSize = 32;
+    private ComputeBuffer CBIn;
+    private ComputeBuffer CBOut;
+    public ComputeShader CSCreate;
+    public ComputeShader CSSmooth;
+
     // -- OVRInput Info
 
     // Axis2D
@@ -188,6 +196,9 @@ public class HandBehaviour : MonoBehaviour {
 
         VoxelWorldCenterPos = terrainVolume.transform.position;
         VoxelWorldLeftHandPos = new Vector3(0, 0, 0);
+
+        CBIn = new ComputeBuffer(CBMaxSize * CBMaxSize * CBMaxSize, sizeof(int), ComputeBufferType.Default);
+        CBOut = new ComputeBuffer(CBMaxSize * CBMaxSize * CBMaxSize, sizeof(int), ComputeBufferType.Default);
     }
 
 	// Update is called once per frame
@@ -213,6 +224,14 @@ public class HandBehaviour : MonoBehaviour {
 
         HandleKeyBoardInput();
         HandleOVRInput();
+    }
+
+    void OnDestroy()
+    {
+
+        CBIn.Release();
+        CBOut.Release();
+
     }
 
     private void HandleKeyBoardInput()
@@ -1030,6 +1049,153 @@ public class HandBehaviour : MonoBehaviour {
         }
     }
 
+    private void VoxelSettingGPU(Vector3 Pos, Vector3 RotateEuler, MaterialSet materialSet, Vector3i range, OptShape optshape, bool activeMirror)
+    {
+        // Only support one hand operator!
+        if (range.x != range.y && range.x != range.z)
+        {
+            return;
+        }
+
+        int r = range.x;
+        int r2 = range.x * range.x;
+
+        Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(Pos) * VoxelWorldTransform.localScale.x;
+        Region vRegion = new Region((int)tempPos.x - r, (int)tempPos.y - r, (int)tempPos.z - r, (int)tempPos.x + r, (int)tempPos.y + r, (int)tempPos.z + r);
+
+        Vector3i regionLowerPos = new Vector3i(vRegion.lowerCorner.x - 1, vRegion.lowerCorner.y - 1, vRegion.lowerCorner.z - 1);
+        Vector3i regionUpperPos = new Vector3i(vRegion.upperCorner.x + 1, vRegion.upperCorner.y + 1, vRegion.upperCorner.z + 1);
+
+        // obtain operator data.
+        int rsize = regionUpperPos.x - regionLowerPos.x + 1;
+        int[,,] voxelHandleRegion = new int[rsize, rsize, rsize];
+
+        for (int tempX = 0; tempX < rsize; ++tempX)
+        {
+            for (int tempY = 0; tempY < rsize; ++tempY)
+            {
+                for (int tempZ = 0; tempZ < rsize; ++tempZ)
+                {
+                    MaterialSet tempM = terrainVolume.data.GetVoxel(regionLowerPos.x + tempX, regionLowerPos.y + tempY, regionLowerPos.z + tempZ);
+                    voxelHandleRegion[tempX, tempY, tempZ] = tempM.weights[0] + tempM.weights[1] + tempM.weights[2] + tempM.weights[3];
+                }
+            }
+        }
+        CBIn.SetData(voxelHandleRegion);
+
+        // create GPU
+        CSCreate.SetVector("centerPos", new Vector3(rsize / 2, rsize / 2, rsize / 2));
+        CSCreate.SetFloat("rangePow2", r2);
+        CSCreate.SetInt("range", rsize);
+        CSCreate.SetBuffer(0, "bufferIn", CBIn);
+        CSCreate.SetBuffer(0, "bufferOut", CBOut);
+        CSCreate.Dispatch(0, CBOut.count / 64, 1, 1);
+
+        // smooth GPU
+        CSSmooth.SetInt("rangeSizeX", rsize);
+        CSSmooth.SetInt("rangeSizeY", rsize);
+        CSSmooth.SetInt("rangeSizeZ", rsize);
+        CSSmooth.SetBuffer(0, "bufferIn", CBOut);
+        CSSmooth.SetBuffer(0, "bufferOut", CBIn);
+        CSSmooth.Dispatch(0, CBIn.count / 64, 1, 1);
+
+        CBIn.GetData(voxelHandleRegion);
+        for (int tempX = 0; tempX < rsize; ++tempX)
+        {
+            for (int tempY = 0; tempY < rsize; ++tempY)
+            {
+                for (int tempZ = 0; tempZ < rsize; ++tempZ)
+                {
+                    float totalmold = materialSet.weights[0] + materialSet.weights[1] + materialSet.weights[2] + materialSet.weights[3];
+                    float totalmset = voxelHandleRegion[tempX, tempY, tempZ];
+
+                    MaterialSet tempM = new MaterialSet();
+                    tempM.weights[0] = (byte)(materialSet.weights[0] / totalmold * totalmset);
+                    tempM.weights[1] = (byte)(materialSet.weights[1] / totalmold * totalmset);
+                    tempM.weights[2] = (byte)(materialSet.weights[2] / totalmold * totalmset);
+                    tempM.weights[3] = (byte)(materialSet.weights[3] / totalmold * totalmset);
+                    terrainVolume.data.SetVoxel(regionLowerPos.x + tempX, regionLowerPos.y + tempY, regionLowerPos.z + tempZ, tempM);
+                }
+            }
+        }
+
+        if (activeMirror)
+        {
+            Vector3 mirrorAnchorPoint0 = trackAnchor.GetMirrorAnchorPoint0();
+            Vector3 mirrorAnchorPoint1 = trackAnchor.GetMirrorAnchorPoint1();
+            Vector3 mirrorAnchorPoint2 = trackAnchor.GetMirrorAnchorPoint2();
+            Vector3 tempmpos = (CalcMirrorPos(mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, Pos));
+            VoxelSettingGPU(tempmpos, RotateEuler, materialSet, range, optshape, false);
+        }
+    }
+
+    private void VoxelSmoothingGPU(Vector3 pos, Vector3i range, bool activeMirror)
+    {
+        Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(pos) * VoxelWorldTransform.localScale.x;
+        Region vRegion = new Region((int)tempPos.x - range.x, (int)tempPos.y - range.y, (int)tempPos.z - range.z, (int)tempPos.x + range.x, (int)tempPos.y + range.y, (int)tempPos.z + range.z);
+
+        Vector3i regionLowerPos = new Vector3i(vRegion.lowerCorner.x - 1, vRegion.lowerCorner.y - 1, vRegion.lowerCorner.z - 1);
+        Vector3i regionUpperPos = new Vector3i(vRegion.upperCorner.x + 1, vRegion.upperCorner.y + 1, vRegion.upperCorner.z + 1);
+
+        // obtain operator data.
+        int rsizex = regionUpperPos.x - regionLowerPos.x + 1;
+        int rsizey = regionUpperPos.y - regionLowerPos.y + 1;
+        int rsizez = regionUpperPos.z - regionLowerPos.z + 1;
+        int[,,] voxelHandleRegion = new int[rsizex, rsizey, rsizez];
+
+        for (int tempX = 0; tempX < rsizex; ++tempX)
+        {
+            for (int tempY = 0; tempY < rsizey; ++tempY)
+            {
+                for (int tempZ = 0; tempZ < rsizez; ++tempZ)
+                {
+                    MaterialSet tempM = terrainVolume.data.GetVoxel(regionLowerPos.x + tempX, regionLowerPos.y + tempY, regionLowerPos.z + tempZ);
+                    voxelHandleRegion[tempX, tempY, tempZ] = tempM.weights[0] + tempM.weights[1] + tempM.weights[2] + tempM.weights[3];
+                }
+            }
+        }
+        CBIn.SetData(voxelHandleRegion);
+
+        // calculate GPU
+        CSSmooth.SetInt("rangeSizeX", rsizex);
+        CSSmooth.SetInt("rangeSizeY", rsizey);
+        CSSmooth.SetInt("rangeSizeZ", rsizez);
+        CSSmooth.SetBuffer(0, "bufferIn", CBIn);
+        CSSmooth.SetBuffer(0, "bufferOut", CBOut);
+        CSSmooth.Dispatch(0, CBOut.count / 64, 1, 1);
+
+        CBOut.GetData(voxelHandleRegion);
+        for (int tempX = 0; tempX < rsizex; ++tempX)
+        {
+            for (int tempY = 0; tempY < rsizey; ++tempY)
+            {
+                for (int tempZ = 0; tempZ < rsizez; ++tempZ)
+                {
+                    MaterialSet tempM = new MaterialSet();
+                    tempM.weights[0] = (byte)(voxelHandleRegion[tempX, tempY, tempZ] / 4);
+                    tempM.weights[1] = (byte)(voxelHandleRegion[tempX, tempY, tempZ] / 4);
+                    tempM.weights[2] = (byte)(voxelHandleRegion[tempX, tempY, tempZ] / 4);
+                    tempM.weights[3] = (byte)(voxelHandleRegion[tempX, tempY, tempZ] / 4);
+                    terrainVolume.data.SetVoxel(regionLowerPos.x + tempX, regionLowerPos.y + tempY, regionLowerPos.z + tempZ, tempM);
+                }
+            }
+        }
+
+        if (activeMirror)
+        {
+            Vector3 mirrorAnchorPoint0 = trackAnchor.GetMirrorAnchorPoint0();
+            Vector3 mirrorAnchorPoint1 = trackAnchor.GetMirrorAnchorPoint1();
+            Vector3 mirrorAnchorPoint2 = trackAnchor.GetMirrorAnchorPoint2();
+            Vector3 tempmpos = (CalcMirrorPos(mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, pos));
+            VoxelSmoothingGPU(tempmpos, range, false);
+        }
+    }
+
+    private void VoxelPaintingGPU(Vector3 pos, Vector3i range, MaterialSet materialset, bool activeMirror)
+    {
+
+    }
+
     IEnumerator VoxelSmoothing(Vector3 pos, Vector3i range, bool activeMirror)
     {
         Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(pos) * VoxelWorldTransform.localScale.x;
@@ -1313,25 +1479,29 @@ public class HandBehaviour : MonoBehaviour {
     {
         MaterialSet emptyMaterialSet = new MaterialSet();
         recordBehaviour.WriteJsonFile(Pos, RotateEular, emptyMaterialSet, range, optshape, Time.time - appStartTime, activeMirror);
-        StartCoroutine(VoxelSetting(Pos, RotateEular, emptyMaterialSet, range, optshape, activeMirror));
+        //StartCoroutine(VoxelSetting(Pos, RotateEular, emptyMaterialSet, range, optshape, activeMirror));
+        VoxelSettingGPU(Pos, RotateEular, emptyMaterialSet, range, optshape, activeMirror);
     }
 
     private void CreateVoxels(Vector3 Pos, Vector3 RotateEular, MaterialSet materialSet, Vector3i range, OptShape optshape, bool activeMirror)
     {
         recordBehaviour.WriteJsonFile(Pos, RotateEular, materialSet, range, optshape, Time.time - appStartTime, activeMirror);
-        StartCoroutine(VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror));
+        //StartCoroutine(VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror));
+        VoxelSettingGPU(Pos, RotateEular, materialSet, range, optshape, activeMirror);
     }
 
     private void SmoothVoxels(Vector3 Pos, Vector3i range, bool activeMirror)
     {
         recordBehaviour.WriteJsonFileSmooth(Pos, range, Time.time - appStartTime, activeMirror);
-        StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
+        //StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
+        VoxelSmoothingGPU(Pos, range, activeMirror);
     }
 
     private void PaintVoxels(Vector3 Pos, MaterialSet materialSet, Vector3i range, float amount, bool activeMirror)
     {
         recordBehaviour.WriteJsonFilePaint(Pos, materialSet, range, amount, Time.time - appStartTime, activeMirror);
-        VoxelPainting(Pos, range, materialSet, activeMirror);
+        //VoxelPainting(Pos, range, materialSet, activeMirror);
+        VoxelPaintingGPU(Pos, range, materialSet, activeMirror);
     }
 
     private void RestartTerrainVolumeData()
