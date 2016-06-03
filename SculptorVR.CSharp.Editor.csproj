@@ -193,6 +193,7 @@
     <None Include="Assets\Sculptor\Scene\UnityVC\UnityVC.cginc" />
     <None Include="Assets\Sculptor\ShaderCreate.compute" />
     <None Include="Assets\Sculptor\ShaderSmooth.compute" />
+    <None Include="Assets\Sculptor\ShaderTest.compute" />
     <None Include="Assets\SteamVR\Resources\SteamVR_AlphaOut.shader" />
     <None Include="Assets\SteamVR\Resources\SteamVR_Blit.shader" />
     <None Include="Assets\SteamVR\Resources\SteamVR_BlitFlip.shader" />
