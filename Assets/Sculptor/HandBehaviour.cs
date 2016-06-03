@@ -1068,7 +1068,7 @@ public class HandBehaviour : MonoBehaviour {
 
         // obtain operator data.
         int rsize = regionUpperPos.x - regionLowerPos.x + 1;
-        int[,,] voxelHandleRegion = new int[rsize, rsize, rsize];
+        int[,,] voxelHandleRegion = new int[rsize, rsize, rsize * 4];
 
         for (int tempX = 0; tempX < rsize; ++tempX)
         {
@@ -1077,27 +1077,31 @@ public class HandBehaviour : MonoBehaviour {
                 for (int tempZ = 0; tempZ < rsize; ++tempZ)
                 {
                     MaterialSet tempM = terrainVolume.data.GetVoxel(regionLowerPos.x + tempX, regionLowerPos.y + tempY, regionLowerPos.z + tempZ);
-                    voxelHandleRegion[tempX, tempY, tempZ] = tempM.weights[0] + tempM.weights[1] + tempM.weights[2] + tempM.weights[3];
+                    voxelHandleRegion[tempX, tempY, tempZ * 4] = tempM.weights[0];
+                    voxelHandleRegion[tempX, tempY, tempZ * 4 + 1] = tempM.weights[1];
+                    voxelHandleRegion[tempX, tempY, tempZ * 4 + 2] = tempM.weights[2];
+                    voxelHandleRegion[tempX, tempY, tempZ * 4 + 3] = tempM.weights[3];
                 }
             }
         }
         CBIn.SetData(voxelHandleRegion);
 
         // create GPU
+        CSCreate.SetVector("colorSet", new Vector4(materialSet.weights[0], materialSet.weights[1], materialSet.weights[2], materialSet.weights[3]));
         CSCreate.SetVector("centerPos", new Vector3(rsize / 2, rsize / 2, rsize / 2));
         CSCreate.SetFloat("rangePow2", r2);
         CSCreate.SetInt("range", rsize);
         CSCreate.SetBuffer(0, "bufferIn", CBIn);
         CSCreate.SetBuffer(0, "bufferOut", CBOut);
-        CSCreate.Dispatch(0, CBOut.count / 64, 1, 1);
+        CSCreate.Dispatch(0, CBOut.count / 256, 1, 1);
+
+        CBOut.GetData(voxelHandleRegion);
 
         // smooth GPU
-        CSSmooth.SetInt("rangeSizeX", rsize);
-        CSSmooth.SetInt("rangeSizeY", rsize);
-        CSSmooth.SetInt("rangeSizeZ", rsize);
+        CSSmooth.SetInt("range", rsize);
         CSSmooth.SetBuffer(0, "bufferIn", CBOut);
         CSSmooth.SetBuffer(0, "bufferOut", CBIn);
-        CSSmooth.Dispatch(0, CBIn.count / 64, 1, 1);
+        CSSmooth.Dispatch(0, CBIn.count / 256, 1, 1);
 
         CBIn.GetData(voxelHandleRegion);
         for (int tempX = 0; tempX < rsize; ++tempX)
@@ -1110,10 +1114,10 @@ public class HandBehaviour : MonoBehaviour {
                     float totalmset = voxelHandleRegion[tempX, tempY, tempZ];
 
                     MaterialSet tempM = new MaterialSet();
-                    tempM.weights[0] = (byte)(materialSet.weights[0] / totalmold * totalmset);
-                    tempM.weights[1] = (byte)(materialSet.weights[1] / totalmold * totalmset);
-                    tempM.weights[2] = (byte)(materialSet.weights[2] / totalmold * totalmset);
-                    tempM.weights[3] = (byte)(materialSet.weights[3] / totalmold * totalmset);
+                    tempM.weights[0] = (byte)voxelHandleRegion[tempX, tempY, tempZ * 4];
+                    tempM.weights[1] = (byte)voxelHandleRegion[tempX, tempY, tempZ * 4 + 1];
+                    tempM.weights[2] = (byte)voxelHandleRegion[tempX, tempY, tempZ * 4 + 2];
+                    tempM.weights[3] = (byte)voxelHandleRegion[tempX, tempY, tempZ * 4 + 3];
                     terrainVolume.data.SetVoxel(regionLowerPos.x + tempX, regionLowerPos.y + tempY, regionLowerPos.z + tempZ, tempM);
                 }
             }

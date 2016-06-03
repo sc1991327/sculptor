@@ -1,26 +1,28 @@
 ﻿#pragma kernel CSMain
 
+float4 colorSet;
 float3 centerPos;
 float rangePow2;
 int range;
 StructuredBuffer<int> bufferIn;
 RWStructuredBuffer<int> bufferOut;
 
-[numthreads(64, 1, 1)]
+[numthreads(256, 1, 1)]
 void CSMain(uint id : SV_DispatchThreadID)
 {
 	//bufferOut[id] = bufferIn[id];
 
-	int tempx = id / (range * range);
-	int tempy = (id - tempx * (range * range)) / range;
-	int tempz = (id - tempx * (range * range) - tempy * range);
+	int tempx = id / (range * range * 4);
+	int tempy = (id - tempx * (range * range * 4)) / (range * 4);
+	int tempz = (id - tempx * (range * range * 4) - tempy * (range * 4)) / 4;
+	int tempw = id - tempx * (range * range * 4) - tempy * (range * 4) - tempz * 4;
 
 	float xDistance = centerPos.x - tempx;
 	float yDistance = centerPos.y - tempy;
 	float zDistance = centerPos.z - tempz;
 	float distSquared = xDistance * xDistance / rangePow2 + yDistance * yDistance / rangePow2 + zDistance * zDistance / rangePow2;
 	if (distSquared < 1) {
-		bufferOut[id] = 255;
+		bufferOut[id] = colorSet[tempw];
 	}
 	else {
 		bufferOut[id] = bufferIn[id];
