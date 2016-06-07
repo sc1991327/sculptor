@@ -100,6 +100,8 @@ public class HandBehaviour : MonoBehaviour {
     private Vector3 preOptPos;
     private Vector3 preNetOptPos;
 
+    private bool breakTwiceHand = false;
+
     // Compute shader
 
     private int CBMaxSize = 32;
@@ -388,21 +390,22 @@ public class HandBehaviour : MonoBehaviour {
             activeShape = OptShape.sphere;
         }
 
-        if (Axis1D_LB > ButtonFilter)
+        if (Axis1D_LB > ButtonFilter && breakTwiceHand == false)
         {
-            StateHandleOVRInput(DrawPos.left, activeMirror);
+            StateHandleOVRInput(DrawPos.left, activeMirror, true);
             preOptState = true;
         }
 
-        if (Axis1D_RB > ButtonFilter)
+        if (Axis1D_RB > ButtonFilter && breakTwiceHand == false)
         {
-            StateHandleOVRInput(DrawPos.right, activeMirror);
+            StateHandleOVRInput(DrawPos.right, activeMirror, true);
             preOptState = true;
         }
         
         if (Axis1D_LB <= ButtonFilter && Axis1D_RB <= ButtonFilter)
         {
             preOptState = false;
+            breakTwiceHand = false;
         }
 
         // size
@@ -524,12 +527,15 @@ public class HandBehaviour : MonoBehaviour {
             // draw two hand result
             if (activeHandOpt == HandOpt.pairOpt)
             {
-                StateHandleOVRInput(DrawPos.twice, false);
+                StateHandleOVRInput(DrawPos.twice, false, false);
                 buttonPreTime = Time.time;
+                preOptState = false;
+                breakTwiceHand = true;
             }
 
             // one hand operator
             HandleButtonInSculptor(false);
+
         }
 
         if (checkPreOptContinueState == true && checkOptContinueState == false)
@@ -639,7 +645,7 @@ public class HandBehaviour : MonoBehaviour {
             // draw two hand result
             if (activeHandOpt == HandOpt.pairOpt)
             {
-                StateHandleOVRInput(DrawPos.twice, true);
+                StateHandleOVRInput(DrawPos.twice, true, false);
                 buttonPreTime = Time.time;
             }
 
@@ -821,18 +827,18 @@ public class HandBehaviour : MonoBehaviour {
 
     }
 
-    private void SingleStateHandleOVRInput(Vector3 tempDrawPosScaled, Vector3 tempDrawRotate, Vector3 tempDrawScale, bool activeMirror)
+    private void SingleStateHandleOVRInput(Vector3 tempDrawPosScaled, Vector3 tempDrawRotate, Vector3 tempDrawScale, bool activeMirror, bool useGPU)
     {
         switch (activeState)
         {
             case OptState.create:
-                CreateVoxels(tempDrawPosScaled, tempDrawRotate, colorMaterialSet, (Vector3i)tempDrawScale, activeShape, activeMirror);
+                CreateVoxels(tempDrawPosScaled, tempDrawRotate, colorMaterialSet, (Vector3i)tempDrawScale, activeShape, activeMirror, useGPU);
                 break;
             case OptState.delete:
-                DestroyVoxels(tempDrawPosScaled, tempDrawRotate, (Vector3i)tempDrawScale, activeShape, activeMirror);
+                DestroyVoxels(tempDrawPosScaled, tempDrawRotate, (Vector3i)tempDrawScale, activeShape, activeMirror, useGPU);
                 break;
             case OptState.smooth:
-                SmoothVoxels(tempDrawPosScaled, (Vector3i)tempDrawScale, activeMirror);
+                SmoothVoxels(tempDrawPosScaled, (Vector3i)tempDrawScale, activeMirror, useGPU);
                 break;
             case OptState.paint:
                 PaintVoxels(tempDrawPosScaled, colorMaterialSet, (Vector3i)tempDrawScale, 1, activeMirror);
@@ -862,7 +868,7 @@ public class HandBehaviour : MonoBehaviour {
 
     }
 
-    private void StateHandleOVRInput(DrawPos drawPos, bool activeMirror)
+    private void StateHandleOVRInput(DrawPos drawPos, bool activeMirror, bool useGPU)
     {
         checkOptContinueState = true;
 
@@ -896,7 +902,7 @@ public class HandBehaviour : MonoBehaviour {
             // local operator
             if (drawPos == DrawPos.twice)
             {
-                SingleStateHandleOVRInput(tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror);
+                SingleStateHandleOVRInput(tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror, useGPU);
             }
             else if (preOptState)
             {
@@ -905,19 +911,19 @@ public class HandBehaviour : MonoBehaviour {
                 {
                     foreach (Vector3 temp in tempDraw)
                     {
-                        SingleStateHandleOVRInput(temp, tempDrawRotate, tempDrawScale, activeMirror);
+                        SingleStateHandleOVRInput(temp, tempDrawRotate, tempDrawScale, activeMirror, useGPU);
                     }
                     preOptPos = tempDrawPosScaled;
                 }
                 else if (activeOptModePanel == OptModePanel.rotate)
                 {
-                    SingleStateHandleOVRInput(tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror);
+                    SingleStateHandleOVRInput(tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror, useGPU);
                     preOptPos = tempDrawPosScaled;
                 }
             }
             else
             {
-                SingleStateHandleOVRInput(tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror);
+                SingleStateHandleOVRInput(tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror, useGPU);
                 preOptPos = tempDrawPosScaled;
             }
 
@@ -1478,26 +1484,44 @@ public class HandBehaviour : MonoBehaviour {
         }
     }
 
-    private void DestroyVoxels(Vector3 Pos, Vector3 RotateEular, Vector3i range, OptShape optshape, bool activeMirror)
+    private void DestroyVoxels(Vector3 Pos, Vector3 RotateEular, Vector3i range, OptShape optshape, bool activeMirror, bool useGPU)
     {
         MaterialSet emptyMaterialSet = new MaterialSet();
         recordBehaviour.WriteJsonFile(Pos, RotateEular, emptyMaterialSet, range, optshape, Time.time - appStartTime, activeMirror);
-        //StartCoroutine(VoxelSetting(Pos, RotateEular, emptyMaterialSet, range, optshape, activeMirror));
-        VoxelSettingGPU(Pos, RotateEular, emptyMaterialSet, range, optshape, activeMirror);
+        if (useGPU)
+        {
+            VoxelSettingGPU(Pos, RotateEular, emptyMaterialSet, range, optshape, activeMirror);
+        }
+        else
+        {
+            StartCoroutine(VoxelSetting(Pos, RotateEular, emptyMaterialSet, range, optshape, activeMirror));
+        }
     }
 
-    private void CreateVoxels(Vector3 Pos, Vector3 RotateEular, MaterialSet materialSet, Vector3i range, OptShape optshape, bool activeMirror)
+    private void CreateVoxels(Vector3 Pos, Vector3 RotateEular, MaterialSet materialSet, Vector3i range, OptShape optshape, bool activeMirror, bool useGPU)
     {
         recordBehaviour.WriteJsonFile(Pos, RotateEular, materialSet, range, optshape, Time.time - appStartTime, activeMirror);
-        //StartCoroutine(VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror));
-        VoxelSettingGPU(Pos, RotateEular, materialSet, range, optshape, activeMirror);
+        if (useGPU)
+        {
+            VoxelSettingGPU(Pos, RotateEular, materialSet, range, optshape, activeMirror);
+        }
+        else
+        {
+            StartCoroutine(VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror));
+        }
     }
 
-    private void SmoothVoxels(Vector3 Pos, Vector3i range, bool activeMirror)
+    private void SmoothVoxels(Vector3 Pos, Vector3i range, bool activeMirror, bool useGPU)
     {
         recordBehaviour.WriteJsonFileSmooth(Pos, range, Time.time - appStartTime, activeMirror);
-        //StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
-        VoxelSmoothingGPU(Pos, range, activeMirror);
+        if (useGPU)
+        {
+            VoxelSmoothingGPU(Pos, range, activeMirror);
+        }
+        else
+        {
+            StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
+        }
     }
 
     private void PaintVoxels(Vector3 Pos, MaterialSet materialSet, Vector3i range, float amount, bool activeMirror)
