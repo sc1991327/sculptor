@@ -1104,7 +1104,8 @@ public class HandBehaviour : MonoBehaviour {
 
         // obtain operator data.
         int rsize = regionUpperPos.x - regionLowerPos.x + 1;
-        int[,,] voxelHandleRegion = new int[rsize, rsize, rsize * 4];
+        int[,,] voxelHandleRegionIn = new int[rsize, rsize, rsize * 4];
+        int[,,] voxelHandleRegionOut = new int[rsize, rsize, rsize * 4];
 
         for (int tempX = 0; tempX < rsize; ++tempX)
         {
@@ -1113,14 +1114,14 @@ public class HandBehaviour : MonoBehaviour {
                 for (int tempZ = 0; tempZ < rsize; ++tempZ)
                 {
                     MaterialSet tempM = terrainVolume.data.GetVoxel(regionLowerPos.x + tempX, regionLowerPos.y + tempY, regionLowerPos.z + tempZ);
-                    voxelHandleRegion[tempX, tempY, tempZ * 4] = tempM.weights[0];
-                    voxelHandleRegion[tempX, tempY, tempZ * 4 + 1] = tempM.weights[1];
-                    voxelHandleRegion[tempX, tempY, tempZ * 4 + 2] = tempM.weights[2];
-                    voxelHandleRegion[tempX, tempY, tempZ * 4 + 3] = tempM.weights[3];
+                    voxelHandleRegionIn[tempX, tempY, tempZ * 4] = tempM.weights[0];
+                    voxelHandleRegionIn[tempX, tempY, tempZ * 4 + 1] = tempM.weights[1];
+                    voxelHandleRegionIn[tempX, tempY, tempZ * 4 + 2] = tempM.weights[2];
+                    voxelHandleRegionIn[tempX, tempY, tempZ * 4 + 3] = tempM.weights[3];
                 }
             }
         }
-        CBIn.SetData(voxelHandleRegion);
+        CBIn.SetData(voxelHandleRegionIn);
 
         // create GPU
         CSCreate.SetVector("colorSet", new Vector4(materialSet.weights[0], materialSet.weights[1], materialSet.weights[2], materialSet.weights[3]));
@@ -1131,7 +1132,7 @@ public class HandBehaviour : MonoBehaviour {
         CSCreate.SetBuffer(0, "bufferOut", CBOut);
         CSCreate.Dispatch(0, CBOut.count / 256, 1, 1);
 
-        CBOut.GetData(voxelHandleRegion);
+        CBOut.GetData(voxelHandleRegionOut);
 
         // smooth GPU
         CSSmooth.SetInt("range", rsize);
@@ -1139,19 +1140,28 @@ public class HandBehaviour : MonoBehaviour {
         CSSmooth.SetBuffer(0, "bufferOut", CBIn);
         CSSmooth.Dispatch(0, CBIn.count / 256, 1, 1);
 
-        CBIn.GetData(voxelHandleRegion);
+        CBIn.GetData(voxelHandleRegionOut);
         for (int tempX = 0; tempX < rsize; ++tempX)
         {
             for (int tempY = 0; tempY < rsize; ++tempY)
             {
                 for (int tempZ = 0; tempZ < rsize; ++tempZ)
                 {
-                    MaterialSet tempM = new MaterialSet();
-                    tempM.weights[0] = (byte)voxelHandleRegion[tempX, tempY, tempZ * 4];
-                    tempM.weights[1] = (byte)voxelHandleRegion[tempX, tempY, tempZ * 4 + 1];
-                    tempM.weights[2] = (byte)voxelHandleRegion[tempX, tempY, tempZ * 4 + 2];
-                    tempM.weights[3] = (byte)voxelHandleRegion[tempX, tempY, tempZ * 4 + 3];
-                    terrainVolume.data.SetVoxel(regionLowerPos.x + tempX, regionLowerPos.y + tempY, regionLowerPos.z + tempZ, tempM);
+                    MaterialSet tempMOld = new MaterialSet();
+                    tempMOld.weights[0] = (byte)voxelHandleRegionIn[tempX, tempY, tempZ * 4];
+                    tempMOld.weights[1] = (byte)voxelHandleRegionIn[tempX, tempY, tempZ * 4 + 1];
+                    tempMOld.weights[2] = (byte)voxelHandleRegionIn[tempX, tempY, tempZ * 4 + 2];
+                    tempMOld.weights[3] = (byte)voxelHandleRegionIn[tempX, tempY, tempZ * 4 + 3];
+
+                    MaterialSet tempMNew = new MaterialSet();
+                    tempMNew.weights[0] = (byte)voxelHandleRegionOut[tempX, tempY, tempZ * 4];
+                    tempMNew.weights[1] = (byte)voxelHandleRegionOut[tempX, tempY, tempZ * 4 + 1];
+                    tempMNew.weights[2] = (byte)voxelHandleRegionOut[tempX, tempY, tempZ * 4 + 2];
+                    tempMNew.weights[3] = (byte)voxelHandleRegionOut[tempX, tempY, tempZ * 4 + 3];
+
+                    Vector3i tp = new Vector3i(regionLowerPos.x + tempX, regionLowerPos.y + tempY, regionLowerPos.z + tempZ);
+                    recordBehaviour.PushOperator(new VoxelOpt(tp, tempMNew, tempMOld));
+                    terrainVolume.data.SetVoxel(tp.x, tp.y, tp.z, tempMNew);
                 }
             }
         }
@@ -1184,7 +1194,8 @@ public class HandBehaviour : MonoBehaviour {
 
         // obtain operator data.
         int rsize = regionUpperPos.x - regionLowerPos.x + 1;
-        int[,,] voxelHandleRegion = new int[rsize, rsize, rsize * 4];
+        int[,,] voxelHandleRegionIn = new int[rsize, rsize, rsize * 4];
+        int[,,] voxelHandleRegionOut = new int[rsize, rsize, rsize * 4];
 
         for (int tempX = 0; tempX < rsize; ++tempX)
         {
@@ -1193,14 +1204,14 @@ public class HandBehaviour : MonoBehaviour {
                 for (int tempZ = 0; tempZ < rsize; ++tempZ)
                 {
                     MaterialSet tempM = terrainVolume.data.GetVoxel(regionLowerPos.x + tempX, regionLowerPos.y + tempY, regionLowerPos.z + tempZ);
-                    voxelHandleRegion[tempX, tempY, tempZ * 4] = tempM.weights[0];
-                    voxelHandleRegion[tempX, tempY, tempZ * 4 + 1] = tempM.weights[1];
-                    voxelHandleRegion[tempX, tempY, tempZ * 4 + 2] = tempM.weights[2];
-                    voxelHandleRegion[tempX, tempY, tempZ * 4 + 3] = tempM.weights[3];
+                    voxelHandleRegionIn[tempX, tempY, tempZ * 4] = tempM.weights[0];
+                    voxelHandleRegionIn[tempX, tempY, tempZ * 4 + 1] = tempM.weights[1];
+                    voxelHandleRegionIn[tempX, tempY, tempZ * 4 + 2] = tempM.weights[2];
+                    voxelHandleRegionIn[tempX, tempY, tempZ * 4 + 3] = tempM.weights[3];
                 }
             }
         }
-        CBIn.SetData(voxelHandleRegion);
+        CBIn.SetData(voxelHandleRegionIn);
 
         // calculate GPU
         CSSmooth.SetInt("range", rsize);
@@ -1208,19 +1219,28 @@ public class HandBehaviour : MonoBehaviour {
         CSSmooth.SetBuffer(0, "bufferOut", CBOut);
         CSSmooth.Dispatch(0, CBOut.count / 256, 1, 1);
 
-        CBOut.GetData(voxelHandleRegion);
+        CBOut.GetData(voxelHandleRegionOut);
         for (int tempX = 0; tempX < rsize; ++tempX)
         {
             for (int tempY = 0; tempY < rsize; ++tempY)
             {
                 for (int tempZ = 0; tempZ < rsize; ++tempZ)
                 {
-                    MaterialSet tempM = new MaterialSet();
-                    tempM.weights[0] = (byte)voxelHandleRegion[tempX, tempY, tempZ * 4];
-                    tempM.weights[1] = (byte)voxelHandleRegion[tempX, tempY, tempZ * 4 + 1];
-                    tempM.weights[2] = (byte)voxelHandleRegion[tempX, tempY, tempZ * 4 + 2];
-                    tempM.weights[3] = (byte)voxelHandleRegion[tempX, tempY, tempZ * 4 + 3];
-                    terrainVolume.data.SetVoxel(regionLowerPos.x + tempX, regionLowerPos.y + tempY, regionLowerPos.z + tempZ, tempM);
+                    MaterialSet tempMOld = new MaterialSet();
+                    tempMOld.weights[0] = (byte)voxelHandleRegionIn[tempX, tempY, tempZ * 4];
+                    tempMOld.weights[1] = (byte)voxelHandleRegionIn[tempX, tempY, tempZ * 4 + 1];
+                    tempMOld.weights[2] = (byte)voxelHandleRegionIn[tempX, tempY, tempZ * 4 + 2];
+                    tempMOld.weights[3] = (byte)voxelHandleRegionIn[tempX, tempY, tempZ * 4 + 3];
+
+                    MaterialSet tempMNew = new MaterialSet();
+                    tempMNew.weights[0] = (byte)voxelHandleRegionOut[tempX, tempY, tempZ * 4];
+                    tempMNew.weights[1] = (byte)voxelHandleRegionOut[tempX, tempY, tempZ * 4 + 1];
+                    tempMNew.weights[2] = (byte)voxelHandleRegionOut[tempX, tempY, tempZ * 4 + 2];
+                    tempMNew.weights[3] = (byte)voxelHandleRegionOut[tempX, tempY, tempZ * 4 + 3];
+
+                    Vector3i tp = new Vector3i(regionLowerPos.x + tempX, regionLowerPos.y + tempY, regionLowerPos.z + tempZ);
+                    recordBehaviour.PushOperator(new VoxelOpt(tp, tempMNew, tempMOld));
+                    terrainVolume.data.SetVoxel(tp.x, tp.y, tp.z, tempMNew);
                 }
             }
         }
