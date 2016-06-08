@@ -84,6 +84,18 @@ ModelImporter:
     100152: Trim_Char_s_2_1
     100154: Trim_Text_Choose_1_1
     100156: Trim_Text_Color_1_1
+    100158: polySurface144
+    100160: polySurface144 1
+    100162: polySurface145
+    100164: polySurface146
+    100166: polySurface147
+    100168: polySurface148
+    100170: transform251
+    100172: transform252
+    100174: transform253
+    100176: transform254
+    100178: transform255
+    100180: transform256
     400000: Char_C_1
     400002: Char_C_1_curve101
     400004: Char_C_2
@@ -163,9 +175,24 @@ ModelImporter:
     400152: Trim_Char_s_2_1
     400154: Trim_Text_Choose_1_1
     400156: Trim_Text_Color_1_1
+    400158: polySurface144
+    400160: polySurface144 1
+    400162: polySurface145
+    400164: polySurface146
+    400166: polySurface147
+    400168: polySurface148
+    400170: transform251
+    400172: transform252
+    400174: transform253
+    400176: transform254
+    400178: transform255
+    400180: transform256
     2300000: Char_C_1_curve101
+    2300002: polySurface144
     3300000: Char_C_1_curve101
+    3300002: polySurface144
     4300000: Char_C_1_curve101
+    4300002: polySurface144
     9500000: //RootNode
   materials:
     importMaterials: 1

@@ -779,6 +779,18 @@ ModelImporter:
     101542: Trim_Char_t_8_1
     101544: Trim_Text_RotateMode_1_1
     101546: Trim_Text_RotateMode_1_2
+    101548: polySurface144
+    101550: polySurface144 1
+    101552: polySurface145
+    101554: polySurface146
+    101556: polySurface147
+    101558: polySurface148
+    101560: transform251
+    101562: transform252
+    101564: transform253
+    101566: transform254
+    101568: transform255
+    101570: transform256
     400000: Char_a_1
     400002: Char_a_2
     400004: Char_a_3
@@ -1553,6 +1565,18 @@ ModelImporter:
     401542: Trim_Char_t_8_1
     401544: Trim_Text_RotateMode_1_1
     401546: Trim_Text_RotateMode_1_2
+    401548: polySurface144
+    401550: polySurface144 1
+    401552: polySurface145
+    401554: polySurface146
+    401556: polySurface147
+    401558: polySurface148
+    401560: transform251
+    401562: transform252
+    401564: transform253
+    401566: transform254
+    401568: transform255
+    401570: transform256
     2300000: Char_R_1_curve2
     2300002: curve17
     2300004: polySurface1
@@ -1566,6 +1590,7 @@ ModelImporter:
     2300020: Char_R_2_curve91
     2300022: Char_H_1_curve57
     2300024: polySurface143
+    2300026: polySurface144
     3300000: Char_R_1_curve2
     3300002: curve17
     3300004: polySurface1
@@ -1579,6 +1604,7 @@ ModelImporter:
     3300020: Char_R_2_curve91
     3300022: Char_H_1_curve57
     3300024: polySurface143
+    3300026: polySurface144
     4300000: Trim_Char_U_2_1
     4300002: polySurface1
     4300004: Char_R_1_curve2
@@ -1592,6 +1618,7 @@ ModelImporter:
     4300020: Char_C_1_curve101
     4300022: Char_H_1_curve57
     4300024: polySurface143
+    4300026: polySurface144
     9500000: //RootNode
   materials:
     importMaterials: 1
