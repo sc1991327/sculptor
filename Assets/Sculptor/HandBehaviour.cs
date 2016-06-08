@@ -9,7 +9,7 @@ public enum InfoPanel { empty, start, info};
 public enum OptState { create, delete, smooth, paint };
 public enum OptShape { cube, sphere, capsule, cylinder };
 public enum DrawPos { left, right, twice };
-public enum HandOpt { singleOpt, pairOpt, voxelWorldOpt };
+public enum HandOpt { singleOpt, pairOpt, voxelWorldOpt, voxelWorldSingleOpt };
 
 public class HandBehaviour : MonoBehaviour {
 
@@ -471,8 +471,8 @@ public class HandBehaviour : MonoBehaviour {
             if (activeHandOpt != HandOpt.voxelWorldOpt)
             {
                 // first
-                VoxelWorldCenterPos = terrainVolume.transform.position;
-                VoxelWorldLeftHandPos = leftChildPosition;
+                //VoxelWorldCenterPos = terrainVolume.transform.position;
+                //VoxelWorldLeftHandPos = leftChildPosition;
 
                 VoxelWorldBasicAngle = terrainVolume.transform.rotation;
                 VoxelWorldPreAngleDir = rightChildPosition - leftChildPosition;
@@ -486,11 +486,41 @@ public class HandBehaviour : MonoBehaviour {
                 VoxelWorldNowAngleDir = rightChildPosition - leftChildPosition;
                 VoxelWorldNowScale = Vector3.Distance(rightChildPosition, leftChildPosition);
 
-                terrainVolume.transform.position = VoxelWorldCenterPos + (leftChildPosition - VoxelWorldLeftHandPos);
+                //terrainVolume.transform.position = VoxelWorldCenterPos + (leftChildPosition - VoxelWorldLeftHandPos);
                 terrainVolume.transform.rotation = Quaternion.FromToRotation(VoxelWorldPreAngleDir, VoxelWorldNowAngleDir) * VoxelWorldBasicAngle;
                 terrainVolume.transform.localScale = VoxelWorldBasicScale * ( Mathf.Clamp(VoxelWorldNowScale / VoxelWorldPreScale, 0.2f, 5));
             }
             activeHandOpt = HandOpt.voxelWorldOpt;
+        }
+        else if (Axis1D_LT > 0)
+        {
+            // global position/rotation/scaling
+            if (activeHandOpt != HandOpt.voxelWorldSingleOpt)
+            {
+                // first
+                VoxelWorldCenterPos = terrainVolume.transform.position;
+                VoxelWorldLeftHandPos = leftChildPosition;
+            }
+            else
+            {
+                terrainVolume.transform.position = VoxelWorldCenterPos + (leftChildPosition - VoxelWorldLeftHandPos);
+            }
+            activeHandOpt = HandOpt.voxelWorldSingleOpt;
+        }
+        else if (Axis1D_RT > 0)
+        {
+            // global position/rotation/scaling
+            if (activeHandOpt != HandOpt.voxelWorldSingleOpt)
+            {
+                // first
+                VoxelWorldCenterPos = terrainVolume.transform.position;
+                VoxelWorldLeftHandPos = rightChildPosition;
+            }
+            else
+            {
+                terrainVolume.transform.position = VoxelWorldCenterPos + (rightChildPosition - VoxelWorldLeftHandPos);
+            }
+            activeHandOpt = HandOpt.voxelWorldSingleOpt;
         }
         else if (Axis1D_LB > 0 && Axis1D_RB > 0)
         {

@@ -158,7 +158,7 @@ public class TrackAnchor : MonoBehaviour {
         boundIndicator = proceduralTerrainVolume.gameObject.GetComponent<BoundIndicator>();
         boundIndicator.transform.GetComponent<Renderer>().material.mainTexture = boundTexture;
         Color tempBoundColor = boundIndicator.transform.GetComponent<Renderer>().material.color;
-        tempBoundColor.a = colorChildAlpha;
+        tempBoundColor.a = 0.3f;
         boundIndicator.transform.GetComponent<Renderer>().material.color = tempBoundColor;
         boundIndicator.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
