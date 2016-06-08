@@ -18,7 +18,7 @@ namespace Cubiquity
 			{
                 // Triplanar textuing seems like a good default material for the terrain volume.
                 //material = Instantiate(Resources.Load("Materials/Colormap", typeof(Material))) as Material;
-                material = Instantiate(Resources.Load("Materials/Triplanar", typeof(Material))) as Material;
+                material = Instantiate(Resources.Load("Custom/testBasic", typeof(Material))) as Material;
             }
         }
 
