@@ -1,0 +1,165 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Sand Glitter
+  m_Shader: {fileID: 4800000, guid: 01f49c20b0701054ca5d65fc4f490e45, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 5
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  m_SavedProperties:
+    serializedVersion: 2
+    m_TexEnvs:
+      data:
+        first:
+          name: _MainTex
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 3, y: 2}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _BumpMap
+        second:
+          m_Texture: {fileID: 2800000, guid: fb05408180a80e342bc97214b72016b5, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Ramp
+        second:
+          m_Texture: {fileID: 2800000, guid: 2c41434b94be886409b1572eac7bdb4a, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _GlitterMap
+        second:
+          m_Texture: {fileID: 2800000, guid: ab5820cef317b304dac89f55f0816368, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _SubMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _DepthTex
+        second:
+          m_Texture: {fileID: 2800000, guid: e56bff670d358de4489ac787137ecb47, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _SubNormal
+        second:
+          m_Texture: {fileID: 2800000, guid: c52ba902bbe27a8489195e80f09306fa, type: 3}
+          m_Scale: {x: 16, y: 10}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _BumpTex
+        second:
+          m_Texture: {fileID: 2800000, guid: fb05408180a80e342bc97214b72016b5, type: 3}
+          m_Scale: {x: 3, y: 2}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _GlitterTex
+        second:
+          m_Texture: {fileID: 2800000, guid: beb6337c85cbf544ca8c1f6af52e4a28, type: 3}
+          m_Scale: {x: 3, y: 2}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _NoiseTex
+        second:
+          m_Texture: {fileID: 2800000, guid: beb6337c85cbf544ca8c1f6af52e4a28, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+    m_Floats:
+      data:
+        first:
+          name: _Shininess
+        second: 0.1133469
+      data:
+        first:
+          name: _RampPower
+        second: 0.8214286
+      data:
+        first:
+          name: _Specular
+        second: 2.5
+      data:
+        first:
+          name: _Aniso
+        second: 0.91071427
+      data:
+        first:
+          name: _Glitter
+        second: 2.142857
+      data:
+        first:
+          name: _Depth
+        second: -2
+      data:
+        first:
+          name: _Coverage
+        second: 0.71664286
+      data:
+        first:
+          name: _Smooth
+        second: 0.9901786
+      data:
+        first:
+          name: _Spread
+        second: 1
+      data:
+        first:
+          name: _Transition
+        second: -0.10714282
+      data:
+        first:
+          name: _TransitionSmooth
+        second: 1.2142859
+      data:
+        first:
+          name: _Speed
+        second: 3
+      data:
+        first:
+          name: _Density
+        second: 0.95
+      data:
+        first:
+          name: _DensityStatic
+        second: 4
+      data:
+        first:
+          name: _Power
+        second: 0.2
+      data:
+        first:
+          name: _DepthCoverage
+        second: 0.3392857
+    m_Colors:
+      data:
+        first:
+          name: _Color
+        second: {r: 1, g: 1, b: 1, a: 1}
+      data:
+        first:
+          name: _Direction
+        second: {r: 0, g: 1, b: 0.25, a: 1}
+      data:
+        first:
+          name: _SpecularColor
+        second: {r: 1, g: 1, b: 1, a: 0}

@@ -128,6 +128,7 @@
     <None Include="Assets\Cubiquity\Resources\Shaders\Planet.shader" />
     <None Include="Assets\Cubiquity\Resources\Shaders\TerrainVolumeUtilities.cginc" />
     <None Include="Assets\Cubiquity\Resources\Shaders\Triplanar.shader" />
+    <None Include="Assets\Cubiquity\Resources\Shaders\TriplanarBasic.shader" />
     <None Include="Assets\Cubiquity\Resources\Shaders\VisualizeLOD.shader" />
     <None Include="Assets\Cubiquity\Resources\Shaders\VisualizeNormals.shader" />
     <None Include="Assets\Cubiquity\Unsafe\README.txt" />
@@ -148,9 +149,14 @@
     <None Include="Assets\Sculptor\ShaderCreate.compute" />
     <None Include="Assets\Sculptor\ShaderSmooth.compute" />
     <None Include="Assets\Sculptor\ShaderTest.compute" />
+    <None Include="Assets\Sculptor\SnowCore.cginc" />
+    <None Include="Assets\Sculptor\SnowInputs.cginc" />
+    <None Include="Assets\Sculptor\SnowLighting.cginc" />
+    <None Include="Assets\Sculptor\SnowSurface.cginc" />
     <None Include="Assets\Sculptor\TerrainVolumeUtilities.cginc" />
     <None Include="Assets\Sculptor\sShaderBasic.shader" />
     <None Include="Assets\Sculptor\sShaderSnow.shader" />
+    <None Include="Assets\Sculptor\sShaderSnow2.shader" />
     <None Include="Assets\SteamVR\Resources\SteamVR_AlphaOut.shader" />
     <None Include="Assets\SteamVR\Resources\SteamVR_Blit.shader" />
     <None Include="Assets\SteamVR\Resources\SteamVR_BlitFlip.shader" />
