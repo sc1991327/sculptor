@@ -7,6 +7,7 @@
 		_DepthTex("Depth (R)", 2D) = "white" {}
 
 		_TexScale("Texture Scale", Range(0.1, 100.0)) = 1.0
+		_ColorRate("Color Rate", Range(0.1, 1.0)) = 1.0
 
 		_TexWeight("All Weight", Range(0.0, 2.0)) = 1.0
 		_MainTexWeight("Diffuse Weight", Range(0.0, 2.0)) = 1.0
@@ -39,6 +40,7 @@
 		float4 _DepthTex_ST;
 
 		half _TexScale;
+		half _ColorRate;
 
 		half _TexWeight;
 		half _MainTexWeight;
@@ -108,6 +110,8 @@
 			half4 specular = texTriplanar(_GlitterTex, texCoords, _GlitterTex_ST, dx, dy, _GlitterTexWeight * _TexWeight);
 			half4 normal = texTriplanar(_BumpTex, texCoords, _BumpTex_ST, dx, dy, _BumpTexWeight * _TexWeight);
 			half4 depth = texTriplanar(_DepthTex, texCoords, _DepthTex_ST, dx, dy, _DepthTexWeight * _TexWeight);
+
+			diffuse = diffuse * (1 - _ColorRate) + materialStrengths * _ColorRate;
 
 			o.Albedo = diffuse.rgb;
 			o.Normal = normal.rgb;
