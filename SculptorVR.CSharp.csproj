@@ -144,6 +144,7 @@
     <Compile Include="Assets\Cubiquity\Scripts\VolumeRenderer.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Examples\Basics.cs" />
     <Compile Include="Assets\Demigiant\DOTween\Examples\Sequences.cs" />
+    <Compile Include="Assets\OBJExport\OBJExport\OBJExporter.cs" />
     <Compile Include="Assets\OSPNative\scenes\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
     <Compile Include="Assets\OSPNative\scripts\ONSPAudioSource.cs" />
     <Compile Include="Assets\OVR\Moonlight\Scripts\OVRDebugHeadController.cs" />
@@ -186,6 +187,7 @@
     <Compile Include="Assets\Sculptor\HeadCanvasControl.cs" />
     <Compile Include="Assets\Sculptor\NetManager.cs" />
     <Compile Include="Assets\Sculptor\NetManagerUDP.cs" />
+    <Compile Include="Assets\Sculptor\ObjExporter.cs" />
     <Compile Include="Assets\Sculptor\RecordBehaviour.cs" />
     <Compile Include="Assets\Sculptor\RotateObj.cs" />
     <Compile Include="Assets\Sculptor\SceneManager.cs" />

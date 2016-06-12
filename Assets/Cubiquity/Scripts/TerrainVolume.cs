@@ -137,7 +137,7 @@ namespace Cubiquity
 				}
 
                 OctreeNode.syncNode(ref availableSyncOperations, rootOctreeNodeGameObject, rootNodeHandle, gameObject);
-                                
+
                 if (volumeRenderer != null && volumeRenderer.hasChanged)
                 {
                     OctreeNode.syncNodeWithVolumeRenderer(rootOctreeNodeGameObject, volumeRenderer, true);
@@ -164,7 +164,9 @@ namespace Cubiquity
             // Cubiquity octree. So if the Cubiquity octree was also up to date then we have synced everything.
             return cubiquityUpToDate && availableSyncOperations > 0;
 		}
-		/// \endcond
+        /// \endcond
+        /// 
+
 #endif
-	}
+    }
 }

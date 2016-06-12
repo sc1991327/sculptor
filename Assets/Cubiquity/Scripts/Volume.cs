@@ -134,7 +134,7 @@ namespace Cubiquity
 		 * updates rather than 'x' times per update?
 		 */
 		/// \cond
-		protected uint maxSyncOperationsInPlayMode = 4;
+		protected uint maxSyncOperationsInPlayMode = 1;
         protected uint maxSyncOperationsInEditMode = 16; // Can be higher than in play mode as we have no collision mehses
 		/// \endcond
 
@@ -294,6 +294,12 @@ namespace Cubiquity
 
         private void Update()
 		{
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                OctreeNode.SetObjStore(true);
+            }
+
             if (flushRequested)
             {
                 FlushInternalData();
@@ -344,7 +350,7 @@ namespace Cubiquity
             {
                 // When we are in game mode we limit the number of nodes which we update per frame, to maintain a nice.
                 // framerate The Update() method is called repeatedly and so over time the whole mesh gets syncronized. 
-                if (Application.isPlaying)
+                if (Application.isPlaying && OctreeNode.GetObjStore() == false)
                 {
                     isMeshSyncronized = SynchronizeOctree(maxSyncOperationsInPlayMode);
                 }
@@ -353,7 +359,9 @@ namespace Cubiquity
                     isMeshSyncronized = SynchronizeOctree(maxSyncOperationsInEditMode);
                 }
             }
-		}
+
+            OctreeNode.SetObjStore(false);
+        }
 		/// \endcond
 
         // Public so that we can manually drive it from the editor as required,

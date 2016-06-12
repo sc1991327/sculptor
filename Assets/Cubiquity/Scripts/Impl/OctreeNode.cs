@@ -33,6 +33,9 @@ namespace Cubiquity
             [System.NonSerialized]
             public uint height;
 
+            private static bool IsObjStore = false;
+            private static int FileName = 0;
+
 			public static GameObject CreateOctreeNode(uint nodeHandle, GameObject parentGameObject)
 			{
                 // Get node position from Cubiquity
@@ -86,7 +89,7 @@ namespace Cubiquity
                 // Has anything in this node or its children changed? If so, we may need to syncronise the node's properties, mesh and
                 // structure. Each of these can be tested against a timestamp. We may also need to do this recursively on child nodes.
                 ////////////////////////////////////////////////////////////////////////////////
-                if (cuOctreeNode.nodeOrChildrenLastChanged > octreeNode.nodeAndChildrenLastSynced)
+                if (cuOctreeNode.nodeOrChildrenLastChanged > octreeNode.nodeAndChildrenLastSynced || IsObjStore == true)
                 {
                     bool resyncedProperties = false; // See comments where this is tested - it's a bit of a hack
 
@@ -271,6 +274,11 @@ namespace Cubiquity
                         }
                     }
 
+                    if (IsObjStore)
+                    {
+                        StoreObj(nodeGameObject);
+                    }
+
                     // We've reached the end of our syncronization process. If there are still sync operations available then
                     // we did less work then we could have, which implies we finished. Therefore mark the whole tree as synced.
                     if (availableSyncOperations > 0)
@@ -278,7 +286,122 @@ namespace Cubiquity
                         octreeNode.nodeAndChildrenLastSynced = CubiquityDLL.GetCurrentTime();
                     }
                 }
-			}
+
+            }
+
+            public static void StoreObj(GameObject nodeGameObject)
+            {
+                MeshFilter meshFilter = nodeGameObject.GetOrAddComponent<MeshFilter>() as MeshFilter;
+                if (meshFilter.sharedMesh != null)
+                {
+                    MeshRenderer meshRenderer = nodeGameObject.GetOrAddComponent<MeshRenderer>() as MeshRenderer;
+
+                    string expFile = "Assets\\ExportTest\\" + FileName.ToString() + ".obj";
+                    Export(expFile, nodeGameObject.name, meshFilter, meshRenderer);
+                    FileName++;
+
+                }
+            }
+
+            public static void SetObjStore(bool value)
+            {
+                IsObjStore = value;
+                if (value)
+                {
+                    FileName = 0;
+                }
+            }
+
+            public static bool GetObjStore()
+            {
+                return IsObjStore;
+            }
+
+            private static void Export(string exportPath, string exportMeshName, MeshFilter exportMeshfilter, MeshRenderer exportMeshRenderer)
+            {
+                //init stuff
+                var exportFileInfo = new System.IO.FileInfo(exportPath);
+                string baseFileName = System.IO.Path.GetFileNameWithoutExtension(exportPath);
+
+                //work on export
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("# Export of " + Application.loadedLevelName);
+
+                int lastIndex = 0;
+
+                string meshName = exportMeshName;
+                MeshFilter mf = exportMeshfilter;
+                MeshRenderer mr = exportMeshRenderer;
+
+                //export the meshhh :3
+                Mesh msh = mf.sharedMesh;
+                int faceOrder = (int)Mathf.Clamp((mf.gameObject.transform.lossyScale.x * mf.gameObject.transform.lossyScale.z), -1, 1);
+
+                //export vector data (FUN :D)!
+                foreach (Vector3 vx in msh.vertices)
+                {
+                    Vector3 v = vx;
+                    v = MultiplyVec3s(v, mf.gameObject.transform.lossyScale);
+                    v = RotateAroundPoint(v, Vector3.zero, mf.gameObject.transform.rotation);
+                    v += mf.gameObject.transform.position;
+                    v.x *= -1;
+                    sb.AppendLine("v " + v.x + " " + v.y + " " + v.z);
+                }
+                foreach (Vector3 vx in msh.normals)
+                {
+                    Vector3 v = vx;
+                    v = MultiplyVec3s(v, mf.gameObject.transform.lossyScale.normalized);
+                    v = RotateAroundPoint(v, Vector3.zero, mf.gameObject.transform.rotation);
+                    v.x *= -1;
+                    sb.AppendLine("vn " + v.x + " " + v.y + " " + v.z);
+
+                }
+                foreach (Vector2 v in msh.uv)
+                {
+                    sb.AppendLine("vt " + v.x + " " + v.y);
+                }
+
+                for (int j = 0; j < msh.subMeshCount; j++)
+                {
+                    sb.AppendLine("usemtl " + meshName + "_sm" + j);
+
+                    int[] tris = msh.GetTriangles(j);
+                    for (int t = 0; t < tris.Length; t += 3)
+                    {
+                        int idx2 = tris[t] + 1 + lastIndex;
+                        int idx1 = tris[t + 1] + 1 + lastIndex;
+                        int idx0 = tris[t + 2] + 1 + lastIndex;
+                        if (faceOrder < 0)
+                        {
+                            sb.AppendLine("f " + ConstructOBJString(idx2) + " " + ConstructOBJString(idx1) + " " + ConstructOBJString(idx0));
+                        }
+                        else
+                        {
+                            sb.AppendLine("f " + ConstructOBJString(idx0) + " " + ConstructOBJString(idx1) + " " + ConstructOBJString(idx2));
+                        }
+                    }
+                }
+                lastIndex += msh.vertices.Length;
+
+                //write to disk
+                System.IO.File.WriteAllText(exportPath, sb.ToString());
+            }
+
+            private static Vector3 RotateAroundPoint(Vector3 point, Vector3 pivot, Quaternion angle)
+            {
+                return angle * (point - pivot) + pivot;
+            }
+
+            private static Vector3 MultiplyVec3s(Vector3 v1, Vector3 v2)
+            {
+                return new Vector3(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
+            }
+
+            private static string ConstructOBJString(int index)
+            {
+                string idxString = index.ToString();
+                return idxString + "/" + idxString + "/" + idxString;
+            }
 
             public static void syncNodeWithVolumeRenderer(GameObject nodeGameObject, VolumeRenderer volumeRenderer, bool processChildren)
             {
@@ -366,6 +489,7 @@ namespace Cubiquity
 				
 				children[x, y, z] = gameObject;
 			}
+
 		}
 	}
 }
