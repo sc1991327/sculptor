@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine.VR;
 using System.Collections.Generic;
 using Valve.VR;
-using UnityEditor;
 
 public class VirtualOpt
 {
@@ -102,7 +101,6 @@ public class CameraManager : MonoBehaviour {
 
         if (OculusCamera.activeSelf && SteamCamera.activeSelf)
         {
-            EditorUtility.DisplayDialog("ERROR", "Place Only Set Active One VR Device Camera Object!", "OK");
             Application.Quit();
         }
         if (OculusCamera.activeSelf)
