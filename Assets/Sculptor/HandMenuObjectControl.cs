@@ -247,17 +247,17 @@ public class HandMenuObjectControl : MonoBehaviour
                 int temp = (minPos % 10);
                 if ((ti % 10) != temp )
                 {
-                    //MenuChildObject[ti].transform.localScale = new Vector3(0, 0, 0);
-                    Color tempp = MenuChildObject[ti].transform.GetComponent<Renderer>().material.color;
-                    tempp.a = 0.06f;
-                    MenuChildObject[ti].transform.GetComponent<Renderer>().material.color = tempp;
+                    MenuChildObject[ti].transform.localScale = new Vector3(0, 0, 0);
+                    //Color tempp = MenuChildObject[ti].transform.GetComponent<Renderer>().material.color;
+                    //tempp.a = 0.06f;
+                    //MenuChildObject[ti].transform.GetComponent<Renderer>().material.color = tempp;
                 }
                 else
                 {
-                    //MenuChildObject[ti].transform.localScale = new Vector3(MenuColorStartLocalScale, MenuColorStartLocalScale, MenuColorStartLocalScale);
-                    Color tempp = MenuChildObject[ti].transform.GetComponent<Renderer>().material.color;
-                    tempp.a = 1.0f;
-                    MenuChildObject[ti].transform.GetComponent<Renderer>().material.color = tempp;
+                    MenuChildObject[ti].transform.localScale = new Vector3(MenuColorStartLocalScale, MenuColorStartLocalScale, MenuColorStartLocalScale);
+                    //Color tempp = MenuChildObject[ti].transform.GetComponent<Renderer>().material.color;
+                    //tempp.a = 1.0f;
+                    //MenuChildObject[ti].transform.GetComponent<Renderer>().material.color = tempp;
                 }
             }
 
@@ -359,7 +359,7 @@ public class HandMenuObjectControl : MonoBehaviour
             Color tempC = tempObj.transform.GetComponent<Renderer>().material.color;
             tempC.a = 1.0f;
             tempObj.transform.GetComponent<Renderer>().material.color = tempC;
-            tempObj.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
+            //tempObj.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
             MenuChildObject.Add(tempObj);
         }
