@@ -12,15 +12,17 @@ using System.Collections.Generic;
 
 public class NetManagerUDP : MonoBehaviour
 {
-    private string myIP = "127.0.0.1";
-    public string serverIP = "10.32.93.177";
-    public int sendPort = 8885;
-    public int recvPort = 8886;
+    public GameObject configObj;
+    private LoadConfig loadConfig;
+
+    public int myID;
+    private string myIP;
+    private string serverIP;
+    private int sendPort;
+    private int recvPort;
 
     private static Socket clientUDP;
     private Thread recvThread;
-
-    public int myID = 0;
 
     public GameObject BasicProceduralVolume = null;
     public GameObject handObject = null;
@@ -83,6 +85,12 @@ public class NetManagerUDP : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        loadConfig = configObj.GetComponent<LoadConfig>();
+        myID = loadConfig.userNumber;
+        myIP = loadConfig.userIP;
+        serverIP = loadConfig.serverIP;
+        sendPort = loadConfig.sendPort;
+        recvPort = loadConfig.recvPort;
 
         handBehaviour = handObject.GetComponent<HandBehaviour>();
         terrainVolume = BasicProceduralVolume.GetComponent<TerrainVolume>();

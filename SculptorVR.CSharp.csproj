@@ -185,6 +185,7 @@
     <Compile Include="Assets\Sculptor\HandMenuControl.cs" />
     <Compile Include="Assets\Sculptor\HandMenuObjectControl.cs" />
     <Compile Include="Assets\Sculptor\HeadCanvasControl.cs" />
+    <Compile Include="Assets\Sculptor\LoadConfig.cs" />
     <Compile Include="Assets\Sculptor\NetManager.cs" />
     <Compile Include="Assets\Sculptor\NetManagerUDP.cs" />
     <Compile Include="Assets\Sculptor\ObjExporter.cs" />
@@ -311,11 +312,19 @@
     <None Include="Assets\SteamVR\Resources\SteamVR_HiddenArea.shader" />
     <None Include="Assets\SteamVR\Resources\SteamVR_Overlay.shader" />
     <None Include="Assets\SteamVR\readme.txt" />
+    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Config.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\CreatedForAssets\Readme.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Examples\ImportedCityLicense.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Examples\Tests\Readme.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_0tb6b6m1.hok.txt" />
+    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_1nk8i73t.ane.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_cer1h82y.4mf.txt" />
+    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_d4ql5iej.dvt.txt" />
+    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_hq4dtuuo.9i6.txt" />
+    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_j8oynlcn.1y3.txt" />
+    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_l5x3fy10.ae9.txt" />
+    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_tyjq1iyv.xqx.txt" />
+    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_y3ektuln.5ic.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\Show\BigTripod.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\Show\HappyStrongMan.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\Show\RainbowHeart.txt" />
