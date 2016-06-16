@@ -71,7 +71,7 @@ public class ProceduralTerrainVolume : MonoBehaviour
 
         System.Random randomIntGenerator = new System.Random();
         int randomInt = randomIntGenerator.Next();
-        string saveLocation = Paths.voxelDatabases + "/VRSculptor_" + randomInt + ".vdb";
+        string saveLocation = Paths.voxelDatabases + "/Load/VRSculptor_" + randomInt + ".vdb";
 
         // create the world Voxel dataset
 

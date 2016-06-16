@@ -296,7 +296,7 @@ namespace Cubiquity
                 {
                     MeshRenderer meshRenderer = nodeGameObject.GetOrAddComponent<MeshRenderer>() as MeshRenderer;
 
-                    string expFile = "Assets\\ExportTest\\" + FileName.ToString() + ".obj";
+                    string expFile = Paths.voxelDatabases + "/ExportTest/" + FileName.ToString() + ".obj";
                     Export(expFile, nodeGameObject.name, meshFilter, meshRenderer);
                     FileName++;
 

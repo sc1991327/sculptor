@@ -58,12 +58,6 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
@@ -176,6 +170,11 @@
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\CreatedForAssets\Readme.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Examples\ImportedCityLicense.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Examples\Tests\Readme.txt" />
+    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_0tb6b6m1.hok.txt" />
+    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_cer1h82y.4mf.txt" />
+    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\Show\BigTripod.txt" />
+    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\Show\HappyStrongMan.txt" />
+    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\Show\RainbowHeart.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

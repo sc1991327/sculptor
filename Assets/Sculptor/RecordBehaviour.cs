@@ -90,10 +90,10 @@ public class RecordBehaviour : MonoBehaviour {
         }
 
         // obtain all files name
-        string fonderpath = "Record/Show";
+        string fonderpath = Paths.voxelDatabases + "/Record/Show";
         ProcessDirectory(fonderpath, recordFileNames, "*.txt", false);
 
-        string loadfonderpath = Paths.voxelDatabases + "/Show";
+        string loadfonderpath = Paths.voxelDatabases + "/Load/Show";
         ProcessDirectory(loadfonderpath, loadFileNames, "*.vdb", false);
 
         ReplayVoxelStore = new List<VoxelStoreObj>();
@@ -329,7 +329,7 @@ public class RecordBehaviour : MonoBehaviour {
     void OnApplicationQuit()
     {
         string randomName = Path.GetRandomFileName();
-        file = new System.IO.StreamWriter("Record/RecordOpt_" + randomName + ".txt");
+        file = new System.IO.StreamWriter(Paths.voxelDatabases + "/Record/RecordOpt_" + randomName + ".txt");
         file.WriteLine("[");
         foreach (VoxelStoreObj temp in RecordVoxelStore)
         {
