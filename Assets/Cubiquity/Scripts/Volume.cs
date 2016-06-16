@@ -134,7 +134,7 @@ namespace Cubiquity
 		 * updates rather than 'x' times per update?
 		 */
 		/// \cond
-		protected uint maxSyncOperationsInPlayMode = 1;
+		protected uint maxSyncOperationsInPlayMode = 2;
         protected uint maxSyncOperationsInEditMode = 16; // Can be higher than in play mode as we have no collision mehses
 		/// \endcond
 

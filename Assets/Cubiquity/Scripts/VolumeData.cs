@@ -218,7 +218,7 @@ namespace Cubiquity
 		 *   mode, and also in standalone builds.
 		 * \param writePermissions The initial write permissions for the voxel database.
 		 */
-		public static VolumeDataType CreateFromVoxelDatabase<VolumeDataType>(string pathToVoxelDatabase, WritePermissions writePermissions = WritePermissions.ReadOnly) where VolumeDataType : VolumeData
+		public static VolumeDataType CreateFromVoxelDatabase<VolumeDataType>(string pathToVoxelDatabase, WritePermissions writePermissions = WritePermissions.ReadWrite) where VolumeDataType : VolumeData
 		{			
 			VolumeDataType volumeData = ScriptableObject.CreateInstance<VolumeDataType>();
 			if(Path.IsPathRooted(pathToVoxelDatabase))
