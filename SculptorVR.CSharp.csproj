@@ -183,6 +183,7 @@
     <Compile Include="Assets\Sculptor\HandBehaviour.cs" />
     <Compile Include="Assets\Sculptor\HandManager.cs" />
     <Compile Include="Assets\Sculptor\HandMenuControl.cs" />
+    <Compile Include="Assets\Sculptor\HandMenuObject.cs" />
     <Compile Include="Assets\Sculptor\HandMenuObjectControl.cs" />
     <Compile Include="Assets\Sculptor\HeadCanvasControl.cs" />
     <Compile Include="Assets\Sculptor\LoadConfig.cs" />
@@ -348,6 +349,7 @@
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_vqy5rjwa.tvr.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_vwv1dln8.zfm.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_y3ektuln.5ic.txt" />
+    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_y9d32csa.k2h.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\Show\BigTripod.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\Show\HappyStrongMan.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\Show\RainbowHeart.txt" />
