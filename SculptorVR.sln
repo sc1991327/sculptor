@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
+# Visual Studio 2013
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SculptorVR.CSharp.Plugins", "SculptorVR.CSharp.Plugins.csproj", "{9C55CF52-3751-3326-D6A3-83F14DE4B258}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SculptorVR.CSharp", "SculptorVR.CSharp.csproj", "{0AC1DB9E-8098-5461-1B34-C7A0A73010F9}"
