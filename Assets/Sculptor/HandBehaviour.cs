@@ -58,7 +58,8 @@ public class HandBehaviour : MonoBehaviour {
     private ControlPanel activePanel;
     private bool activePanelContinue;
     private OptModePanel activeOptModePanel;
-    private OptState activeState;
+    private OptState activeStateLeft;
+    private OptState activeStateRight;
     private OptShape activeShape;
     private DrawPos activeDrawPos;
     private HandOpt activeHandOpt;
@@ -85,7 +86,8 @@ public class HandBehaviour : MonoBehaviour {
     private bool checkOptContinueState = false;
     private bool checkPreOptContinueState = false;
 
-    private int singleHandOptMode = 10000;
+    private int singleHandOptModeLeft = 10000;
+    private int singleHandOptModeRight = 10000;
 
     private int CoroutineRange = 10000;
 
@@ -186,7 +188,8 @@ public class HandBehaviour : MonoBehaviour {
         activePanel = ControlPanel.empty;
         activePanelContinue = false;
         activeOptModePanel = OptModePanel.sculptor;
-        activeState = OptState.create;
+        activeStateLeft = OptState.create;
+        activeStateRight = OptState.create;
 
         activeInfoPanelTimes = 0;
 
@@ -392,13 +395,13 @@ public class HandBehaviour : MonoBehaviour {
 
         if (Axis1D_LB > ButtonFilter && breakTwiceHand == false)
         {
-            StateHandleOVRInput(DrawPos.left, activeMirror, true);
+            StateHandleOVRInput(DrawPos.left, activeStateLeft, activeMirror, true);
             preOptState = true;
         }
 
         if (Axis1D_RB > ButtonFilter && breakTwiceHand == false)
         {
-            StateHandleOVRInput(DrawPos.right, activeMirror, true);
+            StateHandleOVRInput(DrawPos.right, activeStateRight, activeMirror, true);
             preOptState = true;
         }
         
@@ -427,43 +430,54 @@ public class HandBehaviour : MonoBehaviour {
         }
 
         // shape
-        if ((Axis2D_LB_Left || Axis2D_RB_Left) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
+        if (Axis2D_LB_Left && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
-            singleHandOptMode--;
+            singleHandOptModeLeft--;
             buttonPreTime = Time.time;
         }
-
-        if ((Axis2D_LB_Right || Axis2D_RB_Right) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
+        else if (Axis2D_RB_Left && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
-            singleHandOptMode++;
+            singleHandOptModeRight--;
+            buttonPreTime = Time.time;
+        }
+        else if (Axis2D_LB_Right && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
+        {
+            singleHandOptModeLeft++;
+            buttonPreTime = Time.time;
+        }
+        else if (Axis2D_RB_Right && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
+        {
+            singleHandOptModeRight++;
             buttonPreTime = Time.time;
         }
     }
 
-    private void SwitchOptState()
+    private OptState SwitchOptState(int modenum, OptState tempOptState)
     {
-        switch (Mathf.Abs(singleHandOptMode) % 4)
+        switch (Mathf.Abs(modenum) % 4)
         {
             case 0:
-                activeState = OptState.create;
+                tempOptState = OptState.create;
                 break;
             case 1:
-                activeState = OptState.delete;
+                tempOptState = OptState.delete;
                 break;
             case 2:
-                activeState = OptState.smooth;
+                tempOptState = OptState.smooth;
                 break;
             case 3:
-                activeState = OptState.paint;
+                tempOptState = OptState.paint;
                 break;
         }
+        return tempOptState;
     }
 
     private void sculptorOptModePanelHandleOVRInput()
     {
         checkOptContinueState = false;
 
-        SwitchOptState();
+        activeStateLeft = SwitchOptState(singleHandOptModeLeft, activeStateLeft);
+        activeStateRight = SwitchOptState(singleHandOptModeRight, activeStateRight);
 
         if (Axis1D_LT > 0 && Axis1D_RT > 0)
         {
@@ -557,7 +571,7 @@ public class HandBehaviour : MonoBehaviour {
             // draw two hand result
             if (activeHandOpt == HandOpt.pairOpt)
             {
-                StateHandleOVRInput(DrawPos.twice, false, false);
+                StateHandleOVRInput(DrawPos.twice, OptState.create, false, false);
                 buttonPreTime = Time.time;
                 preOptState = false;
                 breakTwiceHand = true;
@@ -579,7 +593,8 @@ public class HandBehaviour : MonoBehaviour {
     {
         checkOptContinueState = false;
 
-        SwitchOptState();
+        activeStateLeft = SwitchOptState(singleHandOptModeLeft, activeStateLeft);
+        activeStateRight = SwitchOptState(singleHandOptModeRight, activeStateRight);
 
         // rotate
         float rotateValue = Time.time - preRotateTime;
@@ -600,7 +615,8 @@ public class HandBehaviour : MonoBehaviour {
     {
         checkOptContinueState = false;
 
-        SwitchOptState();
+        activeStateLeft = SwitchOptState(singleHandOptModeLeft, activeStateLeft);
+        activeStateRight = SwitchOptState(singleHandOptModeRight, activeStateRight);
 
         // only one hand operator
         HandleButtonInSculptor(false);
@@ -616,7 +632,8 @@ public class HandBehaviour : MonoBehaviour {
     {
         checkOptContinueState = false;
 
-        SwitchOptState();
+        activeStateLeft = SwitchOptState(singleHandOptModeLeft, activeStateLeft);
+        activeStateRight = SwitchOptState(singleHandOptModeRight, activeStateRight);
 
         if (Axis1D_LT > 0 && Axis1D_RT > 0)
         {
@@ -675,7 +692,7 @@ public class HandBehaviour : MonoBehaviour {
             // draw two hand result
             if (activeHandOpt == HandOpt.pairOpt)
             {
-                StateHandleOVRInput(DrawPos.twice, true, false);
+                StateHandleOVRInput(DrawPos.twice, OptState.create, true, false);
                 buttonPreTime = Time.time;
             }
 
@@ -857,9 +874,9 @@ public class HandBehaviour : MonoBehaviour {
 
     }
 
-    private void SingleStateHandleOVRInput(Vector3 tempDrawPosScaled, Vector3 tempDrawRotate, Vector3 tempDrawScale, bool activeMirror, bool useGPU)
+    private void SingleStateHandleOVRInput(OptState optState, Vector3 tempDrawPosScaled, Vector3 tempDrawRotate, Vector3 tempDrawScale, bool activeMirror, bool useGPU)
     {
-        switch (activeState)
+        switch (optState)
         {
             case OptState.create:
                 CreateVoxels(tempDrawPosScaled, tempDrawRotate, colorMaterialSet, (Vector3i)tempDrawScale, activeShape, activeMirror, useGPU);
@@ -878,7 +895,7 @@ public class HandBehaviour : MonoBehaviour {
         // network operator
         if (activeOptModePanel == OptModePanel.network)
         {
-            switch (activeState)
+            switch (optState)
             {
                 case OptState.create:
                     networkManager.SendOptMessage(tempDrawPosScaled, tempDrawRotate, colorMaterialSet, (Vector3i)tempDrawScale, activeShape, preOptState, activeMirror);
@@ -898,7 +915,7 @@ public class HandBehaviour : MonoBehaviour {
 
     }
 
-    private void StateHandleOVRInput(DrawPos drawPos, bool activeMirror, bool useGPU)
+    private void StateHandleOVRInput(DrawPos drawPos, OptState optState, bool activeMirror, bool useGPU)
     {
         checkOptContinueState = true;
 
@@ -932,7 +949,7 @@ public class HandBehaviour : MonoBehaviour {
             // local operator
             if (drawPos == DrawPos.twice)
             {
-                SingleStateHandleOVRInput(tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror, useGPU);
+                SingleStateHandleOVRInput(optState, tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror, useGPU);
             }
             else if (preOptState)
             {
@@ -941,19 +958,19 @@ public class HandBehaviour : MonoBehaviour {
                 {
                     foreach (Vector3 temp in tempDraw)
                     {
-                        SingleStateHandleOVRInput(temp, tempDrawRotate, tempDrawScale, activeMirror, useGPU);
+                        SingleStateHandleOVRInput(optState, temp, tempDrawRotate, tempDrawScale, activeMirror, useGPU);
                     }
                     preOptPos = tempDrawPosScaled;
                 }
                 else if (activeOptModePanel == OptModePanel.rotate)
                 {
-                    SingleStateHandleOVRInput(tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror, useGPU);
+                    SingleStateHandleOVRInput(optState, tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror, useGPU);
                     preOptPos = tempDrawPosScaled;
                 }
             }
             else
             {
-                SingleStateHandleOVRInput(tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror, useGPU);
+                SingleStateHandleOVRInput(optState, tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror, useGPU);
                 preOptPos = tempDrawPosScaled;
             }
 
@@ -1677,9 +1694,14 @@ public class HandBehaviour : MonoBehaviour {
         return activePanel;
     }
 
-    public OptState GetActiveState()
+    public OptState GetActiveStateLeft()
     {
-        return activeState;
+        return activeStateLeft;
+    }
+
+    public OptState GetActiveStateRight()
+    {
+        return activeStateRight;
     }
 
     public OptShape GetActiveShape()

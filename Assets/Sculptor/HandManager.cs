@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum HandObj { left, right };
+
 public class HandManager : MonoBehaviour {
 
     public GameObject HandObject;
@@ -11,7 +13,8 @@ public class HandManager : MonoBehaviour {
     public GameObject ModelPaintObject;
 
     private HandBehaviour handBehaviour;
-    private OptState activeState = OptState.create;
+    public HandObj activeHand;
+    public OptState activeState = OptState.create;
 
     // Use this for initialization
     void Start () {
@@ -28,7 +31,12 @@ public class HandManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        OptState tempState = handBehaviour.GetActiveState();
+        OptState tempState = handBehaviour.GetActiveStateRight();
+        if (activeHand == HandObj.left)
+        {
+            tempState = handBehaviour.GetActiveStateLeft();
+        }
+
         if (tempState != activeState)
         {
             switch (tempState)
