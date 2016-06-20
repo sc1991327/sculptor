@@ -6,9 +6,5 @@
 *.sln
 *.pdb
 *.exp
-*.vdb
 *.iobj
 *.vdb.meta
-/Record
-/Build_Vive
-

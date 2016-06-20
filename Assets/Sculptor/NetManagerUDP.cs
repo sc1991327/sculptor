@@ -16,10 +16,10 @@ public class NetManagerUDP : MonoBehaviour
     private LoadConfig loadConfig;
 
     public int myID;
-    private string myIP;
-    private string serverIP;
-    private int sendPort;
-    private int recvPort;
+    public string myIP;
+    public string serverIP;
+    public int sendPort;
+    public int recvPort;
 
     private static Socket clientUDP;
     private Thread recvThread;
