@@ -64,7 +64,8 @@ public class TrackAnchor : MonoBehaviour {
 
     private float twoHandObjSizeMax = 50;
 
-    private Color colorChose;
+    private Color colorChoseLeft = new Color(0.25f, 0.25f, 0.5f);
+    private Color colorChoseRight = new Color(0.25f, 0.25f, 0.5f);
 
     //private ControlPanel showColorCube = ControlPanel.empty;
     //private Vector3 ColorBlackPoint = new Vector3(0, 0, 0);
@@ -88,20 +89,20 @@ public class TrackAnchor : MonoBehaviour {
         rightHandChild = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         rightHandChild.transform.position = rightChildPosition;
         rightHandChild.transform.parent = rightHand.transform;
-        colorChose.a = colorChildAlpha;
-        rightHandChild.transform.GetComponent<Renderer>().material.color = colorChose;
+        colorChoseRight.a = colorChildAlpha;
+        rightHandChild.transform.GetComponent<Renderer>().material.color = colorChoseRight;
         rightHandChild.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
         leftHandChild = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         leftHandChild.transform.position = leftChildPosition;
         leftHandChild.transform.parent = leftHand.transform;
-        colorChose.a = colorChildAlpha;
-        leftHandChild.transform.GetComponent<Renderer>().material.color = colorChose;
+        colorChoseLeft.a = colorChildAlpha;
+        leftHandChild.transform.GetComponent<Renderer>().material.color = colorChoseLeft;
         leftHandChild.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
         twiceHand = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        colorChose.a = colorChildAlpha;
-        twiceHand.transform.GetComponent<Renderer>().material.color = colorChose;
+        colorChoseRight.a = colorChildAlpha;
+        twiceHand.transform.GetComponent<Renderer>().material.color = colorChoseRight;
         twiceHand.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
         //colorCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -209,14 +210,14 @@ public class TrackAnchor : MonoBehaviour {
 
             rightHandChild.transform.position = rightChildPosition;
             rightHandChild.transform.parent = rightHand.transform;
-            colorChose.a = 0.1f;
-            rightHandChild.transform.GetComponent<Renderer>().material.color = colorChose;
+            colorChoseRight.a = 0.1f;
+            rightHandChild.transform.GetComponent<Renderer>().material.color = colorChoseRight;
             rightHandChild.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
             leftHandChild.transform.position = leftChildPosition;
             leftHandChild.transform.parent = leftHand.transform;
-            colorChose.a = 0.1f;
-            leftHandChild.transform.GetComponent<Renderer>().material.color = colorChose;
+            colorChoseLeft.a = 0.1f;
+            leftHandChild.transform.GetComponent<Renderer>().material.color = colorChoseLeft;
             leftHandChild.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
             twiceHand.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
@@ -235,23 +236,36 @@ public class TrackAnchor : MonoBehaviour {
         }
 
         // color
-        Color tempcolor = handBehaviour.GetColorChose();
-        if (tempcolor != colorChose)
+        Color tempcolorleft = handBehaviour.GetColorChoseLeft();
+        if (tempcolorleft != colorChoseLeft)
         {
-            colorChose = tempcolor;
+            colorChoseLeft = tempcolorleft;
             if (activeHandOpt == HandOpt.pairOpt)
             {
-                colorChose.a = 0.1f;
-                leftHandChild.transform.GetComponent<Renderer>().material.color = colorChose;
-                rightHandChild.transform.GetComponent<Renderer>().material.color = colorChose;
-                colorChose.a = colorChildAlpha;
-                twiceHand.transform.GetComponent<Renderer>().material.color = colorChose;
+                colorChoseLeft.a = 0.1f;
+                leftHandChild.transform.GetComponent<Renderer>().material.color = colorChoseLeft;
             }
             else
             {
-                colorChose.a = colorChildAlpha;
-                leftHandChild.transform.GetComponent<Renderer>().material.color = colorChose;
-                rightHandChild.transform.GetComponent<Renderer>().material.color = colorChose;
+                colorChoseLeft.a = colorChildAlpha;
+                leftHandChild.transform.GetComponent<Renderer>().material.color = colorChoseLeft;
+            }
+        }
+        Color tempcolorright = handBehaviour.GetColorChoseRight();
+        if (tempcolorright != colorChoseRight)
+        {
+            colorChoseRight = tempcolorright;
+            if (activeHandOpt == HandOpt.pairOpt)
+            {
+                colorChoseRight.a = 0.1f;
+                rightHandChild.transform.GetComponent<Renderer>().material.color = colorChoseRight;
+                colorChoseRight.a = colorChildAlpha;
+                twiceHand.transform.GetComponent<Renderer>().material.color = colorChoseRight;
+            }
+            else
+            {
+                colorChoseRight.a = colorChildAlpha;
+                rightHandChild.transform.GetComponent<Renderer>().material.color = colorChoseRight;
             }
         }
 

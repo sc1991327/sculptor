@@ -31,7 +31,8 @@ public class HandBehaviour : MonoBehaviour {
     private ProceduralTerrainVolume proceduralTerrainVolume;
 
     private MaterialSet emptyMaterialSet;
-    private MaterialSet colorMaterialSet;
+    private MaterialSet colorMaterialSetLeft;
+    private MaterialSet colorMaterialSetRight;
 
     private Transform VoxelWorldTransform;
 
@@ -79,7 +80,8 @@ public class HandBehaviour : MonoBehaviour {
     private Vector3 leftChildPos = new Vector3(0, 0, 2);
     private Vector3 rightChildPos = new Vector3(0, 0, 2);
 
-    private Color colorChose = new Color(0.25f, 0.25f, 0.5f);
+    private Color colorChoseLeft = new Color(0.25f, 0.25f, 0.5f);
+    private Color colorChoseRight = new Color(0.25f, 0.25f, 0.5f);
 
     private float appStartTime;
 
@@ -179,11 +181,17 @@ public class HandBehaviour : MonoBehaviour {
         emptyMaterialSet.weights[0] = 0;
 
         // color control
-        colorMaterialSet = new MaterialSet();
-        colorMaterialSet.weights[3] = 127;    // light
-        colorMaterialSet.weights[2] = 64;  // b
-        colorMaterialSet.weights[1] = 32;  // g
-        colorMaterialSet.weights[0] = 32;  // r
+        colorMaterialSetLeft = new MaterialSet();
+        colorMaterialSetLeft.weights[3] = 127;    // light
+        colorMaterialSetLeft.weights[2] = 64;  // b
+        colorMaterialSetLeft.weights[1] = 32;  // g
+        colorMaterialSetLeft.weights[0] = 32;  // r
+
+        colorMaterialSetRight = new MaterialSet();
+        colorMaterialSetRight.weights[3] = 127;    // light
+        colorMaterialSetRight.weights[2] = 64;  // b
+        colorMaterialSetRight.weights[1] = 32;  // g
+        colorMaterialSetRight.weights[0] = 32;  // r
 
         activePanel = ControlPanel.empty;
         activePanelContinue = false;
@@ -304,7 +312,7 @@ public class HandBehaviour : MonoBehaviour {
         }
     }
 
-    private void colorPanelHandleOVRInput()
+    private void colorPanelHandleOVRInput(ref MaterialSet colormaterialset, ref Color handcolor)
     {
         // chose color
         int tempTouchID = handMenuObjectControl.GetTouchID();
@@ -312,18 +320,17 @@ public class HandBehaviour : MonoBehaviour {
         {
             Color tempcolor = handMenuObjectControl.colorColorList[tempTouchID];
 
-            if (colorChose != tempcolor)
+            if (handcolor != tempcolor)
             {
                 float temptotal = tempcolor.r + tempcolor.g + tempcolor.b;
-                colorMaterialSet.weights[3] = (byte)(int)Mathf.Clamp(255 - Mathf.Max(tempcolor.r, tempcolor.g, tempcolor.b) * 196, 7, 247);  // light
-                float colortotal = 255 - colorMaterialSet.weights[3];
-                colorMaterialSet.weights[2] = (byte)(int)(colortotal * (tempcolor.b / temptotal));  // b
-                colorMaterialSet.weights[1] = (byte)(int)(colortotal * (tempcolor.g / temptotal));  // g
-                colorMaterialSet.weights[0] = (byte)(int)(colortotal - colorMaterialSet.weights[2] - colorMaterialSet.weights[1]);  // r
-                colorChose = tempcolor;
+                colormaterialset.weights[3] = (byte)(int)Mathf.Clamp(255 - Mathf.Max(tempcolor.r, tempcolor.g, tempcolor.b) * 196, 7, 247);  // light
+                float colortotal = 255 - colormaterialset.weights[3];
+                colormaterialset.weights[2] = (byte)(int)(colortotal * (tempcolor.b / temptotal));  // b
+                colormaterialset.weights[1] = (byte)(int)(colortotal * (tempcolor.g / temptotal));  // g
+                colormaterialset.weights[0] = (byte)(int)(colortotal - colormaterialset.weights[2] - colormaterialset.weights[1]);  // r
+                handcolor = tempcolor;
             }
         }
-
     }
 
     private void replayPanelHandleOVRInput()
@@ -395,13 +402,13 @@ public class HandBehaviour : MonoBehaviour {
 
         if (Axis1D_LB > ButtonFilter && breakTwiceHand == false)
         {
-            StateHandleOVRInput(DrawPos.left, activeStateLeft, activeMirror, true);
+            StateHandleOVRInput(DrawPos.left, activeStateLeft, colorMaterialSetLeft, activeMirror, true);
             preOptState = true;
         }
 
         if (Axis1D_RB > ButtonFilter && breakTwiceHand == false)
         {
-            StateHandleOVRInput(DrawPos.right, activeStateRight, activeMirror, true);
+            StateHandleOVRInput(DrawPos.right, activeStateRight, colorMaterialSetRight, activeMirror, true);
             preOptState = true;
         }
         
@@ -571,7 +578,7 @@ public class HandBehaviour : MonoBehaviour {
             // draw two hand result
             if (activeHandOpt == HandOpt.pairOpt)
             {
-                StateHandleOVRInput(DrawPos.twice, OptState.create, false, false);
+                StateHandleOVRInput(DrawPos.twice, OptState.create, colorMaterialSetRight, false, false);
                 buttonPreTime = Time.time;
                 preOptState = false;
                 breakTwiceHand = true;
@@ -692,7 +699,7 @@ public class HandBehaviour : MonoBehaviour {
             // draw two hand result
             if (activeHandOpt == HandOpt.pairOpt)
             {
-                StateHandleOVRInput(DrawPos.twice, OptState.create, true, false);
+                StateHandleOVRInput(DrawPos.twice, OptState.create, colorMaterialSetRight, true, false);
                 buttonPreTime = Time.time;
             }
 
@@ -837,7 +844,14 @@ public class HandBehaviour : MonoBehaviour {
                 mainPanelHandleOVRInput();
                 break;
             case ControlPanel.color:
-                colorPanelHandleOVRInput();
+                if (activeDrawPos == DrawPos.left)
+                {
+                    colorPanelHandleOVRInput(ref colorMaterialSetLeft, ref colorChoseLeft);
+                }
+                else
+                {
+                    colorPanelHandleOVRInput(ref colorMaterialSetRight, ref colorChoseRight);
+                }
                 break;
             case ControlPanel.replay:
                 replayPanelHandleOVRInput();
@@ -874,12 +888,12 @@ public class HandBehaviour : MonoBehaviour {
 
     }
 
-    private void SingleStateHandleOVRInput(OptState optState, Vector3 tempDrawPosScaled, Vector3 tempDrawRotate, Vector3 tempDrawScale, bool activeMirror, bool useGPU)
+    private void SingleStateHandleOVRInput(OptState optState, Vector3 tempDrawPosScaled, Vector3 tempDrawRotate, Vector3 tempDrawScale, MaterialSet colorMaterial, bool activeMirror, bool useGPU)
     {
         switch (optState)
         {
             case OptState.create:
-                CreateVoxels(tempDrawPosScaled, tempDrawRotate, colorMaterialSet, (Vector3i)tempDrawScale, activeShape, activeMirror, useGPU);
+                CreateVoxels(tempDrawPosScaled, tempDrawRotate, colorMaterial, (Vector3i)tempDrawScale, activeShape, activeMirror, useGPU);
                 break;
             case OptState.delete:
                 DestroyVoxels(tempDrawPosScaled, tempDrawRotate, (Vector3i)tempDrawScale, activeShape, activeMirror, useGPU);
@@ -888,7 +902,7 @@ public class HandBehaviour : MonoBehaviour {
                 SmoothVoxels(tempDrawPosScaled, (Vector3i)tempDrawScale, activeMirror, useGPU);
                 break;
             case OptState.paint:
-                PaintVoxels(tempDrawPosScaled, colorMaterialSet, (Vector3i)tempDrawScale, 1, activeMirror);
+                PaintVoxels(tempDrawPosScaled, colorMaterial, (Vector3i)tempDrawScale, 1, activeMirror);
                 break;
         }
 
@@ -898,7 +912,7 @@ public class HandBehaviour : MonoBehaviour {
             switch (optState)
             {
                 case OptState.create:
-                    networkManager.SendOptMessage(tempDrawPosScaled, tempDrawRotate, colorMaterialSet, (Vector3i)tempDrawScale, activeShape, preOptState, activeMirror);
+                    networkManager.SendOptMessage(tempDrawPosScaled, tempDrawRotate, colorMaterial, (Vector3i)tempDrawScale, activeShape, preOptState, activeMirror);
                     break;
                 case OptState.delete:
                     MaterialSet emptyMaterialSet = new MaterialSet();
@@ -908,14 +922,14 @@ public class HandBehaviour : MonoBehaviour {
                     networkManager.SendOptMessage(tempDrawPosScaled, (Vector3i)tempDrawScale, preOptState, activeMirror);
                     break;
                 case OptState.paint:
-                    networkManager.SendOptMessage(tempDrawPosScaled, (Vector3i)tempDrawScale, colorMaterialSet, preOptState, activeMirror);
+                    networkManager.SendOptMessage(tempDrawPosScaled, (Vector3i)tempDrawScale, colorMaterial, preOptState, activeMirror);
                     break;
             }
         }
 
     }
 
-    private void StateHandleOVRInput(DrawPos drawPos, OptState optState, bool activeMirror, bool useGPU)
+    private void StateHandleOVRInput(DrawPos drawPos, OptState optState, MaterialSet colorMaterial, bool activeMirror, bool useGPU)
     {
         checkOptContinueState = true;
 
@@ -949,7 +963,7 @@ public class HandBehaviour : MonoBehaviour {
             // local operator
             if (drawPos == DrawPos.twice)
             {
-                SingleStateHandleOVRInput(optState, tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror, useGPU);
+                SingleStateHandleOVRInput(optState, tempDrawPosScaled, tempDrawRotate, tempDrawScale, colorMaterial, activeMirror, useGPU);
             }
             else if (preOptState)
             {
@@ -958,19 +972,19 @@ public class HandBehaviour : MonoBehaviour {
                 {
                     foreach (Vector3 temp in tempDraw)
                     {
-                        SingleStateHandleOVRInput(optState, temp, tempDrawRotate, tempDrawScale, activeMirror, useGPU);
+                        SingleStateHandleOVRInput(optState, temp, tempDrawRotate, tempDrawScale, colorMaterial, activeMirror, useGPU);
                     }
                     preOptPos = tempDrawPosScaled;
                 }
                 else if (activeOptModePanel == OptModePanel.rotate)
                 {
-                    SingleStateHandleOVRInput(optState, tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror, useGPU);
+                    SingleStateHandleOVRInput(optState, tempDrawPosScaled, tempDrawRotate, tempDrawScale, colorMaterial, activeMirror, useGPU);
                     preOptPos = tempDrawPosScaled;
                 }
             }
             else
             {
-                SingleStateHandleOVRInput(optState, tempDrawPosScaled, tempDrawRotate, tempDrawScale, activeMirror, useGPU);
+                SingleStateHandleOVRInput(optState, tempDrawPosScaled, tempDrawRotate, tempDrawScale, colorMaterial, activeMirror, useGPU);
                 preOptPos = tempDrawPosScaled;
             }
 
@@ -1810,8 +1824,13 @@ public class HandBehaviour : MonoBehaviour {
         }
     }
 
-    public Color GetColorChose()
+    public Color GetColorChoseLeft()
     {
-        return colorChose;
+        return colorChoseLeft;
+    }
+
+    public Color GetColorChoseRight()
+    {
+        return colorChoseRight;
     }
 }
