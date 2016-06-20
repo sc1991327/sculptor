@@ -3,7 +3,8 @@ using System.Collections;
 
 using Cubiquity;
 
-public class TrackAnchor : MonoBehaviour {
+public class TrackAnchor : MonoBehaviour
+{
 
     public GameObject BasicProceduralVolume = null;
 
@@ -72,7 +73,8 @@ public class TrackAnchor : MonoBehaviour {
     //private Color ColorChose = Color.white;
 
     // Use this for initialization
-    void Start () {
+    void Start ()
+    {
 
         terrainVolume = BasicProceduralVolume.GetComponent<TerrainVolume>();
 
@@ -159,7 +161,7 @@ public class TrackAnchor : MonoBehaviour {
         boundIndicator = proceduralTerrainVolume.gameObject.GetComponent<BoundIndicator>();
         boundIndicator.transform.GetComponent<Renderer>().material.mainTexture = boundTexture;
         Color tempBoundColor = boundIndicator.transform.GetComponent<Renderer>().material.color;
-        tempBoundColor.a = 0.3f;
+        tempBoundColor.a = 0.2f;
         boundIndicator.transform.GetComponent<Renderer>().material.color = tempBoundColor;
         boundIndicator.transform.GetComponent<Renderer>().material.shader = Shader.Find("Transparent/Diffuse");
 
@@ -181,7 +183,8 @@ public class TrackAnchor : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update () {
+    void Update ()
+    {
 
         optRange = handBehaviour.GetOptRange() / optRangeOrg;
 
@@ -190,22 +193,22 @@ public class TrackAnchor : MonoBehaviour {
         {
             switch (nowShape)
             {
-                case OptShape.cube:
-                    UnityEngine.Object.Destroy(twiceHand.gameObject);
-                    twiceHand = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    break;
-                case OptShape.sphere:
-                    UnityEngine.Object.Destroy(twiceHand.gameObject);
-                    twiceHand = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                    break;
-                case OptShape.cylinder:
-                    UnityEngine.Object.Destroy(twiceHand.gameObject);
-                    twiceHand = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                    break;
-                case OptShape.capsule:
-                    UnityEngine.Object.Destroy(twiceHand.gameObject);
-                    twiceHand = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-                    break;
+            case OptShape.cube:
+                UnityEngine.Object.Destroy(twiceHand.gameObject);
+                twiceHand = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                break;
+            case OptShape.sphere:
+                UnityEngine.Object.Destroy(twiceHand.gameObject);
+                twiceHand = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                break;
+            case OptShape.cylinder:
+                UnityEngine.Object.Destroy(twiceHand.gameObject);
+                twiceHand = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                break;
+            case OptShape.capsule:
+                UnityEngine.Object.Destroy(twiceHand.gameObject);
+                twiceHand = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                break;
             }
 
             rightHandChild.transform.position = rightChildPosition;
@@ -275,36 +278,36 @@ public class TrackAnchor : MonoBehaviour {
         {
             switch (nowMode)
             {
-                case OptModePanel.sculptor:
-                    boundIndicator.Show();
-                    sculptorCenterObject.SetActive(true);
-                    rotateCenterObject.SetActive(false);
-                    mirrorPlane.SetActive(false);
-                    break;
-                case OptModePanel.mirror:
-                    boundIndicator.Hide();
-                    sculptorCenterObject.SetActive(false);
-                    rotateCenterObject.SetActive(false);
-                    mirrorPlane.SetActive(true);
-                    break;
-                case OptModePanel.rotate:
-                    boundIndicator.Hide();
-                    sculptorCenterObject.SetActive(false);
-                    rotateCenterObject.SetActive(true);
-                    mirrorPlane.SetActive(false);
-                    break;
-                case OptModePanel.network:
-                    boundIndicator.Show();
-                    sculptorCenterObject.SetActive(false);
-                    rotateCenterObject.SetActive(false);
-                    mirrorPlane.SetActive(false);
-                    break;
-                case OptModePanel.replay:
-                    boundIndicator.Show();
-                    sculptorCenterObject.SetActive(false);
-                    rotateCenterObject.SetActive(false);
-                    mirrorPlane.SetActive(false);
-                    break;
+            case OptModePanel.sculptor:
+                boundIndicator.Show();
+                sculptorCenterObject.SetActive(true);
+                rotateCenterObject.SetActive(false);
+                mirrorPlane.SetActive(false);
+                break;
+            case OptModePanel.mirror:
+                boundIndicator.Hide();
+                sculptorCenterObject.SetActive(false);
+                rotateCenterObject.SetActive(false);
+                mirrorPlane.SetActive(true);
+                break;
+            case OptModePanel.rotate:
+                boundIndicator.Hide();
+                sculptorCenterObject.SetActive(false);
+                rotateCenterObject.SetActive(true);
+                mirrorPlane.SetActive(false);
+                break;
+            case OptModePanel.network:
+                boundIndicator.Show();
+                sculptorCenterObject.SetActive(false);
+                rotateCenterObject.SetActive(false);
+                mirrorPlane.SetActive(false);
+                break;
+            case OptModePanel.replay:
+                boundIndicator.Show();
+                sculptorCenterObject.SetActive(false);
+                rotateCenterObject.SetActive(false);
+                mirrorPlane.SetActive(false);
+                break;
             }
 
             activeMode = nowMode;
@@ -356,7 +359,7 @@ public class TrackAnchor : MonoBehaviour {
         }
         activeHandOpt = tempActiveHandOpt;
 
-        // color 
+        // color
         /*ControlPanel tempShowColorCube = handBehaviour.GetActivePanel();
         if (tempShowColorCube != showColorCube)
         {
@@ -415,7 +418,7 @@ public class TrackAnchor : MonoBehaviour {
     {
         return rightHandChild.transform.position;
     }
-    
+
     public Vector3 GetLeftChildPosition()
     {
         return leftHandChild.transform.position;

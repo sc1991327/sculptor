@@ -14,7 +14,7 @@ using Cubiquity;
 [ExecuteInEditMode]
 public class ProceduralTerrainVolume : MonoBehaviour
 {
-    public int voxelRadius = 90;
+    public int voxelRadius = 128;
     public float voxelScale = 0.01f;
 
     private float voxelRadiusDistance;
@@ -26,7 +26,7 @@ public class ProceduralTerrainVolume : MonoBehaviour
 
     // Use this for initialization
     void Start()
-	{
+    {
         voxelRadiusDistance = (float)(voxelRadius) * voxelScale;
         transform.localScale = new Vector3(voxelScale, voxelScale, voxelScale);
 
@@ -49,7 +49,7 @@ public class ProceduralTerrainVolume : MonoBehaviour
             activeOptModePanel = temp;
         }
 
-        
+
     }
 
     public void LoadVDBFile(string loadLocation)
@@ -172,7 +172,7 @@ public class ProceduralTerrainVolume : MonoBehaviour
                     altitude = (altitude * 2.0f) - 1.0f;
 
                     // Subtract the altitude from the noise. This adds
-                    // material near the ground and subtracts it higher up.					
+                    // material near the ground and subtracts it higher up.
                     simplexNoiseValue -= altitude;
 
                     // After combining our noise value and our altitude we now have values between -2.0 and 2.0.

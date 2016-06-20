@@ -1,5 +1,5 @@
-userNumber=0
+userNumber=1
 usetIP=127.0.0.1
-serverIP=10.32.93.177
+serverIP=10.32.92.116
 sendPort=8885
 recvPort=8886

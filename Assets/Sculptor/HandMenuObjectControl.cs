@@ -157,42 +157,42 @@ public class HandMenuObjectControl : MonoBehaviour
         {
             switch (nowPanel)
             {
-                case ControlPanel.empty:
-                    menuPoints = 0;
-                    DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
-                    UpdateMenuCenterPos(nowPos);
-                    DrawCircleMenuObj(menuPoints);
-                    break;
-                case ControlPanel.main:
-                    menuPoints = mainMenuObjectList.Count;
-                    DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
-                    UpdateMenuCenterPos(nowPos);
-                    DrawCircleMenuObj(mainMenuObjectList);
-                    break;
-                case ControlPanel.color:
-                    DrawColorPanelPoints(new Vector3(0, 0, 0));
-                    UpdateMenuCenterPos(nowPos);
-                    DrawColorPanel();
-                    break;
-                case ControlPanel.replay:
-                    // use recordBehaviour fileNames size to create menu objects.
-                    menuPoints = Mathf.Clamp(recordBehaviour.recordFileNames.Count, 0, 30);
-                    DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
-                    UpdateMenuCenterPos(nowPos);
-                    DrawCircleMenuObj(menuPoints, recordBehaviour.recordFileNames);
-                    break;
-                case ControlPanel.load:
-                    menuPoints = Mathf.Clamp(recordBehaviour.loadFileNames.Count, 0, 30);
-                    DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
-                    UpdateMenuCenterPos(nowPos);
-                    DrawCircleMenuObj(menuPoints, recordBehaviour.loadFileNames);
-                    break;
-                case ControlPanel.high:
-                    menuPoints = editMenuObjectList.Count;
-                    DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
-                    UpdateMenuCenterPos(nowPos);
-                    DrawCircleMenuObj(editMenuObjectList);
-                    break;
+            case ControlPanel.empty:
+                menuPoints = 0;
+                DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
+                UpdateMenuCenterPos(nowPos);
+                DrawCircleMenuObj(menuPoints);
+                break;
+            case ControlPanel.main:
+                menuPoints = mainMenuObjectList.Count;
+                DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
+                UpdateMenuCenterPos(nowPos);
+                DrawCircleMenuObj(mainMenuObjectList);
+                break;
+            case ControlPanel.color:
+                DrawColorPanelPoints(new Vector3(0, 0, 0));
+                UpdateMenuCenterPos(nowPos);
+                DrawColorPanel();
+                break;
+            case ControlPanel.replay:
+                // use recordBehaviour fileNames size to create menu objects.
+                menuPoints = Mathf.Clamp(recordBehaviour.recordFileNames.Count, 0, 30);
+                DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
+                UpdateMenuCenterPos(nowPos);
+                DrawCircleMenuObj(menuPoints, recordBehaviour.recordFileNames);
+                break;
+            case ControlPanel.load:
+                menuPoints = Mathf.Clamp(recordBehaviour.loadFileNames.Count, 0, 30);
+                DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
+                UpdateMenuCenterPos(nowPos);
+                DrawCircleMenuObj(menuPoints, recordBehaviour.loadFileNames);
+                break;
+            case ControlPanel.high:
+                menuPoints = editMenuObjectList.Count;
+                DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
+                UpdateMenuCenterPos(nowPos);
+                DrawCircleMenuObj(editMenuObjectList);
+                break;
             }
             activePanel = nowPanel;
             if(activePanel == ControlPanel.empty)
@@ -200,7 +200,7 @@ public class HandMenuObjectControl : MonoBehaviour
                 PlayHideMenuAnim();
             }
             else
-            {     
+            {
                 PlayShowMenuAnim();
             }
         }
@@ -378,7 +378,7 @@ public class HandMenuObjectControl : MonoBehaviour
             tempObj.SetActive(true);
             tempObj.transform.parent = MenuCenterObject.transform;
             tempObj.transform.localPosition = MenuChildLocalPos[oi];
-            if (vrMode == VRMode.SteamVR)
+            //if (vrMode == VRMode.SteamVR)
             {
                 tempObj.transform.localEulerAngles = new Vector3(0, 180, 0);
             }
@@ -400,7 +400,7 @@ public class HandMenuObjectControl : MonoBehaviour
             tempObj.AddComponent<TextMesh>();
             tempObj.transform.parent = MenuCenterObject.transform;
             tempObj.transform.localScale = new Vector3(MenuStartLocalScale, MenuStartLocalScale, MenuStartLocalScale);
-            if (vrMode == VRMode.SteamVR)
+            //if (vrMode == VRMode.SteamVR)
             {
                 tempObj.transform.localEulerAngles = new Vector3(0, 180, 0);
             }

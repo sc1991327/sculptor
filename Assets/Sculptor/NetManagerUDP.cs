@@ -24,6 +24,7 @@ public class NetManagerUDP : MonoBehaviour
     private static Socket clientUDP;
     private Thread recvThread;
 
+    public GameObject cameraManagerObject = null;
     public GameObject BasicProceduralVolume = null;
     public GameObject handObject = null;
 
@@ -43,10 +44,14 @@ public class NetManagerUDP : MonoBehaviour
 
     private float PreSendTime;
 
+    private CameraManager cameraManager;
     private TerrainVolume terrainVolume;
+    private ProceduralTerrainVolume proceduralTerrainVolume;
     private HandBehaviour handBehaviour;
     private int optRangeOrg;
     private OptModePanel activeOptModePanel;
+
+    private float volumeDistance = 0;
 
     private static object lockObj = new object();
     private bool netDataStreamUse;
@@ -92,8 +97,11 @@ public class NetManagerUDP : MonoBehaviour
         sendPort = loadConfig.sendPort;
         recvPort = loadConfig.recvPort;
 
+        cameraManager = cameraManagerObject.GetComponent<CameraManager>();
         handBehaviour = handObject.GetComponent<HandBehaviour>();
         terrainVolume = BasicProceduralVolume.GetComponent<TerrainVolume>();
+        proceduralTerrainVolume = BasicProceduralVolume.GetComponent<ProceduralTerrainVolume>();
+        volumeDistance = proceduralTerrainVolume.GetVoxelRadiusDistance();
 
         netDataStreamUse = true;
         netDataStream1 = new List<NetData>();
@@ -234,7 +242,8 @@ public class NetManagerUDP : MonoBehaviour
         }
     }
 
-    void OnApplicationQuit() {
+    void OnApplicationQuit()
+    {
 
         recvThread.Abort();
         if (clientUDP != null)
@@ -287,6 +296,8 @@ public class NetManagerUDP : MonoBehaviour
 
     private void NetDataHandling(NetData netData)
     {
+        VRMode vrmode = cameraManager.GetVRMode();
+
         int userID = netData.ClientID;
         if (userID != myID)
         {
@@ -294,54 +305,78 @@ public class NetManagerUDP : MonoBehaviour
             NetMark userPos = (NetMark)netData.ClientNetMark;
             switch (userPos)
             {
-                case NetMark.headpos:
-                    HeadTransPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
+            case NetMark.headpos:
+                if (vrmode == VRMode.OculusVR)
+                {
+                    HeadTransPos = new Vector3(netData.PosX, netData.PosY - volumeDistance, netData.PosZ);
                     HeadTransRot = new Vector3(netData.RotX, netData.RotY, netData.RotZ);
-                    break;
+                }
+                else
+                {
+                    HeadTransPos = new Vector3(netData.PosX, netData.PosY + volumeDistance, netData.PosZ);
+                    HeadTransRot = new Vector3(netData.RotX, netData.RotY, netData.RotZ);
+                }
+                break;
 
-                case NetMark.lefthandpos:
-                    LeftHandTransPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
+            case NetMark.lefthandpos:
+                if (vrmode == VRMode.OculusVR)
+                {
+                    LeftHandTransPos = new Vector3(netData.PosX, netData.PosY - volumeDistance, netData.PosZ);
                     LeftHandTransRot = new Vector3(netData.RotX, netData.RotY, netData.RotZ);
-                    break;
+                }
+                else
+                {
+                    LeftHandTransPos = new Vector3(netData.PosX, netData.PosY + volumeDistance, netData.PosZ);
+                    LeftHandTransRot = new Vector3(netData.RotX, netData.RotY, netData.RotZ);
+                }
+                break;
 
-                case NetMark.righthandpos:
-                    RightHandTransPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
+            case NetMark.righthandpos:
+                if (vrmode == VRMode.OculusVR)
+                {
+                    RightHandTransPos = new Vector3(netData.PosX, netData.PosY - volumeDistance, netData.PosZ);
                     RightHandTransRot = new Vector3(netData.RotX, netData.RotY, netData.RotZ);
-                    break;
+                }
+                else
+                {
+                    RightHandTransPos = new Vector3(netData.PosX, netData.PosY + volumeDistance, netData.PosZ);
+                    RightHandTransRot = new Vector3(netData.RotX, netData.RotY, netData.RotZ);
+                }
+                break;
 
-                case NetMark.sculptoropt:
-                    NetVCPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
-                    NetVCRot = new Vector3(netData.RotX, netData.RotY, netData.RotZ);
-                    NetVCRng = new Vector3i((int)netData.SclX, (int)netData.SclY, (int)netData.SclZ);
-                    NetVCMaterialSet.weights[0] = (byte)netData.M0;
-                    NetVCMaterialSet.weights[1] = (byte)netData.M1;
-                    NetVCMaterialSet.weights[2] = (byte)netData.M2;
-                    NetVCMaterialSet.weights[3] = (byte)netData.M3;
-                    NetVCOpt = (OptShape)netData.Optshape;
-                    NetVCContinue = netData.CalcContinue;
-                    NetVCMirror = netData.ActiveMirror;
-                    doNetVC = true;
-                    break;
+            case NetMark.sculptoropt:
+                NetVCPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
+                NetVCRot = new Vector3(netData.RotX, netData.RotY, netData.RotZ);
+                NetVCRng = new Vector3i((int)netData.SclX, (int)netData.SclY, (int)netData.SclZ);
+                NetVCMaterialSet.weights[0] = (byte)netData.M0;
+                NetVCMaterialSet.weights[1] = (byte)netData.M1;
+                NetVCMaterialSet.weights[2] = (byte)netData.M2;
+                NetVCMaterialSet.weights[3] = (byte)netData.M3;
+                NetVCOpt = (OptShape)netData.Optshape;
+                NetVCContinue = netData.CalcContinue;
+                NetVCMirror = netData.ActiveMirror;
+                doNetVC = true;
+                break;
 
-                case NetMark.smoothopt:
-                    NetVSPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
-                    NetVSRng = new Vector3i((int)netData.SclX, (int)netData.SclY, (int)netData.SclZ);
-                    NetVSContinue = netData.CalcContinue;
-                    NetVSMirror = netData.ActiveMirror;
-                    doNetVS = true;
-                    break;
+            case NetMark.smoothopt:
+                NetVSPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
+                NetVSRng = new Vector3i((int)netData.SclX, (int)netData.SclY, (int)netData.SclZ);
+                NetVSContinue = netData.CalcContinue;
+                NetVSMirror = netData.ActiveMirror;
+                doNetVS = true;
+                break;
 
-                case NetMark.paintopt:
-                    NetVPPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
-                    NetVPRng = new Vector3i((int)netData.SclX, (int)netData.SclY, (int)netData.SclZ);
-                    NetVPMaterialSet.weights[0] = (byte)netData.M0;
-                    NetVPMaterialSet.weights[1] = (byte)netData.M1;
-                    NetVPMaterialSet.weights[2] = (byte)netData.M2;
-                    NetVPMaterialSet.weights[3] = (byte)netData.M3;
-                    NetVPContinue = netData.CalcContinue;
-                    NetVPMirror = netData.ActiveMirror;
-                    doNetVP = true;
-                    break;
+            case NetMark.paintopt:
+                NetVPPos = new Vector3(netData.PosX, netData.PosY, netData.PosZ);
+                NetVPRng = new Vector3i((int)netData.SclX, (int)netData.SclY, (int)netData.SclZ);
+                NetVPMaterialSet.weights[0] = (byte)netData.M0;
+                NetVPMaterialSet.weights[1] = (byte)netData.M1;
+                NetVPMaterialSet.weights[2] = (byte)netData.M2;
+                NetVPMaterialSet.weights[3] = (byte)netData.M3;
+                NetVPContinue = netData.CalcContinue;
+                NetVPMirror = netData.ActiveMirror;
+                doNetVP = true;
+                break;
             }
         }
 
@@ -351,7 +386,7 @@ public class NetManagerUDP : MonoBehaviour
     {
         strInput = strInput.Trim();
         if ((strInput.StartsWith("{") && strInput.EndsWith("}")) || //For object
-            (strInput.StartsWith("[") && strInput.EndsWith("]"))) //For array
+                (strInput.StartsWith("[") && strInput.EndsWith("]"))) //For array
         {
             try
             {

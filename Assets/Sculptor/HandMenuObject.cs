@@ -6,7 +6,8 @@ using DG.Tweening;
 public enum MenuPanel { empty, main, color, replay, load, edit };
 public enum MenuPos { left, right };
 
-public class HandMenuObject : MonoBehaviour {
+public class HandMenuObject : MonoBehaviour
+{
 
     // Use to recognize VR device
     // Object have different local object coordinate in Oculus/Vive Camera Use, So we need to recognize.
@@ -206,41 +207,41 @@ public class HandMenuObject : MonoBehaviour {
             menuPanel = nowPanel;
             switch (menuPanel)
             {
-                case MenuPanel.empty:
-                    menuPoints = 0;
-                    DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
-                    UpdateMenuCenterPos(menuPos);
-                    DrawCircleMenuObj(menuPoints);
-                    break;
-                case MenuPanel.main:
-                    menuPoints = mainMenuObjectList.Count;
-                    DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
-                    UpdateMenuCenterPos(menuPos);
-                    DrawCircleMenuObj(mainMenuObjectList);
-                    break;
-                case MenuPanel.color:
-                    DrawColorPanelPoints(new Vector3(0, 0, 0));
-                    UpdateMenuCenterPos(menuPos);
-                    DrawColorPanel();
-                    break;
-                case MenuPanel.replay:
-                    menuPoints = 0;
-                    DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
-                    UpdateMenuCenterPos(menuPos);
-                    DrawCircleMenuObj(menuPoints);
-                    break;
-                case MenuPanel.load:
-                    menuPoints = 0;
-                    DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
-                    UpdateMenuCenterPos(menuPos);
-                    DrawCircleMenuObj(menuPoints);
-                    break;
-                case MenuPanel.edit:
-                    menuPoints = editMenuObjectList.Count;
-                    DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
-                    UpdateMenuCenterPos(menuPos);
-                    DrawCircleMenuObj(editMenuObjectList);
-                    break;
+            case MenuPanel.empty:
+                menuPoints = 0;
+                DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
+                UpdateMenuCenterPos(menuPos);
+                DrawCircleMenuObj(menuPoints);
+                break;
+            case MenuPanel.main:
+                menuPoints = mainMenuObjectList.Count;
+                DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
+                UpdateMenuCenterPos(menuPos);
+                DrawCircleMenuObj(mainMenuObjectList);
+                break;
+            case MenuPanel.color:
+                DrawColorPanelPoints(new Vector3(0, 0, 0));
+                UpdateMenuCenterPos(menuPos);
+                DrawColorPanel();
+                break;
+            case MenuPanel.replay:
+                menuPoints = 0;
+                DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
+                UpdateMenuCenterPos(menuPos);
+                DrawCircleMenuObj(menuPoints);
+                break;
+            case MenuPanel.load:
+                menuPoints = 0;
+                DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
+                UpdateMenuCenterPos(menuPos);
+                DrawCircleMenuObj(menuPoints);
+                break;
+            case MenuPanel.edit:
+                menuPoints = editMenuObjectList.Count;
+                DrawCirclePoints(menuPoints, MenuChildRadio, new Vector3(0, 0, 0));
+                UpdateMenuCenterPos(menuPos);
+                DrawCircleMenuObj(editMenuObjectList);
+                break;
             }
             if (menuPanel == MenuPanel.empty)
             {
@@ -262,30 +263,30 @@ public class HandMenuObject : MonoBehaviour {
             {
                 switch (TouchID)
                 {
-                    case 0:
-                        nowPanel = MenuPanel.color;
-                        break;
-                    case 1:
-                        nowPanel = MenuPanel.edit;
-                        break;
-                    case 2:
-                        nowPanel = MenuPanel.empty;
-                        break;
-                    case 3:
-                        nowPanel = MenuPanel.empty;
-                        break;
-                    case 4:
-                        nowPanel = MenuPanel.empty;
-                        break;
-                    case 5:
-                        nowPanel = MenuPanel.empty;
-                        break;
-                    case 6:
-                        nowPanel = MenuPanel.empty;
-                        break;
-                    case 7:
-                        nowPanel = MenuPanel.empty;
-                        break;
+                case 0:
+                    nowPanel = MenuPanel.color;
+                    break;
+                case 1:
+                    nowPanel = MenuPanel.edit;
+                    break;
+                case 2:
+                    nowPanel = MenuPanel.empty;
+                    break;
+                case 3:
+                    nowPanel = MenuPanel.empty;
+                    break;
+                case 4:
+                    nowPanel = MenuPanel.empty;
+                    break;
+                case 5:
+                    nowPanel = MenuPanel.empty;
+                    break;
+                case 6:
+                    nowPanel = MenuPanel.empty;
+                    break;
+                case 7:
+                    nowPanel = MenuPanel.empty;
+                    break;
                 }
             }
 
@@ -445,7 +446,7 @@ public class HandMenuObject : MonoBehaviour {
             tempObj.SetActive(true);
             tempObj.transform.parent = MenuCenterObject.transform;
             tempObj.transform.localPosition = MenuChildLocalPos[oi];
-            if (vrMode == VRMode.SteamVR)
+            //if (vrMode == VRMode.SteamVR)
             {
                 tempObj.transform.localEulerAngles = new Vector3(0, 180, 0);
             }
@@ -468,7 +469,7 @@ public class HandMenuObject : MonoBehaviour {
             tempObj.AddComponent<TextMesh>();
             tempObj.transform.parent = MenuCenterObject.transform;
             tempObj.transform.localScale = new Vector3(MenuStartLocalScale, MenuStartLocalScale, MenuStartLocalScale);
-            if (vrMode == VRMode.SteamVR)
+            //if (vrMode == VRMode.SteamVR)
             {
                 tempObj.transform.localEulerAngles = new Vector3(0, 180, 0);
             }
