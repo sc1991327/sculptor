@@ -20,7 +20,10 @@ public class ProceduralTerrainVolume : MonoBehaviour
     private float voxelRadiusDistance;
 
     public GameObject HandObject = null;
+    public GameObject CameraObject = null;
 
+    private CameraManager cameraManager;
+    private ProceduralTerrainVolume proceduralTerrainVolume;
     private HandBehaviour handBehaviour;
     private OptModePanel activeOptModePanel;
 
@@ -30,12 +33,22 @@ public class ProceduralTerrainVolume : MonoBehaviour
         voxelRadiusDistance = (float)(voxelRadius) * voxelScale;
         transform.localScale = new Vector3(voxelScale, voxelScale, voxelScale);
 
+        cameraManager = CameraObject.GetComponent<CameraManager>();
         handBehaviour = HandObject.GetComponent<HandBehaviour>();
+
+        proceduralTerrainVolume = GetComponent<ProceduralTerrainVolume>();
 
         //ProceduralTerrain();
         //ProceduralSphere();
         ProceduralVoxelVR();
         //LoadVDBFile();
+
+        VRMode vrmode = cameraManager.GetVRMode();
+        if (vrmode == VRMode.SteamVR)
+        {
+            transform.position = new Vector3(0, proceduralTerrainVolume.GetVoxelRadiusDistance(), 0);
+        }
+
     }
 
     void Update()

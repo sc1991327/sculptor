@@ -1,4 +1,4 @@
-userNumber=1
+userNumber=0
 usetIP=127.0.0.1
 serverIP=10.32.92.116
 sendPort=8885
