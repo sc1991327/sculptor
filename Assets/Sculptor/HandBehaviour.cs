@@ -753,7 +753,8 @@ public class HandBehaviour : MonoBehaviour {
                     OptShape optshape = (OptShape)tempVSO.Optshape;
                     bool activeMirror = tempVSO.ActiveMirror;
 
-                    StartCoroutine(VoxelSetting(Pos, RotateEuler, materialSet, range, optshape, activeMirror));
+                    VoxelSettingGPU(Pos, RotateEuler, materialSet, range, optshape, activeMirror);
+                    //StartCoroutine(VoxelSetting(Pos, RotateEuler, materialSet, range, optshape, activeMirror));
                 }
                 else if (tempVSO.Type == 2)
                 {
@@ -761,7 +762,8 @@ public class HandBehaviour : MonoBehaviour {
                     Vector3i range = new Vector3i(tempVSO.RangeX, tempVSO.RangeY, tempVSO.RangeZ);
                     bool activeMirror = tempVSO.ActiveMirror;
 
-                    StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
+                    VoxelSmoothingGPU(Pos, range, activeMirror);
+                    //StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
                 }
                 else
                 {
@@ -1792,14 +1794,16 @@ public class HandBehaviour : MonoBehaviour {
             {
                 foreach (Vector3 temp in tempDraw)
                 {
-                    StartCoroutine(VoxelSetting(temp, RotateEular, materialSet, range, optshape, activeMirror));
+                    VoxelSettingGPU(temp, RotateEular, materialSet, range, optshape, activeMirror);
+                    //StartCoroutine(VoxelSetting(temp, RotateEular, materialSet, range, optshape, activeMirror));
                 }
                 preNetOptPos = Pos;
             }
         }
         else
         {
-            StartCoroutine(VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror));
+            VoxelSettingGPU(Pos, RotateEular, materialSet, range, optshape, activeMirror);
+            //StartCoroutine(VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror));
             preNetOptPos = Pos;
         }
     }
@@ -1813,14 +1817,16 @@ public class HandBehaviour : MonoBehaviour {
             {
                 foreach (Vector3 temp in tempDraw)
                 {
-                    StartCoroutine(VoxelSmoothing(temp, range, activeMirror));
+                    VoxelSmoothingGPU(temp, range, activeMirror);
+                    //StartCoroutine(VoxelSmoothing(temp, range, activeMirror));
                 }
                 preNetOptPos = Pos;
             }
         }
         else
         {
-            StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
+            VoxelSmoothingGPU(Pos, range, activeMirror);
+            //StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
             preNetOptPos = Pos;
         }
     }
