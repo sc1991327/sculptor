@@ -70,7 +70,8 @@ public class HandBehaviour : MonoBehaviour {
     private float buttonPreTime = 0.0f;
     private float ButtonTimeControlSingle = 0.3f;
 
-    private int optRange = 6;
+    private int optRangeLeft = 6;
+    private int optRangeRight = 6;
     private int optRangeSingleHandMax = 10;
     private int optRangeSingleHandMin = 4;
 
@@ -419,19 +420,35 @@ public class HandBehaviour : MonoBehaviour {
         }
 
         // size
-        if ((Axis2D_LB_Up || Axis2D_RB_Up) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
+        if ((Axis2D_LB_Up) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
-            if (optRange < optRangeSingleHandMax)
+            if (optRangeLeft < optRangeSingleHandMax)
             {
-                optRange += 2;
+                optRangeLeft += 2;
             }
             buttonPreTime = Time.time;
         }
-        if ((Axis2D_LB_Down || Axis2D_RB_Down) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
+        else if ((Axis2D_RB_Up) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
         {
-            if (optRange > optRangeSingleHandMin)
+            if (optRangeRight < optRangeSingleHandMax)
             {
-                optRange -= 2;
+                optRangeRight += 2;
+            }
+            buttonPreTime = Time.time;
+        }
+        else if ((Axis2D_LB_Down) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
+        {
+            if (optRangeLeft > optRangeSingleHandMin)
+            {
+                optRangeLeft -= 2;
+            }
+            buttonPreTime = Time.time;
+        }
+        else if ((Axis2D_RB_Down) && (Time.time - buttonPreTime) > ButtonTimeControlSingle)
+        {
+            if (optRangeRight > optRangeSingleHandMin)
+            {
+                optRangeRight -= 2;
             }
             buttonPreTime = Time.time;
         }
@@ -944,13 +961,13 @@ public class HandBehaviour : MonoBehaviour {
             {
                 tempDrawPosScaled = leftChildPositionScaled;
                 tempDrawRotate = leftRotateEuler;
-                tempDrawScale = new Vector3(optRange / 2, optRange / 2, optRange / 2);
+                tempDrawScale = new Vector3(optRangeLeft / 2, optRangeLeft / 2, optRangeLeft / 2);
             }
             else if (drawPos == DrawPos.right)
             {
                 tempDrawPosScaled = rightChildPositionScaled;
                 tempDrawRotate = rightRotateEuler;
-                tempDrawScale = new Vector3(optRange / 2, optRange / 2, optRange / 2);
+                tempDrawScale = new Vector3(optRangeRight / 2, optRangeRight / 2, optRangeRight / 2);
             }
             else
             {
@@ -1698,9 +1715,14 @@ public class HandBehaviour : MonoBehaviour {
         return activeInfoPanelTimes;
     }
 
-    public int GetOptRange()
+    public int GetOptRangeLeft()
     {
-        return optRange;
+        return optRangeLeft;
+    }
+
+    public int GetOptRangeRight()
+    {
+        return optRangeRight;
     }
 
     public ControlPanel GetActivePanel()

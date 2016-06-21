@@ -48,7 +48,8 @@ public class NetManagerUDP : MonoBehaviour
     private TerrainVolume terrainVolume;
     private ProceduralTerrainVolume proceduralTerrainVolume;
     private HandBehaviour handBehaviour;
-    private int optRangeOrg;
+    private int optRangeLeftOrg;
+    private int optRangeRightOrg;
     private OptModePanel activeOptModePanel;
 
     private float volumeDistance = 0;
@@ -108,7 +109,8 @@ public class NetManagerUDP : MonoBehaviour
         netDataStream2 = new List<NetData>();
         ConnectToUDPServer();
 
-        optRangeOrg = handBehaviour.GetOptRange();
+        optRangeLeftOrg = handBehaviour.GetOptRangeLeft();
+        optRangeRightOrg = handBehaviour.GetOptRangeRight();
 
         headAnchorRecv.SetActive(false);
         leftHandAnchorRecv.SetActive(false);
@@ -212,15 +214,15 @@ public class NetManagerUDP : MonoBehaviour
 
             headAnchorRecv.transform.position = HeadTransPos;
             headAnchorRecv.transform.eulerAngles = HeadTransRot;
-            headAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRangeOrg;
+            headAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRangeLeftOrg;
 
             leftHandAnchorRecv.transform.position = LeftHandTransPos;
             leftHandAnchorRecv.transform.eulerAngles = LeftHandTransRot;
-            leftHandAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRangeOrg;
+            leftHandAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRangeLeftOrg;
 
             rightHandAnchorRecv.transform.position = RightHandTransPos;
             rightHandAnchorRecv.transform.eulerAngles = RightHandTransRot;
-            rightHandAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRangeOrg;
+            rightHandAnchorRecv.transform.localScale = terrainVolume.transform.localScale * optRangeRightOrg;
 
             if (doNetVC)
             {
