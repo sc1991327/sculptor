@@ -343,8 +343,10 @@ public class HandBehaviour : MonoBehaviour {
         {
             recordBehaviour.ReadJsonFile(recordBehaviour.recordFileNames[tempTouchID]);
 
+            VoxelStoreObj tempVSO = recordBehaviour.ReplayVoxelStore[0];
+
             activeOptModePanel = OptModePanel.replay;
-            replayStartTime = Time.time;
+            replayStartTime = Time.time - tempVSO.Time;
 
             activePanel = ControlPanel.empty;
             activePanelContinue = true;
