@@ -58,12 +58,6 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
@@ -326,50 +320,7 @@
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\CreatedForAssets\Readme.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Examples\ImportedCityLicense.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Examples\Tests\Readme.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_0tb6b6m1.hok.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_0vrwd518.mkt.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_1nk8i73t.ane.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_20221z2k.mh2.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_2q70b3lx.fr8.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_2zbfd7py.77h.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_3dgm2qv4.q3o.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_5ho5picy.ub7.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_68l5orjf.ztg.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_7akkhpbr.z4e.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_7vqdiaop.rhf.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_8kipggxp.438.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_a0zo4rsg.v96.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_c4r8x2ev.wih.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_cer1h82y.4mf.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_cvv3li49.de2.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_d4ql5iej.dvt.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_ez502tzr.7f9.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_f1sdsdtt.49x.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_f2sctkqa.qjf.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_fj6qqm90.t1n.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_fviks2il.fjh.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_hq4dtuuo.9i6.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_htdwfbc4.338.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_iytqtwz5.6aq.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_j6x4jphj.c8s.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_j8oynlcn.1y3.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_l5x3fy10.ae9.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_lq61pyms.qnd.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_mmod2qfv.5pc.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_mxa6d3cl.vbz.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_n3ojuboo.91t.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_ng52bawj.18c.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_onsx8sre.glp.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_owt80obg.k0p.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_qdd06d9d.hdc.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_rdi3d0el.02c.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_tqergllk.8z7.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_tyjq1iyv.xqx.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_vqy5rjwa.tvr.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_vwv1dln8.zfm.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_w3blevli.pbj.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_y3ektuln.5ic.txt" />
-    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_y9d32csa.k2h.txt" />
+    <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\RecordOpt_wvjejxwu.i25.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\Show\BigTripod.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\Show\HappyStrongMan.txt" />
     <None Include="Assets\StreamingAssets\Cubiquity\VoxelDatabases\Record\Show\RainbowHeart.txt" />
