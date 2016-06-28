@@ -82,12 +82,12 @@ public class CameraManager : MonoBehaviour {
     List<int> controllerIndices = new List<int>();
 
     // swipe
-    private const float mMinSwipeDist = 0.2f;
-    private const float mMinVelocity = 2.0f;
+    public float mMinSwipeDist = 0.2f;
+    public float mMinVelocity = 1.0f;
+    public float mAngleRange = 45;
 
     private readonly Vector2 mXAxis = new Vector2(1, 0);
     private readonly Vector2 mYAxis = new Vector2(0, 1);
-    private const float mAngleRange = 30;
 
     private bool mTrackingSwipe;
     private bool mCheckSwipe;

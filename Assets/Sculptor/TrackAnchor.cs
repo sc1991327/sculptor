@@ -65,7 +65,7 @@ public class TrackAnchor : MonoBehaviour
 
     private OptModePanel activeMode, nowMode;
 
-    private float twoHandObjSizeMax = 50;
+    private float twoHandObjSizeMax = 30;
 
     private Color colorChoseLeft = new Color(0.25f, 0.25f, 0.5f);
     private Color colorChoseRight = new Color(0.25f, 0.25f, 0.5f);
@@ -342,9 +342,9 @@ public class TrackAnchor : MonoBehaviour
         rightHand.transform.localScale = optTerrainVolumeScaleOrg * optRangeRightOrg;
 
         Vector3 temp = rightHandChild.transform.position - leftHandChild.transform.position;
-        float tempvx = Mathf.Abs(Mathf.Min(temp.x, twoHandObjSizeMax * terrainVolume.transform.localScale.x));
-        float tempvy = Mathf.Abs(Mathf.Min(temp.y, twoHandObjSizeMax * terrainVolume.transform.localScale.y));
-        float tempvz = Mathf.Abs(Mathf.Min(temp.z, twoHandObjSizeMax * terrainVolume.transform.localScale.z));
+        float tempvx = Mathf.Min(Mathf.Abs(temp.x), twoHandObjSizeMax * terrainVolume.transform.localScale.x);
+        float tempvy = Mathf.Min(Mathf.Abs(temp.y), twoHandObjSizeMax * terrainVolume.transform.localScale.y);
+        float tempvz = Mathf.Min(Mathf.Abs(temp.z), twoHandObjSizeMax * terrainVolume.transform.localScale.z);
         //twiceHand.transform.rotation = Quaternion.Euler(0, 0, 90);
         twiceHand.transform.position = leftHandChild.transform.position + temp / 2;
         twiceHand.transform.localScale = new Vector3(tempvx, tempvy, tempvz);
