@@ -65,6 +65,8 @@ public enum VRMode
     OculusVR,
 }
 
+public enum SwipeMode { up, down, left, right };
+
 public class CameraManager : MonoBehaviour {
 
     public GameObject OculusCamera;
@@ -78,6 +80,21 @@ public class CameraManager : MonoBehaviour {
     private VirtualOpt vOpt;
 
     List<int> controllerIndices = new List<int>();
+
+    // swipe
+    private const float mMinSwipeDist = 0.2f;
+    private const float mMinVelocity = 2.0f;
+
+    private readonly Vector2 mXAxis = new Vector2(1, 0);
+    private readonly Vector2 mYAxis = new Vector2(0, 1);
+    private const float mAngleRange = 30;
+
+    private bool mTrackingSwipe;
+    private bool mCheckSwipe;
+    private float mSwipeStartTime;
+    private Vector2 mStartPosition;
+    private Vector2 mEndPosition;
+
 
     // cached roles - may or may not be connected
 
@@ -242,18 +259,26 @@ public class CameraManager : MonoBehaviour {
             {
                 // leftHand
 
-                if (deviceHand.GetPress(EVRButtonId.k_EButton_Axis0))
-                {
-                    Vector2 axis = deviceHand.GetAxis(EVRButtonId.k_EButton_Axis0);
-                    float maxaxis = Mathf.Max(Mathf.Abs(axis.x), Mathf.Abs(axis.y));
+                //if (deviceHand.GetPress(EVRButtonId.k_EButton_Axis0))
+                //{
+                //    Vector2 axis = deviceHand.GetAxis(EVRButtonId.k_EButton_Axis0);
+                //    float maxaxis = Mathf.Max(Mathf.Abs(axis.x), Mathf.Abs(axis.y));
 
-                    //if (maxaxis < 0.5f){tempVirtualOpt.Axis2D_LB_Center = true;}
-                    if (maxaxis < 0.5f) { tempVirtualOpt.Button_Y = true; }
-                    else if(maxaxis == -axis.x){tempVirtualOpt.Axis2D_LB_Left = true;}
-                    else if (maxaxis == axis.x) {tempVirtualOpt.Axis2D_LB_Right = true;}
-                    else if (maxaxis == -axis.y){tempVirtualOpt.Axis2D_LB_Down = true;}
-                    else{tempVirtualOpt.Axis2D_LB_Up = true;}
-                }
+                //    //if (maxaxis < 0.5f){tempVirtualOpt.Axis2D_LB_Center = true;}
+                //    if (maxaxis < 0.5f) { tempVirtualOpt.Button_Y = true; }
+                //    else if(maxaxis == -axis.x){tempVirtualOpt.Axis2D_LB_Left = true;}
+                //    else if (maxaxis == axis.x) {tempVirtualOpt.Axis2D_LB_Right = true;}
+                //    else if (maxaxis == -axis.y){tempVirtualOpt.Axis2D_LB_Down = true;}
+                //    else{tempVirtualOpt.Axis2D_LB_Up = true;}
+                //}
+
+                if (deviceHand.GetPressDown(EVRButtonId.k_EButton_Axis0)){ tempVirtualOpt.Button_Y = true; }
+
+                int tempAxis = CheckViveSwipe(index);
+                if (tempAxis == 1) { tempVirtualOpt.Axis2D_LB_Left = true; }
+                if (tempAxis == 2) { tempVirtualOpt.Axis2D_LB_Right = true; }
+                if (tempAxis == 3) { tempVirtualOpt.Axis2D_LB_Down = true; }
+                if (tempAxis == 4) { tempVirtualOpt.Axis2D_LB_Up = true; }
 
                 if (deviceHand.GetPress(EVRButtonId.k_EButton_ApplicationMenu)) { tempVirtualOpt.Button_X = true; }
                 if (deviceHand.GetPress(EVRButtonId.k_EButton_SteamVR_Trigger)) { tempVirtualOpt.Axis1D_LB = 1; }
@@ -263,18 +288,26 @@ public class CameraManager : MonoBehaviour {
             {
                 // rightHand
 
-                if (deviceHand.GetPress(EVRButtonId.k_EButton_Axis0))
-                {
-                    Vector2 axis = deviceHand.GetAxis(EVRButtonId.k_EButton_Axis0);
-                    float maxaxis = Mathf.Max(Mathf.Abs(axis.x), Mathf.Abs(axis.y));
+                //if (deviceHand.GetPress(EVRButtonId.k_EButton_Axis0))
+                //{
+                //    Vector2 axis = deviceHand.GetAxis(EVRButtonId.k_EButton_Axis0);
+                //    float maxaxis = Mathf.Max(Mathf.Abs(axis.x), Mathf.Abs(axis.y));
 
-                    //if (maxaxis < 0.5f) { tempVirtualOpt.Axis2D_RB_Center = true; }
-                    if (maxaxis < 0.5f) { tempVirtualOpt.Button_B = true; }
-                    else if (maxaxis == -axis.x) { tempVirtualOpt.Axis2D_RB_Left = true; }
-                    else if (maxaxis == axis.x) { tempVirtualOpt.Axis2D_RB_Right = true; }
-                    else if (maxaxis == -axis.y) { tempVirtualOpt.Axis2D_RB_Down = true; }
-                    else { tempVirtualOpt.Axis2D_RB_Up = true; }
-                }
+                //    //if (maxaxis < 0.5f) { tempVirtualOpt.Axis2D_RB_Center = true; }
+                //    if (maxaxis < 0.5f) { tempVirtualOpt.Button_B = true; }
+                //    else if (maxaxis == -axis.x) { tempVirtualOpt.Axis2D_RB_Left = true; }
+                //    else if (maxaxis == axis.x) { tempVirtualOpt.Axis2D_RB_Right = true; }
+                //    else if (maxaxis == -axis.y) { tempVirtualOpt.Axis2D_RB_Down = true; }
+                //    else { tempVirtualOpt.Axis2D_RB_Up = true; }
+                //}
+
+                if (deviceHand.GetPressDown(EVRButtonId.k_EButton_Axis0)) { tempVirtualOpt.Button_B = true; }
+
+                int tempAxis = CheckViveSwipe(index);
+                if (tempAxis == 1) { tempVirtualOpt.Axis2D_RB_Left = true; }
+                else if (tempAxis == 2) { tempVirtualOpt.Axis2D_RB_Right = true; }
+                else if (tempAxis == 3) { tempVirtualOpt.Axis2D_RB_Down = true; }
+                else if (tempAxis == 4) { tempVirtualOpt.Axis2D_RB_Up = true; }
 
                 if (deviceHand.GetPress(EVRButtonId.k_EButton_ApplicationMenu)) { tempVirtualOpt.Button_A = true; }
                 if (deviceHand.GetPress(EVRButtonId.k_EButton_SteamVR_Trigger)) { tempVirtualOpt.Axis1D_RB = 1; }
@@ -286,6 +319,102 @@ public class CameraManager : MonoBehaviour {
         }
 
         vOpt = tempVirtualOpt;
+    }
+
+    private int CheckViveSwipe(int index)
+    {
+        var deviceHand = SteamVR_Controller.Input(index);
+
+        // Touch down, possible chance for a swipe
+        if (deviceHand.GetTouchDown(EVRButtonId.k_EButton_Axis0))
+        {
+            // Record start time and position
+            mTrackingSwipe = true;
+            mSwipeStartTime = Time.time;
+            mStartPosition = new Vector2(deviceHand.GetAxis(EVRButtonId.k_EButton_Axis0).x, deviceHand.GetAxis(EVRButtonId.k_EButton_Axis0).y);
+        }
+        // Touch up, possible chance for a swipe
+        else if (deviceHand.GetTouchUp(EVRButtonId.k_EButton_Axis0))
+        {
+            mTrackingSwipe = false;
+            mCheckSwipe = true;
+        }
+        // Touching, obtain pos.
+        else if (mTrackingSwipe)
+        {
+            mEndPosition = new Vector2(deviceHand.GetAxis(EVRButtonId.k_EButton_Axis0).x, deviceHand.GetAxis(EVRButtonId.k_EButton_Axis0).y);
+        }
+
+        // check and active swipt
+        if (mCheckSwipe)
+        {
+            mCheckSwipe = false;
+
+            float deltaTime = Time.time - mSwipeStartTime;
+            Vector2 swipeVector = mEndPosition - mStartPosition;
+            float velocity = swipeVector.magnitude / deltaTime;
+
+            if (velocity > mMinVelocity && swipeVector.magnitude > mMinSwipeDist)
+            {
+                // if the swipe has enough velocity and enough distance
+
+                swipeVector.Normalize();
+
+                float angleOfSwipe = Vector2.Dot(swipeVector, mXAxis);
+                angleOfSwipe = Mathf.Acos(angleOfSwipe) * Mathf.Rad2Deg;
+
+                // Detect left and right swipe
+                if (angleOfSwipe < mAngleRange)
+                {
+                    OnSwipeRight();
+                    return 2;
+                }
+                else if ((180.0f - angleOfSwipe) < mAngleRange)
+                {
+                    OnSwipeLeft();
+                    return 1;
+                }
+                else
+                {
+                    // Detect top and bottom swipe
+                    angleOfSwipe = Vector2.Dot(swipeVector, mYAxis);
+                    angleOfSwipe = Mathf.Acos(angleOfSwipe) * Mathf.Rad2Deg;
+                    if (angleOfSwipe < mAngleRange)
+                    {
+                        OnSwipeTop();
+                        return 4;
+                    }
+                    else if ((180.0f - angleOfSwipe) < mAngleRange)
+                    {
+                        OnSwipeBottom();
+                        return 3;
+                    }
+                }
+            }
+
+        }
+
+        return -1;
+    }
+
+    private void OnSwipeLeft()
+    {
+        Debug.Log("Swipe Left");
+    }
+
+    private void OnSwipeRight()
+    {
+        Debug.Log("Swipe right");
+    }
+
+    private void OnSwipeTop()
+    {
+        Debug.Log("Swipe Top");
+    }
+
+    private void OnSwipeBottom()
+    {
+        Debug.Log("Swipe Bottom");
     }
 
     private void SteamDeviceConnected(params object[] args)
