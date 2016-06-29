@@ -108,10 +108,12 @@ public class HandBehaviour : MonoBehaviour {
     private bool breakTwiceHand = false;
 
     // Compute shader
-
     private int CBMaxSize = 32;
+    private int CBMaxMaxSize = 128;
     private ComputeBuffer CBIn;
     private ComputeBuffer CBOut;
+    private ComputeBuffer CBMaxIn;
+    private ComputeBuffer CBMaxOut;
     public ComputeShader CSCreate;
     public ComputeShader CSSmooth;
 
@@ -213,6 +215,9 @@ public class HandBehaviour : MonoBehaviour {
 
         CBIn = new ComputeBuffer(CBMaxSize * CBMaxSize * CBMaxSize, sizeof(int), ComputeBufferType.Default);
         CBOut = new ComputeBuffer(CBMaxSize * CBMaxSize * CBMaxSize, sizeof(int), ComputeBufferType.Default);
+
+        CBMaxIn = new ComputeBuffer(CBMaxMaxSize * CBMaxMaxSize * CBMaxMaxSize, sizeof(int), ComputeBufferType.Default);
+        CBMaxOut = new ComputeBuffer(CBMaxMaxSize * CBMaxMaxSize * CBMaxMaxSize, sizeof(int), ComputeBufferType.Default);
     }
 
 	// Update is called once per frame
@@ -245,6 +250,9 @@ public class HandBehaviour : MonoBehaviour {
 
         CBIn.Release();
         CBOut.Release();
+
+        CBMaxIn.Release();
+        CBMaxOut.Release();
 
     }
 
@@ -764,7 +772,7 @@ public class HandBehaviour : MonoBehaviour {
                     Vector3i range = new Vector3i(tempVSO.RangeX, tempVSO.RangeY, tempVSO.RangeZ);
                     bool activeMirror = tempVSO.ActiveMirror;
 
-                    VoxelSmoothingGPU(Pos, range, activeMirror);
+                    VoxelSmoothingGPU(Pos, range, activeMirror, false, 1);
                     //StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
                 }
                 else
@@ -1232,7 +1240,8 @@ public class HandBehaviour : MonoBehaviour {
         }
     }
 
-    private void VoxelSmoothingGPU(Vector3 pos, Vector3i range, bool activeMirror)
+    // NOW ONLY USE IN TWO HAND OBJ CREATE SMOOTH
+    private void VoxelSmoothingGPU(Vector3 pos, Vector3i range, bool activeMirror, bool maxBuffer, int maxTimes)
     {
         // Only support one hand operator!
         if (range.x != range.y && range.x != range.z)
@@ -1268,15 +1277,52 @@ public class HandBehaviour : MonoBehaviour {
                 }
             }
         }
-        CBIn.SetData(voxelHandleRegionIn);
 
-        // calculate GPU
-        CSSmooth.SetInt("range", rsize);
-        CSSmooth.SetBuffer(0, "bufferIn", CBIn);
-        CSSmooth.SetBuffer(0, "bufferOut", CBOut);
-        CSSmooth.Dispatch(0, CBOut.count / 256, 1, 1);
+        if (maxBuffer)
+        {
+            CBMaxIn.SetData(voxelHandleRegionIn);
 
-        CBOut.GetData(voxelHandleRegionOut);
+            for (int gputime = 0; gputime < maxTimes; gputime++)
+            {
+                if (gputime % 2 == 0)
+                {
+                    // calculate GPU
+                    CSSmooth.SetInt("range", rsize);
+                    CSSmooth.SetBuffer(0, "bufferIn", CBMaxIn);
+                    CSSmooth.SetBuffer(0, "bufferOut", CBMaxOut);
+                    CSSmooth.Dispatch(0, CBMaxOut.count / 256, 1, 1);
+                }
+                else
+                {
+                    // calculate GPU
+                    CSSmooth.SetInt("range", rsize);
+                    CSSmooth.SetBuffer(0, "bufferIn", CBMaxOut);
+                    CSSmooth.SetBuffer(0, "bufferOut", CBMaxIn);
+                    CSSmooth.Dispatch(0, CBMaxIn.count / 256, 1, 1);
+                }
+            }
+            if (maxTimes % 2 == 0)
+            {
+                CBMaxIn.GetData(voxelHandleRegionOut);
+            }
+            else
+            {
+                CBMaxOut.GetData(voxelHandleRegionOut);
+            }
+        }
+        else
+        {
+            CBIn.SetData(voxelHandleRegionIn);
+
+            // calculate GPU
+            CSSmooth.SetInt("range", rsize);
+            CSSmooth.SetBuffer(0, "bufferIn", CBIn);
+            CSSmooth.SetBuffer(0, "bufferOut", CBOut);
+            CSSmooth.Dispatch(0, CBOut.count / 256, 1, 1);
+
+            CBOut.GetData(voxelHandleRegionOut);
+        }
+
         for (int tempX = 0; tempX < rsize; ++tempX)
         {
             for (int tempY = 0; tempY < rsize; ++tempY)
@@ -1308,7 +1354,7 @@ public class HandBehaviour : MonoBehaviour {
             Vector3 mirrorAnchorPoint1 = trackAnchor.GetMirrorAnchorPoint1();
             Vector3 mirrorAnchorPoint2 = trackAnchor.GetMirrorAnchorPoint2();
             Vector3 tempmpos = (CalcMirrorPos(mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, pos));
-            VoxelSmoothingGPU(tempmpos, range, false);
+            VoxelSmoothingGPU(tempmpos, range, false, maxBuffer, maxTimes);
         }
     }
 
@@ -1364,7 +1410,7 @@ public class HandBehaviour : MonoBehaviour {
 
     }
 
-    IEnumerator VoxelSetting(Vector3 Pos, Vector3 RotateEuler, MaterialSet materialSet, Vector3i range, OptShape optshape, bool activeMirror)
+    private void VoxelSetting(Vector3 Pos, Vector3 RotateEuler, MaterialSet materialSet, Vector3i range, OptShape optshape, bool activeMirror)
     {
         int xPos = (int)Pos.x;
         int yPos = (int)Pos.y;
@@ -1396,16 +1442,16 @@ public class HandBehaviour : MonoBehaviour {
                 }
 
                 dismax += adsrange;
-                for ( int i=0; i < Mathf.Clamp(dismax / 3, 2, 6); i++ )
-                {
-                    //Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
-                    //Vector3i tempPosi = new Vector3i(tempPos);
-                    //TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - dismax, tempPosi.y - dismax, tempPosi.z - dismax, tempPosi.x + dismax, tempPosi.y + dismax, tempPosi.z + dismax));
 
-                    Pos = VoxelWorldTransform.InverseTransformPoint(Pos) * VoxelWorldTransform.localScale.x;
-                    StartCoroutine(VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror));
-                    yield return null;
-                }
+                //Vector3 tempPos = VoxelWorldTransform.InverseTransformPoint(new Vector3(xPos, yPos, zPos)) * VoxelWorldTransform.localScale.x;
+                //Vector3i tempPosi = new Vector3i(tempPos);
+                //TerrainVolumeEditor.BlurTerrainVolume(terrainVolume, new Region(tempPosi.x - dismax, tempPosi.y - dismax, tempPosi.z - dismax, tempPosi.x + dismax, tempPosi.y + dismax, tempPosi.z + dismax));
+
+                Pos = VoxelWorldTransform.InverseTransformPoint(Pos) * VoxelWorldTransform.localScale.x;
+                //StartCoroutine(VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror));
+                //yield return null;
+                VoxelSmoothingGPU(Pos, new Vector3i(dismax, dismax, dismax), activeMirror, true, 3);
+
                 break;
 
             case OptShape.sphere:
@@ -1428,14 +1474,11 @@ public class HandBehaviour : MonoBehaviour {
                     }
                 }
 
-                int itimes = (range.x + range.y + range.z) / 3 > optRangeSingleHandMax ? 3 : 1;
-                for (int i = 0; i < itimes; i++)
-                {
-                    int rmax = Mathf.Max(range.x + 1, range.y + 1, range.z + 1);
-                    Pos = VoxelWorldTransform.InverseTransformPoint(Pos) * VoxelWorldTransform.localScale.x;
-                    StartCoroutine(VoxelSmoothing(Pos, new Vector3i(rmax, rmax, rmax), activeMirror));
-                    yield return null;
-                }
+                int rmax = Mathf.Max(range.x + 1, range.y + 1, range.z + 1);
+                Pos = VoxelWorldTransform.InverseTransformPoint(Pos) * VoxelWorldTransform.localScale.x;
+                VoxelSmoothingGPU(Pos, new Vector3i(rmax, rmax, rmax), activeMirror, true, 3);
+                //StartCoroutine(VoxelSmoothing(Pos, new Vector3i(rmax, rmax, rmax), activeMirror));
+                //yield return null;
 
                 break;
 
@@ -1460,12 +1503,11 @@ public class HandBehaviour : MonoBehaviour {
                 }
 
                 dismax += adsrange;
-                for (int i = 0; i < Mathf.Clamp((range.x + range.y + range.z) / 6, 3, 6); i++)
-                {
-                    Pos = VoxelWorldTransform.InverseTransformPoint(Pos) * VoxelWorldTransform.localScale.x;
-                    StartCoroutine(VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror));
-                    yield return null;
-                }
+
+                Pos = VoxelWorldTransform.InverseTransformPoint(Pos) * VoxelWorldTransform.localScale.x;
+                //StartCoroutine(VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror));
+                //yield return null;
+                VoxelSmoothingGPU(Pos, new Vector3i(dismax, dismax, dismax), activeMirror, true, 3);
 
                 break;
 
@@ -1536,19 +1578,19 @@ public class HandBehaviour : MonoBehaviour {
 
                 dismax = Mathf.Max(range.y * 2, dismax);
                 dismax += adsrange;
-                for (int i = 0; i < Mathf.Clamp((range.x + range.y + range.z) / 6, 3, 6); i++)
-                {
-                    Pos = VoxelWorldTransform.InverseTransformPoint(Pos) * VoxelWorldTransform.localScale.x;
-                    StartCoroutine(VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror));
-                    yield return null;
-                }
+
+                Pos = VoxelWorldTransform.InverseTransformPoint(Pos) * VoxelWorldTransform.localScale.x;
+                //StartCoroutine(VoxelSmoothing(Pos, new Vector3i(dismax, dismax, dismax), activeMirror));
+                //yield return null;
+                VoxelSmoothingGPU(Pos, new Vector3i(dismax, dismax, dismax), activeMirror, true, 3);
+
                 break;
         }
 
         if (activeMirror)
         {
             Vector3 tempmpos = (CalcMirrorPos(mirrorAnchorPoint0, mirrorAnchorPoint1, mirrorAnchorPoint2, Pos));
-            StartCoroutine(VoxelSetting(tempmpos, RotateEuler, materialSet, range, optshape, false));
+            VoxelSetting(tempmpos, RotateEuler, materialSet, range, optshape, false);
         }
 
     }
@@ -1606,7 +1648,7 @@ public class HandBehaviour : MonoBehaviour {
         }
         else
         {
-            StartCoroutine(VoxelSetting(Pos, RotateEular, emptyMaterialSet, range, optshape, activeMirror));
+            VoxelSetting(Pos, RotateEular, emptyMaterialSet, range, optshape, activeMirror);
         }
     }
 
@@ -1619,7 +1661,7 @@ public class HandBehaviour : MonoBehaviour {
         }
         else
         {
-            StartCoroutine(VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror));
+            VoxelSetting(Pos, RotateEular, materialSet, range, optshape, activeMirror);
         }
     }
 
@@ -1628,7 +1670,7 @@ public class HandBehaviour : MonoBehaviour {
         recordBehaviour.WriteJsonFileSmooth(Pos, range, Time.time - appStartTime, activeMirror);
         if (useGPU)
         {
-            VoxelSmoothingGPU(Pos, range, activeMirror);
+            VoxelSmoothingGPU(Pos, range, activeMirror, false, 1);
         }
         else
         {
@@ -1829,7 +1871,7 @@ public class HandBehaviour : MonoBehaviour {
             {
                 foreach (Vector3 temp in tempDraw)
                 {
-                    VoxelSmoothingGPU(temp, range, activeMirror);
+                    VoxelSmoothingGPU(temp, range, activeMirror, false, 1);
                     //StartCoroutine(VoxelSmoothing(temp, range, activeMirror));
                 }
                 preNetOptPos = Pos;
@@ -1837,7 +1879,7 @@ public class HandBehaviour : MonoBehaviour {
         }
         else
         {
-            VoxelSmoothingGPU(Pos, range, activeMirror);
+            VoxelSmoothingGPU(Pos, range, activeMirror, false, 1);
             //StartCoroutine(VoxelSmoothing(Pos, range, activeMirror));
             preNetOptPos = Pos;
         }
