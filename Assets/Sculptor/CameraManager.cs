@@ -32,6 +32,10 @@ public class VirtualOpt
     public bool Button_X;
     public bool Button_Y;
 
+    // virtual
+    public int VirLeftValue;
+    public int VirRightValue;
+
     public VirtualOpt()
     {
         Axis2D_LB_Center = false;
@@ -55,6 +59,9 @@ public class VirtualOpt
         Button_B = false;
         Button_X = false;
         Button_Y = false;
+
+        VirLeftValue = -1;
+        VirRightValue = -1;
     }
 }
 
@@ -95,6 +102,8 @@ public class CameraManager : MonoBehaviour {
     private Vector2 mStartPosition;
     private Vector2 mEndPosition;
 
+    private int TempVirtualLeftValue = -1;
+    private int TempVirtualRightValue = -1;
 
     // cached roles - may or may not be connected
 
@@ -274,11 +283,12 @@ public class CameraManager : MonoBehaviour {
 
                 if (deviceHand.GetPressDown(EVRButtonId.k_EButton_Axis0)){ tempVirtualOpt.Button_Y = true; }
 
-                int tempAxis = CheckViveSwipe(index);
+                int tempAxis = CheckViveSwipe(index, true);
                 if (tempAxis == 1) { tempVirtualOpt.Axis2D_LB_Left = true; }
                 if (tempAxis == 2) { tempVirtualOpt.Axis2D_LB_Right = true; }
-                if (tempAxis == 3) { tempVirtualOpt.Axis2D_LB_Down = true; }
-                if (tempAxis == 4) { tempVirtualOpt.Axis2D_LB_Up = true; }
+                //if (tempAxis == 3) { tempVirtualOpt.Axis2D_LB_Down = true; }
+                //if (tempAxis == 4) { tempVirtualOpt.Axis2D_LB_Up = true; }
+                tempVirtualOpt.VirLeftValue = TempVirtualLeftValue;
 
                 if (deviceHand.GetPress(EVRButtonId.k_EButton_ApplicationMenu)) { tempVirtualOpt.Button_X = true; }
                 if (deviceHand.GetPress(EVRButtonId.k_EButton_SteamVR_Trigger)) { tempVirtualOpt.Axis1D_LB = 1; }
@@ -303,11 +313,12 @@ public class CameraManager : MonoBehaviour {
 
                 if (deviceHand.GetPressDown(EVRButtonId.k_EButton_Axis0)) { tempVirtualOpt.Button_B = true; }
 
-                int tempAxis = CheckViveSwipe(index);
+                int tempAxis = CheckViveSwipe(index, false);
                 if (tempAxis == 1) { tempVirtualOpt.Axis2D_RB_Left = true; }
                 else if (tempAxis == 2) { tempVirtualOpt.Axis2D_RB_Right = true; }
-                else if (tempAxis == 3) { tempVirtualOpt.Axis2D_RB_Down = true; }
-                else if (tempAxis == 4) { tempVirtualOpt.Axis2D_RB_Up = true; }
+                //else if (tempAxis == 3) { tempVirtualOpt.Axis2D_RB_Down = true; }
+                //else if (tempAxis == 4) { tempVirtualOpt.Axis2D_RB_Up = true; }
+                tempVirtualOpt.VirRightValue = TempVirtualRightValue;
 
                 if (deviceHand.GetPress(EVRButtonId.k_EButton_ApplicationMenu)) { tempVirtualOpt.Button_A = true; }
                 if (deviceHand.GetPress(EVRButtonId.k_EButton_SteamVR_Trigger)) { tempVirtualOpt.Axis1D_RB = 1; }
@@ -321,9 +332,11 @@ public class CameraManager : MonoBehaviour {
         vOpt = tempVirtualOpt;
     }
 
-    private int CheckViveSwipe(int index)
+    private int CheckViveSwipe(int index, bool isLeft)
     {
         var deviceHand = SteamVR_Controller.Input(index);
+        TempVirtualLeftValue = -1;
+        TempVirtualRightValue = -1;
 
         // Touch down, possible chance for a swipe
         if (deviceHand.GetTouchDown(EVRButtonId.k_EButton_Axis0))
@@ -342,8 +355,24 @@ public class CameraManager : MonoBehaviour {
         // Touching, obtain pos.
         else if (mTrackingSwipe)
         {
-
             mEndPosition = new Vector2(deviceHand.GetAxis(EVRButtonId.k_EButton_Axis0).x, deviceHand.GetAxis(EVRButtonId.k_EButton_Axis0).y);
+            if (Mathf.Abs(mEndPosition.x) < 0.5 && !(mEndPosition.x == 0 && mEndPosition.y == 0))
+            {
+                if (isLeft)
+                {
+                    if (mEndPosition.y > 0.8) { TempVirtualLeftValue = 4; }
+                    else if (mEndPosition.y > 0.5) { TempVirtualLeftValue = 3; }
+                    else if (mEndPosition.y > -0.6) { TempVirtualLeftValue = 2; }
+                    else { TempVirtualLeftValue = 1; }
+                }
+                else
+                {
+                    if (mEndPosition.y > 0.8) { TempVirtualRightValue = 4; }
+                    else if (mEndPosition.y > 0.5) { TempVirtualRightValue = 3; }
+                    else if (mEndPosition.y > -0.6) { TempVirtualRightValue = 2; }
+                    else { TempVirtualRightValue = 1; }
+                }
+            }
         }
 
         // check and active swipt

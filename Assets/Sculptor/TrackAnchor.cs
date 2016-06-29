@@ -65,8 +65,8 @@ public class TrackAnchor : MonoBehaviour
 
     private OptModePanel activeMode, nowMode;
 
-    private float twoHandSphereSizeMax = 30;
-    private float twoHandObjSizeMax = 20;
+    private float twoHandSphereSizeMax = 20;
+    private float twoHandObjSizeMax = 16;
 
     private Color colorChoseLeft = new Color(0.25f, 0.25f, 0.5f);
     private Color colorChoseRight = new Color(0.25f, 0.25f, 0.5f);

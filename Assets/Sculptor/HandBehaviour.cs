@@ -148,6 +148,10 @@ public class HandBehaviour : MonoBehaviour {
     bool Button_X;
     bool Button_Y;
 
+    // virtual value
+    int VirLeftValue;
+    int VirRightValue;
+
     // Use this for initialization
     void Start () {
 
@@ -411,13 +415,19 @@ public class HandBehaviour : MonoBehaviour {
             activeShape = OptShape.sphere;
         }
 
+        if (Axis1D_LB > ButtonFilter && Axis1D_RB > ButtonFilter)
+        {
+            preOptState = false;
+            StateHandleOVRInput(DrawPos.left, activeStateLeft, colorMaterialSetLeft, activeMirror, true);
+            StateHandleOVRInput(DrawPos.right, activeStateRight, colorMaterialSetRight, activeMirror, true);
+            preOptState = false;
+        }
         if (Axis1D_LB > ButtonFilter && breakTwiceHand == false)
         {
             StateHandleOVRInput(DrawPos.left, activeStateLeft, colorMaterialSetLeft, activeMirror, true);
             preOptState = true;
         }
-
-        if (Axis1D_RB > ButtonFilter && breakTwiceHand == false)
+        else if (Axis1D_RB > ButtonFilter && breakTwiceHand == false)
         {
             StateHandleOVRInput(DrawPos.right, activeStateRight, colorMaterialSetRight, activeMirror, true);
             preOptState = true;
@@ -461,6 +471,15 @@ public class HandBehaviour : MonoBehaviour {
                 optRangeRight -= 2;
             }
             buttonPreTime = Time.time;
+        }
+
+        if (VirLeftValue > 0)
+        {
+            optRangeLeft = 2 + VirLeftValue * 2;
+        }
+        if (VirRightValue > 0)
+        {
+            optRangeRight = 2 + VirRightValue * 2;
         }
 
         // shape
@@ -727,6 +746,7 @@ public class HandBehaviour : MonoBehaviour {
             if (activeHandOpt == HandOpt.pairOpt)
             {
                 StateHandleOVRInput(DrawPos.twice, OptState.create, colorMaterialSetRight, true, false);
+                preOptState = false;
                 buttonPreTime = Time.time;
             }
 
@@ -826,6 +846,10 @@ public class HandBehaviour : MonoBehaviour {
         Button_B = vOpt.Button_B;
         Button_X = vOpt.Button_X;
         Button_Y = vOpt.Button_Y;
+
+        // virtual value
+        VirLeftValue = vOpt.VirLeftValue;
+        VirRightValue = vOpt.VirRightValue;
 
         if (Button_A)
         {
