@@ -377,21 +377,33 @@ public class CameraManager : MonoBehaviour {
                 else
                 {
                     // Detect top and bottom swipe
-                    angleOfSwipe = Vector2.Dot(swipeVector, mYAxis);
-                    angleOfSwipe = Mathf.Acos(angleOfSwipe) * Mathf.Rad2Deg;
-                    if (angleOfSwipe < mAngleRange)
-                    {
-                        OnSwipeTop();
-                        return 4;
-                    }
-                    else if ((180.0f - angleOfSwipe) < mAngleRange)
-                    {
-                        OnSwipeBottom();
-                        return 3;
-                    }
+                    //angleOfSwipe = Vector2.Dot(swipeVector, mYAxis);
+                    //angleOfSwipe = Mathf.Acos(angleOfSwipe) * Mathf.Rad2Deg;
+                    //if (angleOfSwipe < mAngleRange)
+                    //{
+                    //    OnSwipeTop();
+                    //    return 4;
+                    //}
+                    //else if ((180.0f - angleOfSwipe) < mAngleRange)
+                    //{
+                    //    OnSwipeBottom();
+                    //    return 3;
+                    //}
                 }
             }
-
+            else
+            {
+                if (mEndPosition.y > 0.2)
+                {
+                    OnSwipeTop();
+                    return 4;
+                }
+                else if (mEndPosition.y < -0.2)
+                {
+                    OnSwipeBottom();
+                    return 3;
+                }
+            }
         }
 
         return -1;
